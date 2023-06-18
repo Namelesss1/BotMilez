@@ -13,6 +13,11 @@ import net.dv8tion.jda.api.requests.restaction.CommandCreateAction;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class handles methods that deal with commands that a user
+ * inputs, initializes needed data for the commands,
+ * and runs the appropriate command as specified by the user.
+ */
 public class CommandManager extends ListenerAdapter {
 
     @Override
@@ -55,7 +60,7 @@ public class CommandManager extends ListenerAdapter {
 
     /**
      *
-     * @return An array containing all of the bot's available commands
+     * @return An array containing all the bot's available commands
      */
     private static IBotCommand[] getBotCommands() {
         IBotCommand commands[] = {

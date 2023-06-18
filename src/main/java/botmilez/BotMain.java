@@ -20,10 +20,7 @@ public class BotMain {
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MESSAGES)
                 .build();
 
-        /* Get the available commands for the bot and register them */
-        //for (IBotCommand command : getBotCommands()) {
-          //  jda.upsertCommand(command.getName(), command.getDesc()).setGuildOnly(true).queue();
-        //}
+
     }
 
 

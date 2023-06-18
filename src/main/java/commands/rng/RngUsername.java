@@ -8,6 +8,13 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * =============== RNG Username ===============
+ * Slash Command that generates a random username by
+ * creating random combinations of words and numbers
+ * in certain orders, and randomly deciding if the name
+ * should follow a specific style such as all caps.
+ */
 public class RngUsername implements IBotCommand {
 
     private String[] adjectives;

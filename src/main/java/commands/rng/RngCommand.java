@@ -11,6 +11,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * =============== RNG ===============
+ * Represents a Discord Slash Command that allows the user to
+ * generate a random number. A lower bound, upper bound, or a
+ * specific range of the random number to generate can be specified
+ * by the user also. The lowest and highest number that is allowed
+ * to be generated is the same as the limits that an integer can
+ * represent.
+ */
 public class RngCommand implements IBotCommand {
 
     private List<OptionData> options;

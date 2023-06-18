@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Hi Command:
+ * =============== Hi Command: ===============
  *
  * Basic command used to test out and play with the discord API,
  * and get some basic interaction with the bot.

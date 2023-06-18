@@ -8,6 +8,19 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * =============== BubbleWrapCommand ===============
+ *
+ * A simple command that outputs a grid of the string "pop!"
+ * each string hidden by a discord spoiler tag. The user can
+ * choose the size of the grid (# rows = #columns) up to a certain
+ * size.
+ *
+ * This command was added mainly to get used to and test the waters with
+ * OptionData and options used by Discord Slash Commands, and have users
+ * input what they want as an option from the command.
+ *
+ */
 public class BubbleWrapCommand implements IBotCommand{
 
     private final List<OptionData> options;
