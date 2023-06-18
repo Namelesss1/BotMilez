@@ -36,7 +36,9 @@ public class BubbleWrapCommand implements IBotCommand{
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_SIZE_NAME,
                         "width by length of bubble wrap, max " + MAX_SIZE,
-                        false, true));
+                        false, true)
+                        .setMaxValue(MAX_SIZE)
+                        .setMinValue(MIN_SIZE));
     }
 
     @Override
@@ -60,19 +62,16 @@ public class BubbleWrapCommand implements IBotCommand{
 
         StringBuilder msg = new StringBuilder();
 
-        if (size >= MIN_SIZE && size <= MAX_SIZE) {
-             for (int row = 0; row < size; row++) {
-                 for (int col = 0; col < size; col++) {
-                     msg.append("||pop!||");
-                 }
-                 msg.append("\n");
-             }
-             event.reply(msg.toString()).queue();
-             return;
-        }
 
-        event.reply("Error: Size must be less than " + MAX_SIZE +
-                " and greater than " + MIN_SIZE).queue();
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                msg.append("||pop!||");
+            }
+            msg.append("\n");
+        }
+        event.reply(msg.toString()).queue();
+
+
     }
 
 
