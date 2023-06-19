@@ -25,23 +25,17 @@ import java.util.Map;
  */
 public class CommandManager extends ListenerAdapter {
 
-    private Map<String, IBotCommand> commands;
+    private List<IBotCommand> commands;
 
     public CommandManager() {
         /* Initialize command instances */
-        commands = new HashMap<>();
+        commands = new ArrayList<>();
 
-        HiCommand hi_command = new HiCommand();
-        RngCommand rng_command = new RngCommand();
-        RngUsername rng_username_command = new RngUsername();
-        BubbleWrapCommand bubblewrap_command = new BubbleWrapCommand();
-        QuoteCommand quote_command = new QuoteCommand();
-
-        commands.put(hi_command.getName(), hi_command);
-        commands.put(rng_command.getName(), rng_command);
-        commands.put(rng_username_command.getName(), rng_username_command);
-        commands.put(bubblewrap_command.getName(), bubblewrap_command);
-        commands.put(quote_command.getName(), quote_command);
+        commands.add(new HiCommand());
+        commands.add(new RngCommand());
+        commands.add(new RngUsername());
+        commands.add(new BubbleWrapCommand());
+        commands.add(new QuoteCommand());
 
 
     }
@@ -53,7 +47,7 @@ public class CommandManager extends ListenerAdapter {
             super.onSlashCommandInteraction(event);
 
             String cmdName = event.getName();
-            for (IBotCommand command : commands.values()) {
+            for (IBotCommand command : commands) {
                 if (cmdName.equals(command.getName())) {
                     command.doAction(event);
                 }
@@ -65,7 +59,7 @@ public class CommandManager extends ListenerAdapter {
     @Override
     public void onGuildReady(GuildReadyEvent event) {
 
-        for (IBotCommand command : commands.values()) {
+        for (IBotCommand command : commands) {
               List<OptionData> options = command.getOptions();
 
               CommandCreateAction action =
@@ -86,7 +80,7 @@ public class CommandManager extends ListenerAdapter {
      *
      * @return A map where the values are commands, key's are the command's names.
      */
-    public Map<String, IBotCommand> getCommands() {
+    public List<IBotCommand> getCommands() {
         return commands;
     }
 
