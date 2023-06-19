@@ -18,7 +18,7 @@ public interface IBotCommand {
      *
      * @return String containing command's name
      */
-    public abstract String getName();
+    public String getName();
 
 
 
