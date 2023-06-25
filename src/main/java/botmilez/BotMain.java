@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
 
+import java.util.List;
 import java.util.Map;
 
 import static botmilez.config.BOTMILEZ_TOKEN;
@@ -19,14 +20,14 @@ public class BotMain {
         JDABuilder jdaBuilder = JDABuilder.createDefault(BOTMILEZ_TOKEN);
 
         CommandManager cmdManager = new CommandManager();
-        Map<String, IBotCommand> commands = cmdManager.getCommands();
+        List<IBotCommand> commands = cmdManager.getCommands();
 
         /*
          * Add event listeners, including the main command manager
          * And commands that have their own listeners.
          */
         jdaBuilder = jdaBuilder.addEventListeners(cmdManager);
-        for (IBotCommand command : commands.values()) {
+        for (IBotCommand command : commands) {
             if (command instanceof ListenerAdapter) {
                 jdaBuilder = jdaBuilder.addEventListeners(command);
             }

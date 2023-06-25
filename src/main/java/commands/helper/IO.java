@@ -1,9 +1,11 @@
 package commands.helper;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Arrays;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Class to contain many helper functions related to IO and files as needed by
@@ -33,6 +35,42 @@ public class IO {
             return null;
         }
 
+    }
+
+
+    public static JSONObject readJsonObj(String path) {
+        JSONParser parser = new JSONParser();
+        JSONObject result = null;
+
+        try {
+            Reader jsonReader = new FileReader(path);
+            result = (JSONObject)parser.parse(jsonReader);
+        }
+        catch (IOException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+        catch (ParseException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+
+        return result;
+    }
+
+
+    public static boolean writeJson(JSONObject jsonObj, String path) {
+        boolean successful = true;
+        FileWriter writer;
+
+        try {
+            writer = new FileWriter(path);
+            writer.write(jsonObj.toJSONString());
+        }
+        catch(IOException e) {
+            System.out.println(e.getLocalizedMessage());
+            successful = false;
+        }
+
+        return successful;
     }
 
 }
