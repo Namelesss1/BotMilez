@@ -1,29 +1,27 @@
-{
-  "quotes":
-  [
+[
     {
-      "year": 2020,
-      "context":
-      [
-        {
-          "name": "Bob",
-          "quote": "What's up?"
-        },
-        {
-          "name": "Jake",
-          "quote": "The sky"
-        }
-      ]
+        "author":"John",
+        "context":[
+            {
+              "name": "Bob",
+              "quote": "What's up?",
+              "year": 2012
+            },
+            {
+              "name": "Bill",
+              "quote": "The Sky",
+              "year": 2012
+            }
+        ]
     },
     {
-      "year": null,
-      "context":
-      [
-        {
-          "name": "Bill",
-          "quote": "I hate pizza"
-        }
-      ]
+        "author":"John",
+        "context":[
+            {
+              "name": "Sally",
+              "quote": "What did they say?",
+              "year": null
+            }
+        ]
     }
-  ]
-}
+]
