@@ -38,7 +38,7 @@ public class Quote {
         return quote;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
