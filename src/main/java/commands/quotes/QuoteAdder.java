@@ -8,6 +8,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONObject;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static botmilez.config.QUOTE_FILE_SUFFIX;
 
 
@@ -15,6 +18,14 @@ import static botmilez.config.QUOTE_FILE_SUFFIX;
  * QuoteAdder: Helper class for the quote command to add
  * new quotes(s) for the bot to store so users can view the
  * quotes later on.
+ *
+ * Quotes can be added in two ways. The first way is for the user
+ * to enter each part of a quote and each quote individually one by one
+ * based on the prompts given by the bot. The second way is the shorthand
+ * and much faster way, where the user can send one or more quotes in a single
+ * message in the form:
+ *
+ * "quote" speakerWhoSaidQuote year(year is optional)
  */
 public class QuoteAdder extends ListenerAdapter {
 
@@ -55,18 +66,25 @@ public class QuoteAdder extends ListenerAdapter {
 
         if (!author.isBot() && event.getAuthor().equals(user)) {
             String response = event.getMessage().getContentRaw();
+            boolean shorthand = false;
 
 
             if (status == Status.INPUT_NAME) {
-                quote.setName(response);
-                status = Status.INPUT_QUOTE;
-                channel.sendMessage("Now enter the quote, WITHOUT \"quotations\"")
-                        .queue();
-                return;
+                shorthand = parseShorthand(response);
+                if (shorthand) {
+                    status = Status.INPUT_MORE;
+                }
+                else {
+                    quote.setName(response);
+                    status = Status.INPUT_QUOTE;
+                    channel.sendMessage("Now enter the quote, WITHOUT \"quotations\"")
+                            .queue();
+                    return;
+                }
             }
 
 
-            else if (status == Status.INPUT_QUOTE) {
+            if (status == Status.INPUT_QUOTE) {
                 quote.setQuote(response);
                 status = Status.INPUT_YEAR;
                 channel.sendMessage(
@@ -78,16 +96,8 @@ public class QuoteAdder extends ListenerAdapter {
             }
 
 
-            else if (status == Status.INPUT_YEAR) {
-                Integer year;
-                try {
-                    year = Integer.parseInt(response);
-                }
-                catch(NumberFormatException e) {
-                    year = null;
-                }
-                quote.setYear(year);
-
+            if (status == Status.INPUT_YEAR) {
+                quote.setYear(response);
                 status = Status.INPUT_MORE;
                 channel.sendMessage(
                                 "Does the quote include any other context? (more quotes?)\n" +
@@ -97,8 +107,10 @@ public class QuoteAdder extends ListenerAdapter {
             }
 
 
-            else if (status == Status.INPUT_MORE) {
-                context.addQuoteToContext(quote);
+            if (status == Status.INPUT_MORE) {
+                if (!shorthand) {
+                    context.addQuoteToContext(quote);
+                }
 
                 if (response.equalsIgnoreCase("yes")) {
                     status = Status.NEW;
@@ -114,7 +126,7 @@ public class QuoteAdder extends ListenerAdapter {
             }
 
 
-            else if (status == Status.INPUT_CORRECT) {
+            if (status == Status.INPUT_CORRECT) {
 
                 if (response.equalsIgnoreCase("yes")) {
                     //TODO: JSON STORE
@@ -146,11 +158,23 @@ public class QuoteAdder extends ListenerAdapter {
     }
 
 
+    /**
+     * This method is called when a user is beginning the process of
+     * entering a new quote to the context.
+     *
+     * @param channel channel for the bot to send a prompt to
+     */
     private void onNewStatus(MessageChannel channel) {
-        channel.sendMessage("Enter the name of who said the quote.").queue();
+        channel.sendMessage("Enter the name of who said the quote.\n" +
+                "Note: there is a quicker way to set a quote using the following format:\n" +
+                "```\"quote\" nameOfPersonWhoSaidQuote yearWhichIsOptional\n" +
+                "\"quote #2\" nameOfPersonWhoSaidQuote yearWhichIsOptional\n" +
+                "etc...```")
+                .queue();
         status = Status.INPUT_NAME;
         quote = new Quote();
     }
+
 
 
     private boolean addQuoteToJSON(QuoteContext context, MessageReceivedEvent event) {
@@ -161,6 +185,71 @@ public class QuoteAdder extends ListenerAdapter {
 
         String path = event.getGuild().getId() + QUOTE_FILE_SUFFIX;
         return IO.writeJson(jsonObj ,path);
+    }
+
+
+    /**
+     * Takes a string and checks whether the formatting is sufficient to
+     * create a quote object from it and add it. If string is good, then
+     * it is taken and parsed to obtain each part of the quote(s) which is added
+     * to the QuoteContext. The format of the string must be that of the shorthand
+     * way of adding a quote. The year is flexible and need not be a "valid" year
+     * (e.g. 2819938) and spaces between someone's name is allowed. 
+     *
+     * @param text String to parse
+     * @return true if string is valid, false if it cannot be taken apart
+     */
+    private boolean parseShorthand(String text) {
+        String capture;
+
+        /* Capture at least one of any character between quotation marks
+         * parenthesis to capture quote itself in group 1, and capturing
+         * whitespace to remove any whitespace before the username */
+        Pattern quoteRegex = Pattern.compile("\"(.+)\"[\\s]*");
+
+        /* Capture a year (optional) which should be at least one number at end of line,
+         *  separated from the username by whitespace or a comma symbol */
+        Pattern yearRegex = Pattern.compile("([\\s]+|[,])[\\d]+$");
+
+        /* Capture a name consisting of at least one of any characters */
+        Pattern nameRegex = Pattern.compile(".+");
+
+        String[] lines = text.split("\n");
+
+        /* Each quote separated by a new line, done on a line-by-line basis */
+        for (String line: lines) {
+            quote = new Quote();
+
+            /* Parsing: Quote */
+            Matcher patternMatcher = quoteRegex.matcher(line);
+            if (!patternMatcher.find()) {
+                return false;
+            }
+            capture = patternMatcher.group(1); /* Get quote w/out quotation marks */
+            quote.setQuote(capture);
+            line = line.substring(patternMatcher.end()); /* Leaving only name & year */
+
+            /* Parsing: Year */
+            patternMatcher = yearRegex.matcher(line);
+            if (patternMatcher.find()) {
+                capture = patternMatcher.group(0).trim();
+                quote.setYear(capture);
+                line = line.substring(0, patternMatcher.start()); /* Leave only name */
+            }
+
+            /* Parsing: Name */
+            patternMatcher = nameRegex.matcher(line);
+            if (!patternMatcher.find()) {
+                return false;
+            }
+            capture = patternMatcher.group(0).trim();
+            quote.setName(capture);
+
+            context.addQuoteToContext(quote);
+        }
+
+
+        return true;
     }
 
 }

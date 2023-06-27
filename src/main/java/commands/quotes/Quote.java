@@ -21,8 +21,13 @@ public class Quote {
         quote = quoteIn;
     }
 
-    public void setYear(Integer yearIn) {
-        year = yearIn;
+    public void setYear(String yearIn) {
+        try {
+            year = Integer.parseInt(yearIn);
+        }
+        catch(NumberFormatException e) {
+            year = null;
+        }
     }
 
     public String getName() {
@@ -37,13 +42,15 @@ public class Quote {
         return year;
     }
 
+
+
     @Override
     public String toString() {
         StringBuilder result =
                 new StringBuilder("\"" + quote + "\" - **" + name + "**");
 
         if (year != null) {
-            result.append(", **" + year + "**");
+            result.append(", *" + year + "*");
         }
 
         return result.toString();
