@@ -6,11 +6,14 @@ import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static botmilez.config.QUOTE_FILE_PREFIX;
 import static botmilez.config.QUOTE_FILE_SUFFIX;
 
 
@@ -130,7 +133,7 @@ public class QuoteAdder extends ListenerAdapter {
 
                 if (response.equalsIgnoreCase("yes")) {
                     //TODO: JSON STORE
-                    boolean success = true;
+                    boolean success = addQuoteToJSON(event);
                     if (success) {
                         channel.sendMessage("Quote Successfully added!").queue();
                     }
@@ -177,13 +180,17 @@ public class QuoteAdder extends ListenerAdapter {
 
 
 
-    private boolean addQuoteToJSON(QuoteContext context, MessageReceivedEvent event) {
+    private boolean addQuoteToJSON(MessageReceivedEvent event) {
         JSONObject jsonObj = new JSONObject();
 
-        //TODO: context to jsonObj
+        JSONArray quoteArray = new JSONArray();
+        quoteArray.addAll(context.getQuotes());
+
+        jsonObj.put("author", user.getName());
+        jsonObj.put("quotelist", quoteArray);
 
 
-        String path = event.getGuild().getId() + QUOTE_FILE_SUFFIX;
+        String path = QUOTE_FILE_PREFIX + event.getGuild().getId() + QUOTE_FILE_SUFFIX;
         return IO.writeJson(jsonObj ,path);
     }
 

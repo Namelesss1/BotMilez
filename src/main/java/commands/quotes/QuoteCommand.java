@@ -34,6 +34,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
     private List<OptionData> options;
 
     private static final String BUTTON_ID_ADD = "addquote";
+    private static final String BUTTON_ID_VIEW = "viewquote";
 
     private Map<User, QuoteAdder> activeAdders;
 
@@ -61,7 +62,9 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
         event.reply("Choose which option you'd like to use")
-                .addActionRow(Button.success(BUTTON_ID_ADD, "Add a quote"))
+                .addActionRow(
+                        Button.success(BUTTON_ID_ADD, "Add a quote"),
+                        Button.primary(BUTTON_ID_VIEW, "View quote"))
                 .queue();
 
     }
@@ -81,6 +84,9 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                 activeAdders.put(user, new QuoteAdder(user, this, event));
                 event.getJDA().addEventListener(activeAdders.get(user));
             }
+        }
+        if (event.getComponentId().equals(BUTTON_ID_VIEW)) {
+
         }
     }
 

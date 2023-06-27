@@ -59,11 +59,12 @@ public class IO {
 
     public static boolean writeJson(JSONObject jsonObj, String path) {
         boolean successful = true;
-        FileWriter writer;
+        FileWriter writer = null;
 
         try {
             writer = new FileWriter(path);
             writer.write(jsonObj.toJSONString());
+            writer.close();
         }
         catch(IOException e) {
             System.out.println(e.getLocalizedMessage());

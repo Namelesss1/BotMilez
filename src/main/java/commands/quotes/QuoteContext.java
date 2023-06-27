@@ -44,6 +44,10 @@ public class QuoteContext {
         quotes.add(quote);
     }
 
+    public List<Quote> getQuotes() {
+        return quotes;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
