@@ -57,12 +57,18 @@ public class IO {
     }
 
 
+    /**
+     * Writes a json object to the file specified by the given path.
+     * @param jsonObj Object to write to file
+     * @param path file to write to
+     * @return true if successful, false if not.
+     */
     public static boolean writeJson(JSONObject jsonObj, String path) {
         boolean successful = true;
         FileWriter writer = null;
 
         try {
-            writer = new FileWriter(path);
+            writer = new FileWriter(path, true);
             writer.write(jsonObj.toJSONString());
             writer.close();
         }
@@ -74,4 +80,13 @@ public class IO {
         return successful;
     }
 
+    /**
+     * Checks if a given file at the path exists or not.
+     * @param path file to check
+     * @return true if file exists, no if not.
+     */
+    public static boolean fileExists (String path) {
+        File file = new File(path);
+        return file.exists();
+    }
 }
