@@ -194,7 +194,7 @@ public class QuoteAdder extends ListenerAdapter {
      * it is taken and parsed to obtain each part of the quote(s) which is added
      * to the QuoteContext. The format of the string must be that of the shorthand
      * way of adding a quote. The year is flexible and need not be a "valid" year
-     * (e.g. 2819938) and spaces between someone's name is allowed. 
+     * (e.g. 2819938) and spaces between someone's name is allowed.
      *
      * @param text String to parse
      * @return true if string is valid, false if it cannot be taken apart

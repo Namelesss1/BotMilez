@@ -1,6 +1,7 @@
 package commands.basic;
 
 import commands.IBotCommand;
+import commands.helper.IO;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
@@ -19,6 +20,13 @@ import java.util.Random;
 public class HiCommand implements IBotCommand {
 
     private String[] args;
+    private String[] greetings;
+
+    private final String GREETINGS_PATH = "resources/greetings/greetings.txt";
+
+    public HiCommand() {
+        greetings = IO.readAllFileLinesIntoArray(GREETINGS_PATH);
+    }
 
     public String getName() {
         return "hi";
@@ -35,30 +43,9 @@ public class HiCommand implements IBotCommand {
 
     public void doAction(SlashCommandInteractionEvent event) {
         Random random = new Random();
-        int choice = random.nextInt(6);
+        int choice = random.nextInt(greetings.length);
 
-        switch (choice) {
-            case 0:
-                event.reply("Hi!").queue();
-                break;
-            case 1:
-                event.reply("Howdy!").queue();
-                break;
-            case 2:
-                event.reply("Greetings, "
-                        + event.getUser().getName() + ".").queue();
-                break;
-            case 3:
-                event.reply("YOOO WHATS UP, " +
-                        event.getUser().getName() + "?").queue();
-                break;
-            case 4:
-                event.reply("Airmilez says hello back!").queue();
-                break;
-            case 5:
-                event.reply("Hi.. wait a sec, you're not Airmilez!");
-                break;
-        }
+        event.reply(greetings[choice]).queue();
     }
 
 }

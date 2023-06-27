@@ -1,6 +1,7 @@
 target/
 src/main/java/botmilez/config.java
 resources/quotes/guildquotes/
+resources/greetings/greetings.txt
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
