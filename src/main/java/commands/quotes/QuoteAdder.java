@@ -179,19 +179,42 @@ public class QuoteAdder extends ListenerAdapter {
     }
 
 
-
+    /**
+     * Prepares a quote context into a JSON format, then sends the json object
+     * to a method that stores the object as a JSON file to save the quote.
+     * @param event gives the guild to which the quote belongs to
+     * @return true if addition of quote was successful, false if not.
+     */
     private boolean addQuoteToJSON(MessageReceivedEvent event) {
+        String path = QUOTE_FILE_PREFIX + event.getGuild().getId() + QUOTE_FILE_SUFFIX;
         JSONObject jsonObj = new JSONObject();
 
         JSONArray quoteArray = new JSONArray();
-        quoteArray.addAll(context.getQuotes());
+        JSONObject jsonQuote;
+
+        for (Quote quote : context.getQuotes()) {
+            jsonQuote = new JSONObject();
+            jsonQuote.put("name", quote.getName());
+            jsonQuote.put("quote", quote.getQuote());
+            jsonQuote.put("year", quote.getYear());
+            quoteArray.add(jsonQuote);
+        }
 
         jsonObj.put("author", user.getName());
-        jsonObj.put("quotelist", quoteArray);
+        jsonObj.put("context", quoteArray);
+
+        JSONArray contextArray;
+        if (IO.fileExists(path)) {
+            contextArray = (JSONArray)IO.readJson(path);
+        }
+        else {
+            contextArray = new JSONArray();
+        }
+        contextArray.add(jsonObj);
 
 
-        String path = QUOTE_FILE_PREFIX + event.getGuild().getId() + QUOTE_FILE_SUFFIX;
-        return IO.writeJson(jsonObj ,path);
+
+        return IO.writeJson(contextArray ,path);
     }
 
 

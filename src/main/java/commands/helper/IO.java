@@ -3,6 +3,7 @@ package commands.helper;
 import java.io.*;
 import java.util.Arrays;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -38,23 +39,6 @@ public class IO {
     }
 
 
-    public static JSONObject readJsonObj(String path) {
-        JSONParser parser = new JSONParser();
-        JSONObject result = null;
-
-        try {
-            Reader jsonReader = new FileReader(path);
-            result = (JSONObject)parser.parse(jsonReader);
-        }
-        catch (IOException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-        catch (ParseException e) {
-            System.out.println(e.getLocalizedMessage());
-        }
-
-        return result;
-    }
 
 
     /**
@@ -63,13 +47,13 @@ public class IO {
      * @param path file to write to
      * @return true if successful, false if not.
      */
-    public static boolean writeJson(JSONObject jsonObj, String path) {
+    public static boolean writeJson(JSONArray jsonArray, String path) {
         boolean successful = true;
         FileWriter writer = null;
 
         try {
-            writer = new FileWriter(path, true);
-            writer.write(jsonObj.toJSONString());
+            writer = new FileWriter(path, false);
+            writer.write(jsonArray.toJSONString());
             writer.close();
         }
         catch(IOException e) {
@@ -78,6 +62,27 @@ public class IO {
         }
 
         return successful;
+    }
+
+
+    public static Object readJson(String path) {
+        JSONParser parser = new JSONParser();
+        Object res;
+
+        try {
+            FileReader reader = new FileReader(path);
+            res = parser.parse(reader);
+        }
+        catch(ParseException e) {
+            System.out.println(e.getLocalizedMessage());
+            res = null;
+        }
+        catch(IOException e) {
+            System.out.println(e.getLocalizedMessage());
+            res = null;
+        }
+
+        return res;
     }
 
     /**
