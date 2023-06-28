@@ -2,6 +2,7 @@ package commands.quotes;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
@@ -62,9 +63,9 @@ public class QuoteContext {
      * Sends a message containing an embed that prints out a quote context added
      * by a user into the bot.
      *
-     * @param event MessageReceivedEvent object giving the channel for bot to print quote in
+     * @param channel the channel for bot to print quote in
      */
-    public void sendQuoteContext(MessageReceivedEvent event) {
+    public void sendQuoteContext(MessageChannel channel) {
 
         MessageEmbed.Field field = new MessageEmbed.Field(
                 "Quote added by " + author, /* name */
@@ -79,7 +80,7 @@ public class QuoteContext {
                 //.setFooter("test")
                 .addField(field);
 
-        event.getChannel().sendMessageEmbeds(embBuilder.build()).queue();
+        channel.sendMessageEmbeds(embBuilder.build()).queue();
     }
 
 }

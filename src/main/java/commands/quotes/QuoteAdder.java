@@ -122,7 +122,7 @@ public class QuoteAdder extends ListenerAdapter {
                     channel.sendMessage("Does the following quote context look correct?" +
                         "Input yes if so, anything else otherwise").queue();
                     context.setAuthor(user.getName());
-                    context.sendQuoteContext(event);
+                    context.sendQuoteContext(channel);
                     status = Status.INPUT_CORRECT;
                     return;
                 }
@@ -135,6 +135,7 @@ public class QuoteAdder extends ListenerAdapter {
                     //TODO: JSON STORE
                     boolean success = addQuoteToJSON(event);
                     if (success) {
+                        quoteCommand.getQuoteViewer().setAsModified(event.getGuild().getIdLong());
                         channel.sendMessage("Quote Successfully added!").queue();
                     }
                     else {
