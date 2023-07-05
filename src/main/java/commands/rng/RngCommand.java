@@ -19,8 +19,9 @@ import java.util.Random;
  * by the user also. The lowest and highest number that is allowed
  * to be generated is the same as the limits that an integer can
  * represent.
+ * The command also allows a user to input a list of options and the
+ * bot will randomly select one option from the list.
  *
- * //TODO enable user to input a bunch of choices and choose an option
  */
 public class RngCommand implements IBotCommand {
 
