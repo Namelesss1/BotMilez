@@ -19,12 +19,15 @@ import java.util.Random;
  * by the user also. The lowest and highest number that is allowed
  * to be generated is the same as the limits that an integer can
  * represent.
+ *
+ * //TODO enable user to input a bunch of choices and choose an option
  */
 public class RngCommand implements IBotCommand {
 
     private List<OptionData> options;
     private final String MAX_OPTION = "upper_bound";
     private final String MIN_OPTION = "lower_bound";
+    private final String STRINGS_OPTION = "list_of_options";
 
     public RngCommand() {
         options = new ArrayList<>();
@@ -40,6 +43,12 @@ public class RngCommand implements IBotCommand {
                         "Lowest possible number to generate",
                         false)
                         .setMinValue(1));
+
+        options.add(
+                new OptionData(OptionType.STRING, STRINGS_OPTION,
+                        "list of options to choose from",
+                        false)
+        );
 
     }
 
@@ -72,7 +81,13 @@ public class RngCommand implements IBotCommand {
 
 
         if (!maxSpecified && !minSpecified) {
-            event.reply(Integer.toString(rand.nextInt(max))).queue();
+            if (event.getOption(STRINGS_OPTION) != null) {
+                String[] options = event.getOption(STRINGS_OPTION).getAsString().split("\\s+");
+                event.reply(options[rand.nextInt(options.length)]).queue();
+            }
+            else {
+                event.reply(Integer.toString(rand.nextInt(max))).queue();
+            }
         }
 
         else if (!minSpecified) {
