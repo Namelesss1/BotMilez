@@ -221,6 +221,7 @@ public class QuoteViewer extends ListenerAdapter {
         EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields);
         emBuilder.setTitle("All quotes");
         emBuilder.setColor(Color.YELLOW);
+        emBuilder.setPageCounterPlacement(CounterEmbedComponent.FOOTER);
 
         channel.sendMessageEmbeds(emBuilder.build()).addActionRow(
                 Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
@@ -255,12 +256,18 @@ public class QuoteViewer extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        long msgId = event.getMessage().getIdLong();
-        EmbedPageBuilder emBuilder = pageEmbeds.get(msgId);
-        emBuilder.scroll(event);
-        if (emBuilder.isErased()) {
-            pageEmbeds.remove(msgId);
+        String id = event.getComponentId();
+        if (id.equals(BUTTON_NEXT_PAGE) || id.equals(BUTTON_PREVIOUS_PAGE) ||
+                id.equals(DELETE_QUOTE_EMBED)) {
+
+            long msgId = event.getMessage().getIdLong();
+            EmbedPageBuilder emBuilder = pageEmbeds.get(msgId);
+            emBuilder.scroll(event);
+            if (emBuilder.isErased()) {
+                pageEmbeds.remove(msgId);
+            }
         }
+
     }
 
 
