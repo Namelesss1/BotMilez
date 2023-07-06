@@ -29,7 +29,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
     }
 
     /**
-     * Indicates the positioning of a page counter within the embed. 
+     * Indicates the positioning of a page counter within the embed.
      * If null, then no page counter will be included.
      */
     private CounterEmbedComponent counterEmbedPlacement = null;
@@ -57,7 +57,6 @@ public class EmbedPageBuilder extends EmbedBuilder {
             this.addField(elements.get(i));
         }
 
-        addPageCounter();
     }
 
     /**
@@ -82,11 +81,13 @@ public class EmbedPageBuilder extends EmbedBuilder {
     }
 
     /**
-     * Set where in the embed a page counter will belong to.
+     * Set where in the embed a page counter will belong to. This will also add
+     * the page counter to the specified position.
      * @param component where the page counter will go. null indicates no page counter
      */
     public void setPageCounterPlacement(CounterEmbedComponent component) {
         counterEmbedPlacement = component;
+        addPageCounter();
     }
 
     /**
