@@ -3,14 +3,17 @@ package commands.quotes;
 import commands.IBotCommand;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.components.LayoutComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.json.simple.JSONObject;
@@ -18,6 +21,8 @@ import org.json.simple.JSONObject;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+
+import static commands.quotes.QuoteIDs.*;
 
 /**
  * =============== Quotes ===============
@@ -35,10 +40,6 @@ import java.util.List;
 public class QuoteCommand extends ListenerAdapter implements IBotCommand {
 
     private List<OptionData> options;
-
-    private static final String BUTTON_ID_ADD = "addquote";
-    private static final String BUTTON_ID_VIEW = "viewquote";
-    private static final String SELECT_MENU_VIEW = "choiceview";
 
     private Map<User, QuoteAdder> activeAdders;
     private Map<User, QuoteViewer> activeViewers;
@@ -82,10 +83,11 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         User user = event.getUser();
+        MessageChannel channel = event.getChannel();
 
         if (event.getComponentId().equals(BUTTON_ID_ADD)) {
             if (activeAdders.containsKey(user)) {
-                event.reply("Error: You are already in the process of adding " +
+                channel.sendMessage("Error: You are already in the process of adding " +
                         "a quote.").queue();
             }
             else {
@@ -94,39 +96,49 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                 event.getJDA().addEventListener(activeAdders.get(user));
             }
         }
+
         if (event.getComponentId().equals(BUTTON_ID_VIEW)) {
+
+            if (!viewer.isEventListener()) {
+                viewer.setListening(event.getJDA());
+            }
+
             event.reply("What do you want to do?")
                     .addActionRow(
                             StringSelectMenu.create(SELECT_MENU_VIEW)
-                                    .addOption("Random Quote", "random",
+                                    .addOption("Random Quote", SELECT_CHOICE_RANDOM,
                                             "Get a random quote from this server")
-                                    .addOption("All Quotes", "all",
+                                    .addOption("All Quotes", SELECT_CHOICE_ALL,
                                             "View all server quotes")
-                                    .addOption("Search", "search",
+                                    .addOption("Search", SELECT_CHOICE_SEARCH,
                                             "Search for a quote by who added the quote," +
                                             "person who said quote, keyword, or year.")
                                     .build()
                     ).queue();
-
         }
+
+        //event.getMessage().delete().queue();
     }
 
+
+
+
+    /**
+     * Removes a QuoteAdder object from the set of active instances of
+     * a user adding a quote once they are done.
+     *
+     * @param event event that triggered the user done
+     * @param user user that is now completed the process of adding a quote.
+     */
     public void removeQuoteAdder(MessageReceivedEvent event, User user) {
         event.getJDA().removeEventListener(activeAdders.get(user));
         activeAdders.remove(user);
     }
 
 
-    @Override
-    public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        if (event.getComponentId().equals(SELECT_MENU_VIEW)) {
-            if (event.getValues().get(0).equals("random")) {
-                event.reply("Here is a random quote").queue();
-                viewer.getRandomQuote(event.getGuild().getIdLong(), event.getChannel());
-            }
-        }
-    }
-
+    /**
+     * @return The quote viewer object to a class that needs to view quotes.
+     */
     public QuoteViewer getQuoteViewer() {
         return viewer;
     }

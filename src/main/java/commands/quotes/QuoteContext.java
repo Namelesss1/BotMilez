@@ -74,13 +74,25 @@ public class QuoteContext {
         );
 
         EmbedBuilder embBuilder = new EmbedBuilder()
-                //.setAuthor("Quote added by: " + context.getAuthor())
-                //.setTitle("-------------")
                 .setColor(Color.YELLOW)
-                //.setFooter("test")
                 .addField(field);
 
         channel.sendMessageEmbeds(embBuilder.build()).queue();
+    }
+
+    /**
+     *
+     * @return this QuoteContext object as a MessageEmbed field
+     */
+    public MessageEmbed.Field getAsField() {
+
+        MessageEmbed.Field field = new MessageEmbed.Field(
+                "Quote added by " + author, /* name */
+                toString(), /* Value */
+                false /* inline */
+        );
+
+        return field;
     }
 
 }

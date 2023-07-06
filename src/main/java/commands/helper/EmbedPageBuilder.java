@@ -85,7 +85,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
 
     /**
      * Based on the buttons clicked on this embed, determine whether to scroll to the next
-     * page, previous page, or close the embed entirely. 
+     * page, previous page, or close the embed entirely.
      * @param event this EmbedBuilder object with the updated page.
      */
     public void scroll(ButtonInteractionEvent event) {
