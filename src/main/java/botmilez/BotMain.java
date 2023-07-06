@@ -14,6 +14,10 @@ import java.util.Map;
 
 import static botmilez.config.BOTMILEZ_TOKEN;
 
+//TODO: rng-sentence command including Markov & Basic generator
+//TODO: Help command describing each command with examples
+//TODO: Music command
+//TODO: Random image command by scraping the web similar to old university project
 public class BotMain {
     public static void main(String[] args) throws LoginException {
 
