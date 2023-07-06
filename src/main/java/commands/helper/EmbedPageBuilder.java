@@ -17,6 +17,22 @@ public class EmbedPageBuilder extends EmbedBuilder {
     public static final String BUTTON_PREVIOUS_PAGE = "prev_page";
     public static final String DELETE_QUOTE_EMBED = "delete_embed";
 
+    /**
+     * Possible choices on where to add a page counter to the embed,
+     * if outside methods choose to do so.
+     */
+    public enum CounterEmbedComponent {
+        AUTHOR,
+        TITLE,
+        DESCRIPTION,
+        FOOTER
+    }
+
+    /**
+     * Indicates the positioning of a page counter within the embed. 
+     * If null, then no page counter will be included.
+     */
+    private CounterEmbedComponent counterEmbedPlacement = null;
 
     /* List structure to display as fields in embed. This is
     * only initialized once, so if the elements were to be updated
@@ -41,6 +57,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
             this.addField(elements.get(i));
         }
 
+        addPageCounter();
     }
 
     /**
@@ -65,6 +82,37 @@ public class EmbedPageBuilder extends EmbedBuilder {
     }
 
     /**
+     * Set where in the embed a page counter will belong to.
+     * @param component where the page counter will go. null indicates no page counter
+     */
+    public void setPageCounterPlacement(CounterEmbedComponent component) {
+        counterEmbedPlacement = component;
+    }
+
+    /**
+     * Adds a page counter to the place specified by counterEmbedPlacement
+     */
+    private void addPageCounter() {
+        if (counterEmbedPlacement != null) {
+            String pageCounter = "Page " + (pageNumber+1) + "/" + maxPageNumber();
+            switch (counterEmbedPlacement) {
+                case AUTHOR:
+                    this.setAuthor(pageCounter);
+                    break;
+                case TITLE:
+                    this.setTitle(pageCounter);
+                    break;
+                case DESCRIPTION:
+                    this.setDescription(pageCounter);
+                    break;
+                case FOOTER:
+                    this.setFooter(pageCounter);
+                    break;
+            }
+        }
+    }
+
+    /**
      * Get a new page of the embed. When this is triggered, all of the existing fields
      * are replaced with the next or previous set of fields gathered from the
      * elements list.
@@ -79,6 +127,8 @@ public class EmbedPageBuilder extends EmbedBuilder {
              ; i < elements.size() && i < startIndex + maxFieldsPerPage; i++) {
             this.addField(elements.get(i));
         }
+
+        addPageCounter();
 
         return this;
     }
