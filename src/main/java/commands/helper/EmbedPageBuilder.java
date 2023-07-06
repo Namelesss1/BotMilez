@@ -49,7 +49,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
     private boolean isErased = false;
 
     public EmbedPageBuilder(int maxFieldsPerPageIn, List<MessageEmbed.Field> elementsIn) {
-        pageNumber = 0;
+        pageNumber = 1;
         maxFieldsPerPage = maxFieldsPerPageIn;
         elements = elementsIn;
 
@@ -70,7 +70,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
      * @return Maximum page number
      */
     public int maxPageNumber() {
-        return elements.size() / maxFieldsPerPage;
+        return (elements.size() / maxFieldsPerPage);
     }
 
     /**
@@ -95,7 +95,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
      */
     private void addPageCounter() {
         if (counterEmbedPlacement != null) {
-            String pageCounter = "Page " + (pageNumber+1) + "/" + maxPageNumber();
+            String pageCounter = "Page " + pageNumber + "/" + maxPageNumber();
             switch (counterEmbedPlacement) {
                 case AUTHOR:
                     this.setAuthor(pageCounter);
@@ -121,7 +121,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
      * @return this object with the next or previous set of fields
      */
     private EmbedPageBuilder getEmbedPage() {
-        int startIndex = pageNumber * maxFieldsPerPage;
+        int startIndex = (pageNumber * maxFieldsPerPage) - maxFieldsPerPage; /* Since pageNumber starts at 1 */
         this.getFields().clear();
 
         for (int i = startIndex
@@ -145,19 +145,18 @@ public class EmbedPageBuilder extends EmbedBuilder {
             if (pageNumber < maxPageNumber()) {
                 pageNumber++;
                 event.editMessageEmbeds(getEmbedPage().build()).queue();
+                return;
             }
-            else {
-                event.editMessageEmbeds(this.build()).queue();
-            }
+            event.editMessageEmbeds(this.build()).queue();
+
         }
 
         if (event.getComponentId().equals(DELETE_QUOTE_EMBED)) {
-            event.editMessage("Deleting...").queue();
             event.getMessage().delete().queue();
         }
 
         if (event.getComponentId().equals(BUTTON_PREVIOUS_PAGE)) {
-            if (pageNumber > 0) {
+            if (pageNumber > 1) {
                 pageNumber--;
                 event.editMessageEmbeds(getEmbedPage().build()).queue();
             }
