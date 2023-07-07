@@ -61,7 +61,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
         for (int i = 0; i < elements.size() && i < maxFieldsPerPage; i++) {
             if (fieldCounter) {
                 this.addField(new MessageEmbed.Field(
-                        "", "quote: " + Integer.toString(i), true
+                        "", "entry #: " + Integer.toString(i), true
                 ));
             }
             this.addField(elements.get(i));
@@ -142,7 +142,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
              ; i < elements.size() && i < startIndex + maxFieldsPerPage; i++) {
             if (fieldCounter) {
                 this.addField(new MessageEmbed.Field(
-                        "", "quote: " + Integer.toString(i), true
+                        "", "entry #: " + Integer.toString(i), true
                 ));
             }
             this.addField(elements.get(i));
