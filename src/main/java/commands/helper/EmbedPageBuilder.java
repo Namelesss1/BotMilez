@@ -34,6 +34,9 @@ public class EmbedPageBuilder extends EmbedBuilder {
      */
     private CounterEmbedComponent counterEmbedPlacement = null;
 
+    /* Whether to set an id number above each field */
+    private boolean fieldCounter;
+
     /* List structure to display as fields in embed. This is
     * only initialized once, so if the elements were to be updated
     * outside of this object, then the updates would not reflect here. */
@@ -48,12 +51,19 @@ public class EmbedPageBuilder extends EmbedBuilder {
     /* Whether the delete_embed has been triggered or not by a user */
     private boolean isErased = false;
 
-    public EmbedPageBuilder(int maxFieldsPerPageIn, List<MessageEmbed.Field> elementsIn) {
+    public EmbedPageBuilder(int maxFieldsPerPageIn, List<MessageEmbed.Field> elementsIn,
+                            boolean doFieldCounter) {
         pageNumber = 1;
         maxFieldsPerPage = maxFieldsPerPageIn;
         elements = elementsIn;
+        fieldCounter = doFieldCounter;
 
         for (int i = 0; i < elements.size() && i < maxFieldsPerPage; i++) {
+            if (fieldCounter) {
+                this.addField(new MessageEmbed.Field(
+                        "", "quote: " + Integer.toString(i), true
+                ));
+            }
             this.addField(elements.get(i));
         }
 
@@ -88,6 +98,10 @@ public class EmbedPageBuilder extends EmbedBuilder {
     public void setPageCounterPlacement(CounterEmbedComponent component) {
         counterEmbedPlacement = component;
         addPageCounter();
+    }
+
+    public void setFieldCounter(boolean doFieldCounter) {
+        fieldCounter = doFieldCounter;
     }
 
     /**
@@ -126,6 +140,11 @@ public class EmbedPageBuilder extends EmbedBuilder {
 
         for (int i = startIndex
              ; i < elements.size() && i < startIndex + maxFieldsPerPage; i++) {
+            if (fieldCounter) {
+                this.addField(new MessageEmbed.Field(
+                        "", "quote: " + Integer.toString(i), true
+                ));
+            }
             this.addField(elements.get(i));
         }
 
