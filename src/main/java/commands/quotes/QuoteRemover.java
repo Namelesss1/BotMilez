@@ -17,6 +17,10 @@ import static botmilez.config.QUOTE_FILE_PREFIX;
 import static botmilez.config.QUOTE_FILE_SUFFIX;
 import static commands.quotes.QuoteIDs.*;
 
+/**
+ * QuoteRemover: Responsible for managing the process of
+ * removing a quote from a server's quotes if a user requests it.
+ */
 public class QuoteRemover extends ListenerAdapter {
 
     private Map<User, DeletionState> usersState;
