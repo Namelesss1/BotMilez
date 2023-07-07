@@ -230,7 +230,7 @@ public class QuoteViewer extends ListenerAdapter {
             quoteFields.add(context.getAsField());
         }
 
-        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields);
+        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields, true);
         emBuilder.setTitle("All quotes");
         emBuilder.setColor(Color.YELLOW);
         emBuilder.setPageCounterPlacement(CounterEmbedComponent.FOOTER);
@@ -271,7 +271,7 @@ public class QuoteViewer extends ListenerAdapter {
         }
 
         String searchBy = usersSearching.get(event.getAuthor());
-        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields);
+        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields, true);
 
         if (searchBy.equals(SELECT_CHOICE_BY_SAID)) {
             emBuilder.setTitle("Search Results for term: \"" + searchTerm + "\"");
