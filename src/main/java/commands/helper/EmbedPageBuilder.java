@@ -70,7 +70,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
      * @return Maximum page number
      */
     public int maxPageNumber() {
-        return (elements.size() / maxFieldsPerPage);
+        return (elements.size() + maxFieldsPerPage - 1) / maxFieldsPerPage;
     }
 
     /**
