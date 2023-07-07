@@ -6,10 +6,16 @@ public class QuoteIDs {
      * StringSelectInteractions choices - viewing quotes
      ***************************************************/
 
-    public static final String SELECT_MENU_VIEW = "choiceview";
-    public static final String SELECT_CHOICE_RANDOM = "random";
-    public static final String SELECT_CHOICE_ALL = "all";
-    public static final String SELECT_CHOICE_SEARCH = "search";
+    public static final String SELECT_MENU_VIEW = "viewmenu";
+    public static final String SELECT_CHOICE_RANDOM = "viewrandom";
+    public static final String SELECT_CHOICE_ALL = "viewall";
+    public static final String SELECT_CHOICE_SEARCH = "viewsearch";
+    public static final String SELECT_MENU_SEARCH = "searchmenu";
+
+    public static final String SELECT_CHOICE_BY_SAID = "quotebysaid";
+    public static final String SELECT_CHOICE_BY_SPEAKER = "quotebyspeaker";
+    public static final String SELECT_CHOICE_BY_AUTHOR = "quotebyauthor";
+    public static final String SELECT_CHOICE_BY_YEAR = "quotebyyear";
 
 
     /******************************************************

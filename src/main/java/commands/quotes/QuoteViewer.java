@@ -2,15 +2,17 @@ package commands.quotes;
 
 import commands.helper.EmbedPageBuilder;
 import commands.helper.IO;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -39,6 +41,9 @@ public class QuoteViewer extends ListenerAdapter {
     /* messageId -> current embed page number */
     private Map<Long, EmbedPageBuilder> pageEmbeds;
 
+    /* User -> search terms */
+    private Map<User, String> usersSearching;
+
     /* Limit to how many quotes can be displayed in an embed */
     public static final int MAX_QUOTES_PER_EMBED = 2;
 
@@ -48,6 +53,7 @@ public class QuoteViewer extends ListenerAdapter {
         quotesArrays = new HashMap<>();
         isModified = new HashMap<>();
         pageEmbeds = new HashMap<>();
+        usersSearching = new HashMap<>();
     }
 
     /**
@@ -206,7 +212,13 @@ public class QuoteViewer extends ListenerAdapter {
     }
 
 
-    public void initializeQuoteEmbed(long guildId, MessageChannel channel) {
+    /**
+     * Initializes a page-scrollable embed that contains all current quotes
+     * on a server.
+     * @param guildId id of the server
+     * @param channel channel to send embed to
+     */
+    public void initAllQuoteEmbed(long guildId, MessageChannel channel) {
 
         if (!validateQuotesArrays(guildId, channel)) {
             return;
@@ -235,12 +247,66 @@ public class QuoteViewer extends ListenerAdapter {
 
     }
 
+    /**
+     * Initializes a page-scrollable embed for quotes that match a given search term
+     *
+     * @param event event that triggered this method
+     * @param contexts list of quotes contexts that matched the search term to be added to embed
+     * @param searchTerm the search term entered by the user.
+     */
+    public void initSearchEmbed(MessageReceivedEvent event, List<QuoteContext> contexts,
+                                String searchTerm) {
+
+        List<MessageEmbed.Field> quoteFields = new ArrayList<>();
+        for (QuoteContext context : contexts) {
+            quoteFields.add(context.getAsField());
+        }
+        if (contexts.isEmpty()) {
+            MessageEmbed.Field field = new MessageEmbed.Field(
+                    "No quotes found", /* name */
+                    "", /* Value */
+                    false /* inline */
+            );
+            quoteFields.add(field);
+        }
+
+        String searchBy = usersSearching.get(event.getAuthor());
+        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields);
+
+        if (searchBy.equals(SELECT_CHOICE_BY_SAID)) {
+            emBuilder.setTitle("Search Results for term: \"" + searchTerm + "\"");
+        }
+        else if (searchBy.equals(SELECT_CHOICE_BY_SPEAKER)) {
+            emBuilder.setTitle("Search Results for user: " + searchTerm);
+        }
+        else if (searchBy.equals(SELECT_CHOICE_BY_YEAR)) {
+            emBuilder.setTitle("Search Results for year: " + searchTerm);
+        }
+        else if (searchBy.equals(SELECT_CHOICE_BY_AUTHOR)) {
+            emBuilder.setTitle("Search Results for author: " + searchTerm);
+        }
+        emBuilder.setColor(Color.YELLOW);
+        emBuilder.setPageCounterPlacement(CounterEmbedComponent.FOOTER);
+
+        event.getChannel().sendMessageEmbeds(emBuilder.build()).addActionRow(
+                        Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
+                        Button.danger(DELETE_QUOTE_EMBED, Emoji.fromUnicode("❌")),
+                        Button.primary(BUTTON_NEXT_PAGE, Emoji.fromUnicode("▶")))
+                .queue((message) ->
+                {
+                    long msgId = message.getIdLong();
+                    pageEmbeds.put(msgId, emBuilder);
+                });
+
+    }
+
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
         long guildId = event.getGuild().getIdLong();
         MessageChannel channel = event.getChannel();
 
+        /* --- On viewing a quote --- */
         if (event.getComponentId().equals(SELECT_MENU_VIEW)) {
             if (event.getValues().get(0).equals(SELECT_CHOICE_RANDOM)) {
                 event.editMessage("Fetching a random quote..").queue();
@@ -248,7 +314,44 @@ public class QuoteViewer extends ListenerAdapter {
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_ALL)) {
                 event.editMessage("Fetching all quotes..").queue();
-                initializeQuoteEmbed(guildId, channel);
+                initAllQuoteEmbed(guildId, channel);
+            }
+            if (event.getValues().get(0).equals(SELECT_CHOICE_SEARCH)) {
+                event.editMessage("Select how you want to filter your search.").queue();
+                event.editSelectMenu(StringSelectMenu.create(SELECT_MENU_SEARCH)
+                        .addOption("By things said", SELECT_CHOICE_BY_SAID,
+                                "Search for something that was said")
+                        .addOption("By speaker", SELECT_CHOICE_BY_SPEAKER,
+                                "Search for who said a quote")
+                        .addOption("By author", SELECT_CHOICE_BY_AUTHOR,
+                                "Search by who added the quote to the bot")
+                        .addOption("By year", SELECT_CHOICE_BY_YEAR,
+                                "Search a quote by year that it was said")
+                        .build())
+                        .queue();
+            }
+        }
+
+
+        /* --- On searching --- */
+        if (event.getComponentId().equals(SELECT_MENU_SEARCH)) {
+            if (event.getValues().get(0).equals(SELECT_CHOICE_BY_SAID)) {
+                event.reply("Enter your search term:").queue();
+                usersSearching.put(event.getUser(), SELECT_CHOICE_BY_SAID);
+            }
+            if (event.getValues().get(0).equals(SELECT_CHOICE_BY_SPEAKER)) {
+                event.reply("Enter who said the quote:").queue();
+                usersSearching.put(event.getUser(), SELECT_CHOICE_BY_SPEAKER);
+            }
+            if (event.getValues().get(0).equals(SELECT_CHOICE_BY_AUTHOR)) {
+                event.reply("Enter who added the quote to bot:").queue();
+                usersSearching.put(event.getUser(), SELECT_CHOICE_BY_AUTHOR);
+            }
+            if (event.getValues().get(0).equals(SELECT_CHOICE_BY_YEAR)) {
+                event.reply("Enter the year (or anything other than: " +
+                        "a number if you want quotes without years)")
+                        .queue();
+                usersSearching.put(event.getUser(), SELECT_CHOICE_BY_YEAR);
             }
         }
 
@@ -271,6 +374,56 @@ public class QuoteViewer extends ListenerAdapter {
     }
 
 
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event) {
+        User user = event.getAuthor();
+
+        if (!user.isBot() && usersSearching.containsKey(user)) {
+            String searchBy = usersSearching.get(user);
+            String searchTerm = event.getMessage().getContentRaw().toLowerCase();
+            List<QuoteContext> matches = new ArrayList<>();
+
+            if (!validateQuotesArrays(event.getGuild().getIdLong(), event.getChannel())) {
+                return;
+            }
+            List<QuoteContext> contexts = quotesArrays.get(event.getGuild().getIdLong());
+
+
+            for (QuoteContext context : contexts) {
+                for (Quote quote : context.getQuotes()) {
+                    if (searchBy.equals(SELECT_CHOICE_BY_SAID) && !matches.contains(context) &&
+                            quote.getQuote().toLowerCase().contains(searchTerm)) {
+                        matches.add(context);
+                    }
+                    else if (searchBy.equals(SELECT_CHOICE_BY_SPEAKER) && !matches.contains(context) &&
+                            quote.getName().toLowerCase().contains(searchTerm)) {
+                        matches.add(context);
+                    }
+                    else if (searchBy.equals(SELECT_CHOICE_BY_YEAR) && !matches.contains(context)) {
+                        try {
+                            int year = Integer.parseInt(searchTerm);
+                            if (quote.getYear() != null && quote.getYear() == year) {
+                                matches.add(context);
+                            }
+                        }
+                        catch(NumberFormatException e) {
+                            if (quote.getYear() == null) {
+                                matches.add(context);
+                            }
+                        }
+                    }
+                }
+
+                if (searchBy.equals(SELECT_CHOICE_BY_AUTHOR) &&
+                        context.getAuthor().toLowerCase().contains(searchTerm)) {
+                    matches.add(context);
+                }
+            }
+
+            initSearchEmbed(event, matches, searchTerm);
+            usersSearching.remove(user);
+        }
+    }
 
 
 

@@ -40,7 +40,6 @@ import static commands.quotes.QuoteIDs.*;
 public class QuoteCommand extends ListenerAdapter implements IBotCommand {
 
     private List<OptionData> options;
-
     private Map<User, QuoteAdder> activeAdders;
     private Map<User, QuoteViewer> activeViewers;
 
