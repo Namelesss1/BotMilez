@@ -18,6 +18,7 @@ import static botmilez.config.BOTMILEZ_TOKEN;
 //TODO: Help command describing each command with examples
 //TODO: Music command
 //TODO: Random image command by scraping the web similar to old university project
+//TODO: mkw stats command
 public class BotMain {
     public static void main(String[] args) throws LoginException {
 
