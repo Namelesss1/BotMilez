@@ -43,6 +43,37 @@ public class Quote {
     }
 
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+
+        Quote otherQuote = (Quote)other;
+        if (!name.equals(otherQuote.getName()) || !quote.equals(otherQuote.getQuote())) {
+            return false;
+        }
+
+        if (year == null && otherQuote.getYear() != null) {
+            return false;
+        }
+        if (year != null) {
+            if (otherQuote.getYear() == null) {
+                return false;
+            }
+            if (!year.equals(otherQuote.getYear())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     @Override
     public String toString() {

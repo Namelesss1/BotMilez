@@ -29,7 +29,7 @@ import static commands.quotes.QuoteIDs.*;
 /**
  * QuoteViewer class: A class that is responsible for the reading of JSON files
  * that have quotes stored in them, and methods that return quote requests to
- * a user that asked for them.
+ * a user that asked for them. Supports searching for quotes as well.
  */
 public class QuoteViewer extends ListenerAdapter {
 
@@ -49,11 +49,14 @@ public class QuoteViewer extends ListenerAdapter {
 
     private boolean isEventListener = false;
 
-    public QuoteViewer() {
+    private QuoteCommand command;
+
+    public QuoteViewer(QuoteCommand instance) {
         quotesArrays = new HashMap<>();
         isModified = new HashMap<>();
         pageEmbeds = new HashMap<>();
         usersSearching = new HashMap<>();
+        command = instance;
     }
 
     /**
@@ -70,6 +73,23 @@ public class QuoteViewer extends ListenerAdapter {
     public void setListening(JDA jda) {
         isEventListener = true;
         jda.addEventListener(this);
+    }
+
+    /**
+     * Adds a new user to the set of users doing a search.
+     * @param user user to add
+     * @param searchBy search filters chosen by the user.
+     */
+    public void addToUsersSearching(User user, String searchBy) {
+        usersSearching.put(user, searchBy);
+    }
+
+    /**
+     * @param user User
+     * @return true if given user is doing a search. False if not.
+     */
+    public boolean userIsSearching(User user) {
+        return usersSearching.containsKey(user);
     }
 
 
@@ -215,22 +235,30 @@ public class QuoteViewer extends ListenerAdapter {
     /**
      * Initializes a page-scrollable embed that contains all current quotes
      * on a server.
-     * @param guildId id of the server
-     * @param channel channel to send embed to
+     * @param event the event that triggered this method
      */
-    public void initAllQuoteEmbed(long guildId, MessageChannel channel) {
+    public void initAllQuoteEmbed(StringSelectInteractionEvent event, boolean isDeleting) {
+
+        long guildId = event.getGuild().getIdLong();
+        MessageChannel channel = event.getChannel();
 
         if (!validateQuotesArrays(guildId, channel)) {
             return;
         }
 
         List<QuoteContext> contexts = quotesArrays.get(guildId);
+
+        if (isDeleting) {
+            command.getQuoteRemover().setDeletionCandidates(event.getUser(), contexts);
+        }
+
         List<MessageEmbed.Field> quoteFields = new ArrayList<>();
         for (QuoteContext context : contexts) {
             quoteFields.add(context.getAsField());
         }
 
-        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields, true);
+        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields,
+                isDeleting);
         emBuilder.setTitle("All quotes");
         emBuilder.setColor(Color.YELLOW);
         emBuilder.setPageCounterPlacement(CounterEmbedComponent.FOOTER);
@@ -270,8 +298,16 @@ public class QuoteViewer extends ListenerAdapter {
             quoteFields.add(field);
         }
 
+        boolean isDeleting = command.getQuoteRemover().getUserState().containsKey(event.getAuthor());
+
+        if (isDeleting) {
+            command.getQuoteRemover().setDeletionCandidates(event.getAuthor(), contexts);
+        }
+
         String searchBy = usersSearching.get(event.getAuthor());
-        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields, true);
+
+        EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields,
+                isDeleting);
 
         if (searchBy.equals(SELECT_CHOICE_BY_SAID)) {
             emBuilder.setTitle("Search Results for term: \"" + searchTerm + "\"");
@@ -298,6 +334,10 @@ public class QuoteViewer extends ListenerAdapter {
                     pageEmbeds.put(msgId, emBuilder);
                 });
 
+        if (isDeleting) {
+            event.getChannel().sendMessage("Enter the quote# for the quote you want to remove.").queue();
+        }
+
     }
 
 
@@ -314,7 +354,7 @@ public class QuoteViewer extends ListenerAdapter {
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_ALL)) {
                 event.editMessage("Fetching all quotes..").queue();
-                initAllQuoteEmbed(guildId, channel);
+                initAllQuoteEmbed(event, false);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_SEARCH)) {
                 event.editMessage("Select how you want to filter your search.").queue();
@@ -331,7 +371,6 @@ public class QuoteViewer extends ListenerAdapter {
                         .queue();
             }
         }
-
 
         /* --- On searching --- */
         if (event.getComponentId().equals(SELECT_MENU_SEARCH)) {
@@ -379,6 +418,7 @@ public class QuoteViewer extends ListenerAdapter {
         User user = event.getAuthor();
 
         if (!user.isBot() && usersSearching.containsKey(user)) {
+            command.getQuoteRemover().addToAcknowledgedMessage(event.getMessageIdLong());
             String searchBy = usersSearching.get(user);
             String searchTerm = event.getMessage().getContentRaw().toLowerCase();
             List<QuoteContext> matches = new ArrayList<>();
@@ -423,6 +463,7 @@ public class QuoteViewer extends ListenerAdapter {
             initSearchEmbed(event, matches, searchTerm);
             usersSearching.remove(user);
         }
+
     }
 
 

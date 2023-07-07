@@ -59,6 +59,26 @@ public class QuoteContext {
         return result.toString();
     }
 
+    @Override
+    public boolean equals(Object other) {
+
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+
+        QuoteContext otherContext = (QuoteContext)other;
+        if (author.equals(otherContext.getAuthor()) && quotes.equals(otherContext.getQuotes())) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Sends a message containing an embed that prints out a quote context added
      * by a user into the bot.

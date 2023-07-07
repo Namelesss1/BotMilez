@@ -30,8 +30,6 @@ import static commands.quotes.QuoteIDs.*;
  * other people to the bot. These quotes can be viewed or
  * removed.
  *
- * TODO: LOOK INTO ADDING CHOICES DROP DOWN BOX INSTEAD OF RAW INPUTS
- * TODO: Add View Quote And Delete Quote
  * TODO: Ensure everything occurs within the channel the slash command was initialized
  * TODO: Ensure the user that initiated slash command is the one taking control
  * TODO: Have the bot edit its original message instead of sending a new one
@@ -44,13 +42,15 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
     private Map<User, QuoteViewer> activeViewers;
 
     private final QuoteViewer viewer;
+    private final QuoteRemover remover;
 
 
     public QuoteCommand() {
         options = new ArrayList<>();
         activeAdders = new HashMap<>();
         activeViewers = new HashMap<>();
-        viewer = new QuoteViewer();
+        viewer = new QuoteViewer(this);
+        remover = new QuoteRemover(this);
     }
 
     @Override
@@ -73,7 +73,8 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         event.reply("Choose which option you'd like to use")
                 .addActionRow(
                         Button.success(BUTTON_ID_ADD, "Add a quote"),
-                        Button.primary(BUTTON_ID_VIEW, "View quote"))
+                        Button.primary(BUTTON_ID_VIEW, "View quote"),
+                        Button.danger(BUTTON_ID_DELETE, "Delete a quote"))
                 .queue();
 
     }
@@ -116,6 +117,25 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                     ).queue();
         }
 
+        if (event.getComponentId().equals(BUTTON_ID_DELETE)) {
+            if (!viewer.isEventListener()) {
+                viewer.setListening(event.getJDA());
+            }
+            if (!remover.isEventListener()) {
+                remover.setListening(event.getJDA());
+            }
+
+            event.reply("Choose one of the options below.")
+                    .addActionRow(
+                            StringSelectMenu.create(SELECT_MENU_DELETE)
+                                    .addOption("Choose from all quotes", SELECT_CHOICE_ALL,
+                                            "Get a list of all quotes, choose one to delete")
+                                    .addOption("Search for a quote", SELECT_CHOICE_SEARCH,
+                                            "Search for a quote to delete")
+                                    .build()
+                    ).queue();
+        }
+
         //event.getMessage().delete().queue();
     }
 
@@ -140,5 +160,12 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
      */
     public QuoteViewer getQuoteViewer() {
         return viewer;
+    }
+
+    /**
+     * @return The quote viewer object to a class that needs to view quotes.
+     */
+    public QuoteRemover getQuoteRemover() {
+        return remover;
     }
 }
