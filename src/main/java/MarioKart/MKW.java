@@ -1,4 +1,4 @@
-package commands.util;
+package MarioKart;
 
 import commands.helper.IO;
 import org.json.simple.JSONArray;
@@ -42,26 +42,26 @@ public class MKW {
      * @param path path to a JSON file containing the data to read from into map.
      */
     private void initVehicleMap(String path) {
-        JSONArray jsonArray = (JSONArray)IO.readJson(path + "vehicles.json");
+        JSONArray jsonArray = (JSONArray)IO.readJson(path);
 
         for (Object element : jsonArray) {
             JSONObject entry = (JSONObject)element;
             Vehicle vehicle = new Vehicle(
-                    (Integer)entry.get("id"),
+                    (Long)entry.get("id"),
                     (String)entry.get("name"),
                     (String)entry.get("alias"),
                     (String)entry.get("codename"),
                     (String)entry.get("type"),
                     (String)entry.get("weightclass"),
-                    (String)entry.get("drift type"),
-                    (Integer)entry.get("speed"),
-                    (Integer)entry.get("weight"),
-                    (Integer)entry.get("acceleration"),
-                    (Integer)entry.get("handling"),
-                    (Integer)entry.get("drift"),
-                    (Integer)entry.get("offroad"),
-                    (Integer)entry.get("miniturbo"),
-                    (Integer)entry.get("total")
+                    (String)entry.get("drifttype"),
+                    (Long)entry.get("speed"),
+                    (Long)entry.get("weight"),
+                    (Long)entry.get("acceleration"),
+                    (Long)entry.get("handling"),
+                    (Long)entry.get("drift"),
+                    (Long)entry.get("offroad"),
+                    (Long)entry.get("miniturbo"),
+                    (Long)entry.get("total")
             );
             vehicles.put(vehicle.getName(), vehicle);
         }
@@ -123,7 +123,7 @@ public class MKW {
      * of fields are set once in the constructor when the object is created.
      */
     private final class Vehicle {
-        private final int id; /* vehicle's internal id */
+        private final long id; /* vehicle's internal id */
         private final String name; /* name of vehicle */
         private final String alias; /* Alternative name, given in EU version */
         private final String codename; /* internal name string */
@@ -133,20 +133,20 @@ public class MKW {
 
 
         /* The higher the integer, the higher the performance of below stats */
-        private final int speed;
-        private final int weight;
-        private final int acceleration;
-        private final int handling;
-        private final int drift;
-        private final int offroad;
-        private final int miniturbo;
-        private final int total;
+        private final long speed;
+        private final long weight;
+        private final long acceleration;
+        private final long handling;
+        private final long drift;
+        private final long offroad;
+        private final long miniturbo;
+        private final long total;
 
 
-        public Vehicle(int id, String name, String alias, String codename,
+        public Vehicle(long id, String name, String alias, String codename,
                        String type, String weightclass, String driftype,
-                       int speed, int weight, int acceleration, int handling,
-                       int drift, int offroad, int miniturbo,  int total) {
+                       long speed, long weight, long acceleration, long handling,
+                       long drift, long offroad, long miniturbo,  long total) {
 
             this.id = id;
             this.name = name;
@@ -166,7 +166,7 @@ public class MKW {
         }
 
 
-        public int getId() {
+        public long getId() {
             return id;
         }
 
@@ -194,35 +194,35 @@ public class MKW {
             return drifttype;
         }
 
-        public int getSpeed() {
+        public long getSpeed() {
             return speed;
         }
 
-        public int getAcceleration() {
+        public long getAcceleration() {
             return acceleration;
         }
 
-        public int getWeight() {
+        public long getWeight() {
             return weight;
         }
 
-        public int getHandling() {
+        public long getHandling() {
             return handling;
         }
 
-        public int getDrift() {
+        public long getDrift() {
             return drift;
         }
 
-        public int getOffroad() {
+        public long getOffroad() {
             return offroad;
         }
 
-        public int getMiniturbo() {
+        public long getMiniturbo() {
             return miniturbo;
         }
 
-        public int getTotal() {
+        public long getTotal() {
             return total;
         }
     }
@@ -257,5 +257,17 @@ public class MKW {
         OUTWARD
     }
 
-    
+
+    /*
+     * IDs for MKW-related JDA StringSelectMenus
+     */
+
+    public static final String MENU_SELECT_STAT = "selectstat";
+    public static final  String SELECT_CHARACTERS = "selectcharacters";
+    public static final String SELECT_VEHICLES = "selectvehicles";
+    public static final String MENU_SELECT_CLASS = "selectclass";
+    public static final String SELECT_LIGHT_VEHICLE = "selectlightvehicle";
+    public static final String SELECT_MEDIUM_VEHICLE = "selectmediumvehicle";
+    public static final String SELECT_HEAVY_VEHICLE = "selectheavyvehicle";
+    public static final String MENU_SELECT_VEHICLE = "selectvehiclemenu";
 }
