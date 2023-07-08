@@ -4,6 +4,7 @@ import commands.basic.HiCommand;
 import commands.quotes.QuoteCommand;
 import commands.rng.RngCommand;
 import commands.rng.RngUsername;
+import commands.util.MkwStatsCommand;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -36,7 +37,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new RngUsername());
         commands.add(new BubbleWrapCommand());
         commands.add(new QuoteCommand());
-
+        commands.add(new MkwStatsCommand());
 
     }
 
