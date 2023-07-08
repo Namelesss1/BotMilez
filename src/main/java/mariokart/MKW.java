@@ -4,7 +4,9 @@ import commands.helper.IO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -81,35 +83,40 @@ public class MKW {
                                                VehicleType vehicleType, DriftType driftType) {
 
         Map<String, MKWVehicle> result = new HashMap<>(vehicles);
+        List<String> vehiclesToRemove = new ArrayList<>();
 
         for (MKWVehicle vehicle : result.values()) {
 
             if ((weightClass == WeightClass.HEAVY) && !vehicle.getWeightclass().equals("Heavy")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
             else if ((weightClass == WeightClass.MEDIUM) && !vehicle.getWeightclass().equals("Medium")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
             else if ((weightClass == WeightClass.LIGHT) && !vehicle.getWeightclass().equals("Light")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
 
 
             if ((vehicleType == VehicleType.BIKE) && !vehicle.getType().equals("Bike")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
             else if ((vehicleType == VehicleType.KART) && !vehicle.getType().equals("Kart")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
 
 
             if ((driftType == DriftType.INWARD) && !vehicle.getDrifttype().equals("Inward")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
             else if ((driftType == DriftType.INWARD) && !vehicle.getDrifttype().equals("Outward")) {
-                result.remove(vehicle.getName());
+                vehiclesToRemove.add(vehicle.getName());
             }
 
+        }
+
+        for (String name : vehiclesToRemove) {
+            result.remove(name);
         }
 
         return result;
