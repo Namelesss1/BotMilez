@@ -1,11 +1,14 @@
 package mariokart;
 
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+
 /**
  * A class that represents a Mario Kart Wii vehicle & Its stats.
  * All stats of a vehicle are final, so there are no setter methods. Values
  * of fields are set once in the constructor when the object is created.
  */
-public final class MKWVehicle {
+public final class MKWVehicle implements Comparable<MKWVehicle>{
     private final long id; /* vehicle's internal id */
     private final String name; /* name of vehicle */
     private final String alias; /* Alternative name, given in EU version */
@@ -107,5 +110,36 @@ public final class MKWVehicle {
 
     public long getTotal() {
         return total;
+    }
+
+    public MessageEmbed.Field getAsField() {
+        String desc =
+                "*ID*:　　　　　　　" + id + "\n" +
+                        "*Alias*:　　　　　　" + alias + "\n" +
+                        "*Internal name*:　　" + codename + "\n" +
+                        "*Type*:　　　　　　" + type + "\n" +
+                        "*Weight Class*:　　　" + weightclass + "\n" +
+                        "*Drift Type*:　　　　" + drifttype + "\n" +
+                        "*Speed*:　　　　　" + speed + "\n" +
+                        "*Acceleration*:　　　" + acceleration + "\n" +
+                        "*Weight*:　　　　　" + weight + "\n" +
+                        "*Handling*:　　　　" + handling + "\n" +
+                        "*Drift*:　　　　　　" + drift + "\n" +
+                        "*Offroad*:　　　　　" + offroad + "\n" +
+                        "*Miniturbo*:　　　　" + miniturbo + "\n" +
+                        "*Total*:　　　　　　" + total;
+
+        MessageEmbed.Field field = new MessageEmbed.Field(
+                name,
+                desc,
+                false
+        );
+        return field;
+    }
+
+    @Override
+    public int compareTo(MKWVehicle other) {
+        /* Ordering done by name instead of id */
+        return name.compareTo(other.getName());
     }
 }
