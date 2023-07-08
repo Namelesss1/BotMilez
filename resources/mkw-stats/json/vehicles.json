@@ -14,7 +14,7 @@
         "handling": 48,
         "drift": 51,
         "offroad": 40,
-        "mini turbo": 45,
+        "miniturbo": 45,
         "total": 302
     },
     {
@@ -31,7 +31,7 @@
         "handling": 43,
         "drift": 45,
         "offroad": 35,
-        "mini turbo": 40,
+        "miniturbo": 40,
         "total": 294
     },
     {
@@ -48,7 +48,7 @@
         "handling": 40,
         "drift": 40,
         "offroad": 35,
-        "mini turbo": 35,
+        "miniturbo": 35,
         "total": 294
     },
     {
@@ -65,7 +65,7 @@
         "handling": 64,
         "drift": 37,
         "offroad": 54,
-        "mini turbo": 59,
+        "miniturbo": 59,
         "total": 324
     },
     {
@@ -82,7 +82,7 @@
         "handling": 54,
         "drift": 54,
         "offroad": 40,
-        "mini turbo": 51,
+        "miniturbo": 51,
         "total": 338
     },
     {
@@ -99,7 +99,7 @@
         "handling": 54,
         "drift": 18,
         "offroad": 43,
-        "mini turbo": 45,
+        "miniturbo": 45,
         "total": 311
     },
     {
@@ -116,7 +116,7 @@
         "handling": 32,
         "drift": 64,
         "offroad": 27,
-        "mini turbo": 64,
+        "miniturbo": 64,
         "total": 303
     },
     {
@@ -133,7 +133,7 @@
         "handling": 29,
         "drift": 59,
         "offroad": 24,
-        "mini turbo": 59,
+        "miniturbo": 59,
         "total": 300
     },
     {
@@ -150,7 +150,7 @@
         "handling": 21,
         "drift": 48,
         "offroad": 18,
-        "mini turbo": 48,
+        "miniturbo": 48,
         "total": 272
     },
     {
@@ -167,7 +167,7 @@
         "handling": 56,
         "drift": 39,
         "offroad": 45,
-        "mini turbo": 54,
+        "miniturbo": 54,
         "total": 336
     },
     {
@@ -184,7 +184,7 @@
         "handling": 37,
         "drift": 21,
         "offroad": 54,
-        "mini turbo": 35,
+        "miniturbo": 35,
         "total": 272
     },
     {
@@ -201,7 +201,7 @@
         "handling": 35,
         "drift": 35,
         "offroad": 29,
-        "mini turbo": 27,
+        "miniturbo": 27,
         "total": 277
     },
     {
@@ -218,7 +218,7 @@
         "handling": 43,
         "drift": 29,
         "offroad": 64,
-        "mini turbo": 40,
+        "miniturbo": 40,
         "total": 300
     },
     {
@@ -235,7 +235,7 @@
         "handling": 59,
         "drift": 32,
         "offroad": 48,
-        "mini turbo": 54,
+        "miniturbo": 54,
         "total": 323
     },
     {
@@ -252,7 +252,7 @@
         "handling": 17,
         "drift": 27,
         "offroad": 16,
-        "mini turbo": 16,
+        "miniturbo": 16,
         "total": 222
     },
     {
@@ -269,7 +269,7 @@
         "handling": 29,
         "drift": 43,
         "offroad": 24,
-        "mini turbo": 29,
+        "miniturbo": 29,
         "total": 249
     },
     {
@@ -286,7 +286,7 @@
         "handling": 24,
         "drift": 37,
         "offroad": 21,
-        "mini turbo": 24,
+        "miniturbo": 24,
         "total": 245
     },
     {
@@ -303,7 +303,7 @@
         "handling": 29,
         "drift": 56,
         "offroad": 24,
-        "mini turbo": 56,
+        "miniturbo": 56,
         "total": 307
     },
     {
@@ -320,7 +320,7 @@
         "handling":51,
         "drift": 54,
         "offroad": 43,
-        "mini turbo": 48,
+        "miniturbo": 48,
         "total": 307
     },
     {
@@ -337,7 +337,7 @@
         "handling": 45,
         "drift": 48,
         "offroad": 37,
-        "mini turbo": 43,
+        "miniturbo": 43,
         "total": 296
     },
     {
@@ -354,7 +354,7 @@
         "handling": 43,
         "drift": 43,
         "offroad": 37,
-        "mini turbo": 37,
+        "miniturbo": 37,
         "total": 300
     },
     {
@@ -371,7 +371,7 @@
         "handling": 35,
         "drift": 67,
         "offroad": 29,
-        "mini turbo": 67,
+        "miniturbo": 67,
         "total": 307
     },
     {
@@ -388,7 +388,7 @@
         "handling": 32,
         "drift": 62,
         "offroad": 27,
-        "mini turbo": 62,
+        "miniturbo": 62,
         "total": 299
     },
     {
@@ -405,7 +405,7 @@
         "handling": 24,
         "drift": 51,
         "offroad": 21,
-        "mini turbo": 51,
+        "miniturbo": 51,
         "total": 279
     },
     {
@@ -422,7 +422,7 @@
         "handling": 67,
         "drift": 40,
         "offroad": 56,
-        "mini turbo": 62,
+        "miniturbo": 62,
         "total": 327
     },
     {
@@ -439,7 +439,7 @@
         "handling": 62,
         "drift": 35,
         "offroad": 51,
-        "mini turbo": 56,
+        "miniturbo": 56,
         "total": 322
     },
     {
@@ -456,7 +456,7 @@
         "handling": 56,
         "drift": 21,
         "offroad": 45,
-        "mini turbo": 48,
+        "miniturbo": 48,
         "total": 317
     },
     {
@@ -473,7 +473,7 @@
         "handling": 60,
         "drift": 62,
         "offroad": 48,
-        "mini turbo": 57,
+        "miniturbo": 57,
         "total": 343
     },
     {
@@ -490,7 +490,7 @@
         "handling": 51,
         "drift": 29,
         "offroad": 62,
-        "mini turbo": 45,
+        "miniturbo": 45,
         "total": 308
     },
     {
@@ -507,7 +507,7 @@
         "handling": 32,
         "drift": 59,
         "offroad": 27,
-        "mini turbo": 59,
+        "miniturbo": 59,
         "total": 304
     },
     {
@@ -524,7 +524,7 @@
         "handling": 45,
         "drift": 32,
         "offroad": 67,
-        "mini turbo": 43,
+        "miniturbo": 43,
         "total": 299
     },
     {
@@ -541,7 +541,7 @@
         "handling": 27,
         "drift": 40,
         "offroad": 24,
-        "mini turbo": 27,
+        "miniturbo": 27,
         "total": 249
     },
     {
@@ -558,7 +558,7 @@
         "handling": 18,
         "drift": 29,
         "offroad": 18,
-        "mini turbo": 18,
+        "miniturbo": 18,
         "total": 230
     },
     {
@@ -575,7 +575,7 @@
         "handling": 40,
         "drift": 45,
         "offroad": 35,
-        "mini turbo": 37,
+        "miniturbo": 37,
         "total": 272
     },
     {
@@ -592,7 +592,7 @@
         "handling": 40,
         "drift": 24,
         "offroad": 56,
-        "mini turbo": 37,
+        "miniturbo": 37,
         "total": 285
     },
     {
@@ -609,7 +609,7 @@
         "handling": 48,
         "drift": 17,
         "offroad": 56,
-        "mini turbo": 40,
+        "miniturbo": 40,
         "total": 298
     }
 ]
