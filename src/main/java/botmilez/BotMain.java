@@ -19,6 +19,7 @@ import static botmilez.config.BOTMILEZ_TOKEN;
 //TODO: Music command
 //TODO: Random image command by scraping the web similar to old university project
 //TODO: mkw stats command
+//TODO: ImposterBot idea
 public class BotMain {
     public static void main(String[] args) throws LoginException {
 
