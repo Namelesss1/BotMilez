@@ -116,35 +116,25 @@ public class MkwStatsCommand extends ListenerAdapter implements IBotCommand {
         if (event.getComponentId().equals(MENU_SELECT_VEHICLE)) {
             Map<String, MKWVehicle> vehicles =
                     mkw.getVehicles(WeightClass.ALL, VehicleType.ALL, DriftType.ALL);
-            List<MessageEmbed.Field> fields = new ArrayList<>();
+
+            EmbedBuilder emBuilder = new EmbedBuilder();
+            emBuilder.setColor(Color.BLUE);
+            emBuilder.setTitle("Vehicle Information");
 
             for (MKWVehicle vehicle : vehicles.values()) {
                 if (event.getValues().get(0).equals(vehicle.getName())) {
-                    fields.add(vehicle.getAsField());
+                    emBuilder.addField(vehicle.getAsField());
+                    emBuilder.setImage(vehicle.getImgURL());
+                    emBuilder.setFooter("Image Credit: " + vehicle.getImgcredit());
                 }
             }
 
-            MessageEmbed embed = getStatEmbed(fields);
             event.editMessage("Here are the stats.").queue();
-            event.getHook().editOriginalEmbeds(embed).queue();
+            event.getHook().editOriginalEmbeds(emBuilder.build()).queue();
         }
 
 
     }
-
-
-    private MessageEmbed getStatEmbed(List<MessageEmbed.Field> fields) {
-        EmbedBuilder emBuilder = new EmbedBuilder();
-        emBuilder.setColor(Color.BLUE);
-        emBuilder.setTitle("Vehicle Information");
-
-        for (MessageEmbed.Field field : fields) {
-            emBuilder.addField(field);
-        }
-
-        return emBuilder.build();
-    }
-
 
 
 }

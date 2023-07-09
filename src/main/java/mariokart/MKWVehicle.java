@@ -27,12 +27,15 @@ public final class MKWVehicle implements Comparable<MKWVehicle>{
     private final long offroad;
     private final long miniturbo;
     private final long total;
+    private final String imgURL;
+    private final String imgcredit;
 
 
     public MKWVehicle(long id, String name, String alias, String codename,
                       String type, String weightclass, String driftype,
                       long speed, long weight, long acceleration, long handling,
-                      long drift, long offroad, long miniturbo, long total) {
+                      long drift, long offroad, long miniturbo, long total,
+                      String imgURL, String imgcredit) {
 
         this.id = id;
         this.name = name;
@@ -49,6 +52,8 @@ public final class MKWVehicle implements Comparable<MKWVehicle>{
         this.offroad = offroad;
         this.miniturbo = miniturbo;
         this.total = total;
+        this.imgURL = imgURL;
+        this.imgcredit = imgcredit;
     }
 
 
@@ -110,6 +115,14 @@ public final class MKWVehicle implements Comparable<MKWVehicle>{
 
     public long getTotal() {
         return total;
+    }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public String getImgcredit() {
+        return imgcredit;
     }
 
     public MessageEmbed.Field getAsField() {

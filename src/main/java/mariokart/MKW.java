@@ -63,7 +63,9 @@ public class MKW {
                     (Long)entry.get("drift"),
                     (Long)entry.get("offroad"),
                     (Long)entry.get("miniturbo"),
-                    (Long)entry.get("total")
+                    (Long)entry.get("total"),
+                    (String)entry.get("img"),
+                    (String)entry.get("imgcredit")
             );
             vehicles.put(vehicle.getName(), vehicle);
         }

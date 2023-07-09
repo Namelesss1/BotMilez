@@ -15,7 +15,9 @@
         "drift": 51,
         "offroad": 40,
         "miniturbo": 45,
-        "total": 302
+        "total": 302,
+		"img": "https://mario.wiki.gallery/images/3/36/Standard_Kart_S_%28Toad%29_Model.png",
+		"imgcredit": "RoyKoopa510 - Super Mario Wiki"
     },
     {
         "id": 1,
@@ -32,7 +34,9 @@
         "drift": 45,
         "offroad": 35,
         "miniturbo": 40,
-        "total": 294
+        "total": 294,
+		"img": "https://mario.wiki.gallery/images/d/db/Standard_Kart_M_%28Mario%29_Model.png",
+		"imgcredit": "RoyKoopa510 - Super Mario Wiki"
     },
     {
         "id": 2,
@@ -49,7 +53,9 @@
         "drift": 40,
         "offroad": 35,
         "miniturbo": 35,
-        "total": 294
+        "total": 294,
+		"img": "https://mario.wiki.gallery/images/9/90/Standard_Kart_L_%28Bowser%29_Model.png",
+		"imgcredit": "RoyKoopa510 - Super Mario Wiki"
     },
     {
         "id": 3,
@@ -66,7 +72,9 @@
         "drift": 37,
         "offroad": 54,
         "miniturbo": 59,
-        "total": 324
+        "total": 324,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/3/39/Booster_Seat_%28Baby_Peach%29_Model.PNG/revision/latest/thumbnail/width/360/height/450?cb=20220318130900",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 4,
@@ -83,7 +91,9 @@
         "drift": 54,
         "offroad": 40,
         "miniturbo": 51,
-        "total": 338
+        "total": 338,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/f/f3/Classic_Dragster_%28Mario%29_Model.PNG/revision/latest?cb=20220327165833",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 5,
@@ -100,7 +110,9 @@
         "drift": 18,
         "offroad": 43,
         "miniturbo": 45,
-        "total": 311
+        "total": 311,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/0/0f/Offroader_%28Donkey_Kong%29_Model.PNG/revision/latest?cb=20220327165010",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 6,
@@ -117,7 +129,9 @@
         "drift": 64,
         "offroad": 27,
         "miniturbo": 64,
-        "total": 303
+        "total": 303,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/0/04/Mini_Beast_%28Baby_Mario%29_Model.PNG/revision/latest/scale-to-width-down/250?cb=20220405214612",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 7,
@@ -134,7 +148,9 @@
         "drift": 59,
         "offroad": 24,
         "miniturbo": 59,
-        "total": 300
+        "total": 300,
+		"img": "https://mario.wiki.gallery/images/thumb/7/78/MKT_Icon_WildWing.png/200px-MKT_Icon_WildWing.png",
+		"imgcredit": "MariusM - Super Mario Wiki"
     },
     {
         "id": 8,
@@ -151,7 +167,9 @@
         "drift": 48,
         "offroad": 18,
         "miniturbo": 48,
-        "total": 272
+        "total": 272,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/e/ec/Flame_Flyer_%28Waluigi%29_Model.PNG/revision/latest?cb=20220318023250",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 9,
@@ -168,7 +186,9 @@
         "drift": 39,
         "offroad": 45,
         "miniturbo": 54,
-        "total": 336
+        "total": 336,
+		"img": "https://mario.wiki.gallery/images/9/9d/MKT_Icon_CheepCharger.png",
+		"imgcredit": "MariusM - Super Mario Wiki"
     },
     {
         "id": 10,
@@ -185,7 +205,9 @@
         "drift": 21,
         "offroad": 54,
         "miniturbo": 35,
-        "total": 272
+        "total": 272,
+		"img": "https://mario.wiki.gallery/images/6/6a/MKT_Icon_SuperBlooper.png",
+		"imgcredit": "MariusM - Super Mario Wiki"
     },
     {
         "id": 11,
@@ -202,7 +224,9 @@
         "drift": 35,
         "offroad": 29,
         "miniturbo": 27,
-        "total": 277
+        "total": 277,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/9/9a/250px-PiranhaProwler-FunkyKong.png/revision/latest?cb=20130129230203",
+		"imgcredit": "HeatBallerZ - Super Mario Wiki"
     },
     {
         "id": 12,
@@ -219,7 +243,9 @@
         "drift": 29,
         "offroad": 64,
         "miniturbo": 40,
-        "total": 300
+        "total": 300,
+		"img": "https://static.wikia.nocookie.net/fantendo/images/f/f9/Tiny_Titan_%28Baby_Luigi%29_Model.PNG/revision/latest?cb=20220608025549",
+		"imgcredit": "PoisonMushroom2807 - Fantendo"
     },
     {
         "id": 13,
@@ -236,7 +262,9 @@
         "drift": 32,
         "offroad": 48,
         "miniturbo": 54,
-        "total": 323
+        "total": 323,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/5/57/Daytripper_%28Peach%29_Model.PNG/revision/latest?cb=20220528143915",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 14,
@@ -253,7 +281,9 @@
         "drift": 27,
         "offroad": 16,
         "miniturbo": 16,
-        "total": 222
+        "total": 222,
+		"img": "https://mario.wiki.gallery/images/c/c5/MKT_Icon_GreenSpeeder.png",
+		"imgcredit": "MariusM - Super Mario Wiki"
     },
     {
         "id": 15,
@@ -270,7 +300,9 @@
         "drift": 43,
         "offroad": 24,
         "miniturbo": 29,
-        "total": 249
+        "total": 249,
+		"img": "https://static.wikia.nocookie.net/fantendo/images/c/c4/Blue_Falcon_%28Baby_Mario%29_Model.PNG/revision/latest?cb=20220608024330",
+		"imgcredit": "PoisonMushroom2807 - Fantendo"
     },
     {
         "id": 16,
@@ -287,7 +319,9 @@
         "drift": 37,
         "offroad": 21,
         "miniturbo": 24,
-        "total": 245
+        "total": 245,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/b/b0/MKT_Icon_BDasherMk2.png/revision/latest?cb=20220912162905",
+		"imgcredit": "LuigiMaster41 - Super Mario Wiki"
     },
     {
         "id": 17,
@@ -304,7 +338,9 @@
         "drift": 56,
         "offroad": 24,
         "miniturbo": 56,
-        "total": 307
+        "total": 307,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/d/d7/Honeycoupe_%28Wario%29_Model.PNG/revision/latest?cb=20220523214639",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 18,
@@ -321,7 +357,9 @@
         "drift": 54,
         "offroad": 43,
         "miniturbo": 48,
-        "total": 307
+        "total": 307,
+		"img": "https://mario.wiki.gallery/images/b/b9/Standard_Bike_S_%28Toad%29_Model.png",
+		"imgcredit": "RoyKoopa510 - Super Mario Wiki"
     },
     {
         "id": 19,
@@ -338,7 +376,9 @@
         "drift": 48,
         "offroad": 37,
         "miniturbo": 43,
-        "total": 296
+        "total": 296,
+		"img": "https://mario.wiki.gallery/images/9/9a/Standard_Bike_M_%28Mario%29_Model.png",
+		"imgcredit": "RoyKoopa510 - Super Mario Wiki"
     },
     {
         "id": 20,
@@ -355,7 +395,9 @@
         "drift": 43,
         "offroad": 37,
         "miniturbo": 37,
-        "total": 300
+        "total": 300,
+		"img": "https://mario.wiki.gallery/images/7/7b/Standard_Bike_L_%28Wario%29_Model.png",
+		"imgcredit": "RoyKoopa510 - Super Mario Wiki"
     },
     {
         "id": 21,
@@ -372,7 +414,9 @@
         "drift": 67,
         "offroad": 29,
         "miniturbo": 67,
-        "total": 307
+        "total": 307,
+		"img": "https://tcrf.net/images/thumb/2/2c/MKWii_Used_Toad_Bullet_Bike_Model.png/300px-MKWii_Used_Toad_Bullet_Bike_Model.png",
+		"imgcredit": "B Squo - The Cutting Room Floor"
     },
     {
         "id": 22,
@@ -389,7 +433,9 @@
         "drift": 62,
         "offroad": 27,
         "miniturbo": 62,
-        "total": 299
+        "total": 299,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/b/b3/Mach_Bike_%28Daisy%29_Model.PNG/revision/latest?cb=20220910205304",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 23,
@@ -406,7 +452,9 @@
         "drift": 51,
         "offroad": 21,
         "miniturbo": 51,
-        "total": 279
+        "total": 279,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/1/19/Flame_Runner_%28Bowser%29_Model.PNG/revision/latest?cb=20220318031104",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 24,
@@ -423,7 +471,9 @@
         "drift": 40,
         "offroad": 56,
         "miniturbo": 62,
-        "total": 327
+        "total": 327,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/2/26/Bit_Bike_%28Koopa_Troopa%29_Model.PNG/revision/latest?cb=20220318133344",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 25,
@@ -440,7 +490,9 @@
         "drift": 35,
         "offroad": 51,
         "miniturbo": 56,
-        "total": 322
+        "total": 322,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/7/7e/Sugarscoot_%28Birdo%29_Model.PNG/revision/latest?cb=20220527010659",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 26,
@@ -457,7 +509,9 @@
         "drift": 21,
         "offroad": 45,
         "miniturbo": 48,
-        "total": 317
+        "total": 317,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/d/dc/Wario_Bike_%28Wario%29_Model.PNG/revision/latest?cb=20220523214641",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 27,
@@ -474,7 +528,9 @@
         "drift": 62,
         "offroad": 48,
         "miniturbo": 57,
-        "total": 343
+        "total": 343,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/a/a3/Quacker_%28Toad%29_Model.PNG/revision/latest?cb=20220604023405",
+		"imgcredit": "Tobio2933 - Mario Kart Racing Wiki"
     },
     {
         "id": 28,
@@ -491,7 +547,9 @@
         "drift": 29,
         "offroad": 62,
         "miniturbo": 45,
-        "total": 308
+        "total": 308,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/5/52/Zip_Zip_%28Diddy_Kong%29_Model.PNG/revision/latest?cb=20220603151859",
+		"imgcredit": "The RPG Gamer - Mario Kart Racing Wiki"
     },
     {
         "id": 29,
@@ -508,7 +566,9 @@
         "drift": 59,
         "offroad": 27,
         "miniturbo": 59,
-        "total": 304
+        "total": 304,
+		"img": "https://static.wikia.nocookie.net/mariokartfanon/images/9/9b/Shooting_Star_%28Rosalina%29_Model.PNG/revision/latest?cb=20220603134739",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 30,
@@ -525,7 +585,9 @@
         "drift": 32,
         "offroad": 67,
         "miniturbo": 43,
-        "total": 299
+        "total": 299,
+		"img": "https://static.wikia.nocookie.net/fantendo/images/d/d5/Magikruiser_%28Toadette%29_Model.PNG/revision/latest?cb=20220608025911",
+		"imgcredit": "PoisonMushroom2807 - Fantendo"
     },
     {
         "id": 31,
@@ -542,7 +604,9 @@
         "drift": 40,
         "offroad": 24,
         "miniturbo": 27,
-        "total": 249
+        "total": 249,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/2/27/Sneakster_%28Bowser_Jr%29_Model.PNG/revision/latest?cb=20220314214909",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 32,
@@ -559,7 +623,9 @@
         "drift": 29,
         "offroad": 18,
         "miniturbo": 18,
-        "total": 230
+        "total": 230,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/8/86/Spear_%28Dry_Bowser%29_Model.PNG/revision/latest?cb=20220311170200",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 33,
@@ -576,7 +642,9 @@
         "drift": 45,
         "offroad": 35,
         "miniturbo": 37,
-        "total": 272
+        "total": 272,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/4/4e/Jet_Bubble_%28Toad%29_Model.PNG/revision/latest?cb=20220604023405",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     },
     {
         "id": 34,
@@ -593,7 +661,9 @@
         "drift": 24,
         "offroad": 56,
         "miniturbo": 37,
-        "total": 285
+        "total": 285,
+		"img": "https://static.wikia.nocookie.net/fantendo/images/3/32/Dolphin_Dasher_%28Mario%29_Model.PNG.webp/revision/latest?cb=20220422211052",
+		"imgcredit": "BlooP-OW - Fantendo"
     },
     {
         "id": 35,
@@ -610,6 +680,8 @@
         "drift": 17,
         "offroad": 56,
         "miniturbo": 40,
-        "total": 298
+        "total": 298,
+		"img": "https://static.wikia.nocookie.net/mariokart/images/7/7b/Phantom_%28King_Boo%29_Model.PNG/revision/latest?cb=20220314223127",
+		"imgcredit": "MarioKartDSYes MarioKartWiiNo - Mario Kart Racing Wiki"
     }
 ]
