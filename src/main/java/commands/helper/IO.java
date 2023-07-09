@@ -43,7 +43,7 @@ public class IO {
 
     /**
      * Writes a json object to the file specified by the given path.
-     * @param jsonObj Object to write to file
+     * @param jsonArray Object to write to file
      * @param path file to write to
      * @return true if successful, false if not.
      */
@@ -65,6 +65,11 @@ public class IO {
     }
 
 
+    /**
+     * Reads from a JSON file
+     * @param path file to read from
+     * @return a parsed JSON object
+     */
     public static Object readJson(String path) {
         JSONParser parser = new JSONParser();
         Object res;
@@ -94,4 +99,5 @@ public class IO {
         File file = new File(path);
         return file.exists();
     }
+
 }
