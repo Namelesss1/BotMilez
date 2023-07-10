@@ -237,7 +237,6 @@ public class QuoteAdder extends ListenerAdapter {
         text = text.replace("”", "\"");
         text = text.replace("“", "\"");
         text = text.replaceAll("\'", "\"");
-        System.out.println(text);
 
         /* Capture at least one of any character between quotation marks
          * parenthesis to capture quote itself in group 1, and capturing
