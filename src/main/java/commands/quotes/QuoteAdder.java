@@ -233,6 +233,12 @@ public class QuoteAdder extends ListenerAdapter {
     private boolean parseShorthand(String text) {
         String capture;
 
+        /* Some IOS devices use curly quotation mark automatically */
+        text = text.replace("”", "\"");
+        text = text.replace("“", "\"");
+        text = text.replaceAll("\'", "\"");
+        System.out.println(text);
+
         /* Capture at least one of any character between quotation marks
          * parenthesis to capture quote itself in group 1, and capturing
          * whitespace to remove any whitespace before the username */
