@@ -22,11 +22,16 @@ public class MKW {
     /* Vehicle name -> Vehicle */
     private final Map<String, MKWVehicle> vehicles = new HashMap<>();
 
+    /* Character name -> Character */
+    private final Map<String, MKWCharacter> characters = new HashMap<>();
+
     /* Single instance of this class to be created */
     private static MKW mkwInstance = null;
 
     private MKW() {
+
         initVehicleMap(PATH + "vehicles.json");
+        initCharacterMap(PATH + "characters.json");
     }
 
 
@@ -68,6 +73,36 @@ public class MKW {
                     (String)entry.get("imgcredit")
             );
             vehicles.put(vehicle.getName(), vehicle);
+        }
+    }
+
+    /**
+     * Initializes the statistics and information of each character in the game into
+     * a map.
+     * @param path path to a JSON file containing the data to read from into map.
+     */
+    private void initCharacterMap(String path) {
+        JSONArray jsonArray = (JSONArray)IO.readJson(path);
+
+        for (Object element : jsonArray) {
+            JSONObject entry = (JSONObject)element;
+            MKWCharacter character = new MKWCharacter(
+                    (Long)entry.get("id"),
+                    (String)entry.get("name"),
+                    (String)entry.get("codename"),
+                    (String)entry.get("weightclass"),
+                    (Long)entry.get("speed"),
+                    (Long)entry.get("weight"),
+                    (Long)entry.get("acceleration"),
+                    (Long)entry.get("handling"),
+                    (Long)entry.get("drift"),
+                    (Long)entry.get("offroad"),
+                    (Long)entry.get("miniturbo"),
+                    (Long)entry.get("total"),
+                    (String)entry.get("img"),
+                    (String)entry.get("imgcredit")
+            );
+            characters.put(character.getName(), character);
         }
     }
 
@@ -124,6 +159,35 @@ public class MKW {
         return result;
     }
 
+    /**
+     * Get a sub-map of the game's characters that match all of the given parameters.
+     *
+     * @param weightClass desired weightclass of characters
+     * @return a map that contains only characters that match the criteria.
+     */
+    public Map<String, MKWCharacter> getCharacters(WeightClass weightClass) {
+
+        if (weightClass == WeightClass.ALL) {
+            return new HashMap<>(characters);
+        }
+
+        Map<String, MKWCharacter> result = new HashMap<>();
+
+        for (MKWCharacter character : characters.values()) {
+            if ((weightClass == WeightClass.HEAVY) && character.getWeightclass().equals("Heavy")) {
+                result.put(character.getName(), character);
+            }
+            else if ((weightClass == WeightClass.MEDIUM) && character.getWeightclass().equals("Medium")) {
+                result.put(character.getName(), character);
+            }
+            else if ((weightClass == WeightClass.LIGHT) && character.getWeightclass().equals("Light")) {
+                result.put(character.getName(), character);
+            }
+        }
+
+        return result;
+    }
+
 
     /*
      * The below enums are used to filter vehicles and characters
@@ -160,9 +224,14 @@ public class MKW {
     public static final String MENU_SELECT_STAT = "selectstat";
     public static final  String SELECT_CHARACTERS = "selectcharacters";
     public static final String SELECT_VEHICLES = "selectvehicles";
-    public static final String MENU_SELECT_CLASS = "selectclass";
+    public static final String MENU_SELECT_VEHICLE_CLASS = "selectvehicleclass";
+    public static final String MENU_SELECT_CHARACTER_CLASS = "selectcharacterclass";
     public static final String SELECT_LIGHT_VEHICLE = "selectlightvehicle";
     public static final String SELECT_MEDIUM_VEHICLE = "selectmediumvehicle";
     public static final String SELECT_HEAVY_VEHICLE = "selectheavyvehicle";
     public static final String MENU_SELECT_VEHICLE = "selectvehiclemenu";
+    public static final String MENU_SELECT_CHARACTER = "selectcharactermenu";
+    public static final String SELECT_LIGHT_CHARACTER = "selectlightcharacter";
+    public static final String SELECT_MEDIUM_CHARACTER = "selectmediumcharacter";
+    public static final String SELECT_HEAVY_CHARACTER = "selectheavycharacter";
 }
