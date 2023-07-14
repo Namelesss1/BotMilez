@@ -179,23 +179,25 @@ public class RngMkwCommand extends ListenerAdapter implements IBotCommand {
         if ((selection.getEntityType() == MKW.EntityType.ALL) ||
                 (selection.getEntityType() == MKW.EntityType.CHARACTER)) {
             possibleCharacters =
-                    (List<MKWCharacter>) mkw.getCharacters(selection.getWeightClass()).values();
+                    new ArrayList<>(mkw.getCharacters(selection.getWeightClass()).values());
         }
         if ((selection.getEntityType() == MKW.EntityType.ALL) ||
                 (selection.getEntityType() == MKW.EntityType.VEHICLE)) {
             possibleVehicles =
-                    (List<MKWVehicle>) mkw.getVehicles(
+                    new ArrayList<>(mkw.getVehicles(
                             selection.getWeightClass(), selection.getVehicleType(), selection.getDriftType())
-                            .values();
+                            .values());
         }
 
         Random random = new Random();
 
         if (possibleCharacters != null) {
-            msg.append(possibleCharacters.get(random.nextInt()).getName());
+            int index = random.nextInt(possibleCharacters.size());
+            msg.append(possibleCharacters.get(index).getName() + " ");
         }
         if (possibleVehicles != null) {
-            msg.append(possibleVehicles.get(random.nextInt()).getName());
+            int index = random.nextInt(possibleVehicles.size());
+            msg.append(possibleVehicles.get(index).getName());
         }
 
         userSelections.remove(user);
