@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import static botmilez.config.QUOTE_FILE_PREFIX;
 import static botmilez.config.QUOTE_FILE_SUFFIX;
+import commands.Stoppable;
 
 
 /**
@@ -31,7 +32,7 @@ import static botmilez.config.QUOTE_FILE_SUFFIX;
  *
  * "quote" speakerWhoSaidQuote year(year is optional)
  */
-public class QuoteAdder extends ListenerAdapter {
+public class QuoteAdder extends ListenerAdapter implements Stoppable{
 
     private Map<User, Status> statuses;
     private Map<User,Quote> quotes;
@@ -151,7 +152,7 @@ public class QuoteAdder extends ListenerAdapter {
                         channel.sendMessage("Failed to add quote, something went wrong").queue();
                     }
 
-                    stopCommand(author);
+                    stop(author, channel);
                     return;
                 }
 
@@ -308,7 +309,8 @@ public class QuoteAdder extends ListenerAdapter {
     }
 
 
-    public void stopCommand(User user) {
+    @Override
+    public void stop(User user, MessageChannel channel) {
         if (statuses.containsKey(user)) {
             statuses.remove(user);
         }
