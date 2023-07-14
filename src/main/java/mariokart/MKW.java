@@ -146,7 +146,7 @@ public class MKW {
             if ((driftType == DriftType.INWARD) && !vehicle.getDrifttype().equals("Inward")) {
                 vehiclesToRemove.add(vehicle.getName());
             }
-            else if ((driftType == DriftType.INWARD) && !vehicle.getDrifttype().equals("Outward")) {
+            else if ((driftType == DriftType.OUTWARD) && !vehicle.getDrifttype().equals("Outward")) {
                 vehiclesToRemove.add(vehicle.getName());
             }
 
