@@ -45,7 +45,7 @@ public class QuoteViewer extends ListenerAdapter {
     private Map<User, String> usersSearching;
 
     /* Limit to how many quotes can be displayed in an embed */
-    public static final int MAX_QUOTES_PER_EMBED = 2;
+    public static final int MAX_QUOTES_PER_EMBED = 15;
 
     private boolean isEventListener = false;
 
