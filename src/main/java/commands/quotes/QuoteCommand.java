@@ -31,8 +31,6 @@ import static commands.quotes.QuoteIDs.*;
  * removed.
  *
  * TODO: Ensure everything occurs within the channel the slash command was initialized
- * TODO: Ensure the user that initiated slash command is the one taking control
- * TODO: Have the bot edit its original message instead of sending a new one
  * TODO: Check the user has permissions to add/remove quote.
  */
 public class QuoteCommand extends ListenerAdapter implements IBotCommand {
@@ -86,7 +84,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
             if (!adder.isEventListener()) {
                 adder.setListening(event.getJDA());
             }
-            event.editButton(null).queue();
+            event.editMessage("You selected: Add a quote").setComponents().queue();
             adder.onNewStatus(user, event.getChannel());
         }
 
@@ -95,8 +93,8 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
             if (!viewer.isEventListener()) {
                 viewer.setListening(event.getJDA());
             }
-
-            event.reply("What do you want to do?")
+            event.editMessage("You selected: View a quote").setComponents().queue();
+            event.getChannel().sendMessage("What do you want to do?")
                     .addActionRow(
                             StringSelectMenu.create(SELECT_MENU_VIEW)
                                     .addOption("Random Quote", SELECT_CHOICE_RANDOM,
@@ -108,6 +106,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                                             "person who said quote, keyword, or year.")
                                     .build()
                     ).queue();
+
         }
 
         if (event.getComponentId().equals(BUTTON_ID_DELETE)) {
@@ -118,7 +117,8 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                 remover.setListening(event.getJDA());
             }
 
-            event.reply("Choose one of the options below.")
+            event.editMessage("You selected: Remove a quote").setComponents().queue();
+            event.getChannel().sendMessage("Choose one of the options below.")
                     .addActionRow(
                             StringSelectMenu.create(SELECT_MENU_DELETE)
                                     .addOption("Choose from all quotes", SELECT_CHOICE_ALL,
@@ -129,7 +129,6 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                     ).queue();
         }
 
-        //event.getMessage().delete().queue();
     }
 
 

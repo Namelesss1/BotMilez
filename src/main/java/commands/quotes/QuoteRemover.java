@@ -139,7 +139,7 @@ public class QuoteRemover extends ListenerAdapter {
             usersState.put(event.getUser(), DeletionState.CHOOSING_NUM);
 
             if (event.getValues().get(0).equals(SELECT_CHOICE_ALL)) {
-                event.editMessage("Fetching all quotes..").queue();
+                event.editMessage("Fetching all quotes..").setComponents().queue();
                 quoteCommand.getQuoteViewer().initAllQuoteEmbed(event, true);
                 event.getChannel().sendMessage("Enter the entry # of the quote you want to delete").queue();
             }
@@ -163,19 +163,23 @@ public class QuoteRemover extends ListenerAdapter {
         /* --- On searching --- */
         if (event.getComponentId().equals(SELECT_MENU_SEARCH_DELETE)) {
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_SAID)) {
-                event.reply("Enter your search term:").queue();
+                event.editMessage("You selected: search by the quote").setComponents().queue();
+                channel.sendMessage("Enter your search term:").queue();
                 quoteCommand.getQuoteViewer().addToUsersSearching(event.getUser(), SELECT_CHOICE_BY_SAID);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_SPEAKER)) {
-                event.reply("Enter who said the quote:").queue();
+                event.editMessage("You selected: search by the speaker").setComponents().queue();
+                channel.sendMessage("Enter who said the quote:").queue();
                 quoteCommand.getQuoteViewer().addToUsersSearching(event.getUser(), SELECT_CHOICE_BY_SPEAKER);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_AUTHOR)) {
-                event.reply("Enter who added the quote to bot:").queue();
+                event.editMessage("You selected: search by who added the quote").setComponents().queue();
+                channel.sendMessage("Enter who added the quote to bot:").queue();
                 quoteCommand.getQuoteViewer().addToUsersSearching(event.getUser(), SELECT_CHOICE_BY_AUTHOR);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_YEAR)) {
-                event.reply("Enter the year (or anything other than: " +
+                event.editMessage("You selected: search by the year").setComponents().queue();
+                channel.sendMessage("Enter the year (or anything other than: " +
                                 "a number if you want quotes without years)")
                         .queue();
                 quoteCommand.getQuoteViewer().addToUsersSearching(event.getUser(), SELECT_CHOICE_BY_YEAR);
@@ -200,7 +204,7 @@ public class QuoteRemover extends ListenerAdapter {
                     contextNum = Integer.parseInt(response);
                 }
                 catch (NumberFormatException e) {
-                    channel.sendMessage(" is not a valid number.").queue();
+                    channel.sendMessage(" is not a valid number. Removal aborted.").queue();
                     usersState.remove(user);
                     usersCandidates.remove(user);
                     return;

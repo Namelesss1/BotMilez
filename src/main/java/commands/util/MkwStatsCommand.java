@@ -165,7 +165,7 @@ public class MkwStatsCommand extends ListenerAdapter implements IBotCommand {
                 }
             }
 
-            event.editMessage("Here are the stats.").queue();
+            event.editMessage("Here are the stats.").setComponents().queue();
             event.getHook().editOriginalEmbeds(emBuilder.build()).queue();
         }
 
@@ -186,7 +186,7 @@ public class MkwStatsCommand extends ListenerAdapter implements IBotCommand {
                 }
             }
 
-            event.editMessage("Here are the stats.").queue();
+            event.editMessage("Here are the stats.").setComponents().queue();
             event.getHook().editOriginalEmbeds(emBuilder.build()).queue();
         }
 

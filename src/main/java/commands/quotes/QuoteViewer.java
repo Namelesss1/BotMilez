@@ -349,11 +349,11 @@ public class QuoteViewer extends ListenerAdapter {
         /* --- On viewing a quote --- */
         if (event.getComponentId().equals(SELECT_MENU_VIEW)) {
             if (event.getValues().get(0).equals(SELECT_CHOICE_RANDOM)) {
-                event.editMessage("Fetching a random quote..").queue();
+                event.editMessage("Fetching a random quote..").setComponents().queue();
                 getRandomQuote(guildId, channel);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_ALL)) {
-                event.editMessage("Fetching all quotes..").queue();
+                event.editMessage("Fetching all quotes..").setComponents().queue();
                 initAllQuoteEmbed(event, false);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_SEARCH)) {
@@ -375,19 +375,23 @@ public class QuoteViewer extends ListenerAdapter {
         /* --- On searching --- */
         if (event.getComponentId().equals(SELECT_MENU_SEARCH)) {
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_SAID)) {
-                event.reply("Enter your search term:").queue();
+                event.editMessage("You selected: search by the quote").setComponents().queue();
+                channel.sendMessage("Enter your search term:").queue();
                 usersSearching.put(event.getUser(), SELECT_CHOICE_BY_SAID);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_SPEAKER)) {
-                event.reply("Enter who said the quote:").queue();
+                event.editMessage("You selected: search by who said the quote").setComponents().queue();
+                channel.sendMessage("Enter who said the quote:").queue();
                 usersSearching.put(event.getUser(), SELECT_CHOICE_BY_SPEAKER);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_AUTHOR)) {
-                event.reply("Enter who added the quote to bot:").queue();
+                event.editMessage("You selected: search by who added the quote").setComponents().queue();
+                channel.sendMessage("Enter who added the quote to bot:").queue();
                 usersSearching.put(event.getUser(), SELECT_CHOICE_BY_AUTHOR);
             }
             if (event.getValues().get(0).equals(SELECT_CHOICE_BY_YEAR)) {
-                event.reply("Enter the year (or anything other than: " +
+                event.editMessage("You selected: search by year").setComponents().queue();
+                channel.sendMessage("Enter the year (or anything other than: " +
                         "a number if you want quotes without years)")
                         .queue();
                 usersSearching.put(event.getUser(), SELECT_CHOICE_BY_YEAR);
