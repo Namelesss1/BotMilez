@@ -216,6 +216,13 @@ public class MKW {
         OUTWARD
     }
 
+    /* Character or Vehicle */
+    public enum EntityType {
+        ALL,
+        CHARACTER,
+        VEHICLE
+    }
+
 
     /*
      * IDs for MKW-related JDA StringSelectMenus
@@ -234,4 +241,8 @@ public class MKW {
     public static final String SELECT_LIGHT_CHARACTER = "selectlightcharacter";
     public static final String SELECT_MEDIUM_CHARACTER = "selectmediumcharacter";
     public static final String SELECT_HEAVY_CHARACTER = "selectheavycharacter";
+
+
+    /* ----- Random rng-mkw Command ----- */
+    public static final String SELECT_RANDOM = "selectrandom";
 }
