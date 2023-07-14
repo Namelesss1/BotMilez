@@ -3,22 +3,18 @@ import commands.basic.BubbleWrapCommand;
 import commands.basic.HiCommand;
 import commands.quotes.QuoteCommand;
 import commands.rng.RngCommand;
-import commands.rng.RngMkw;
-import commands.rng.RngUsername;
+import commands.rng.RngMkwCommand;
+import commands.rng.RngUsernameCommand;
 import commands.util.MkwStatsCommand;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.requests.restaction.CommandCreateAction;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class handles methods that deal with commands that a user
@@ -35,11 +31,11 @@ public class CommandManager extends ListenerAdapter {
 
         commands.add(new HiCommand());
         commands.add(new RngCommand());
-        commands.add(new RngUsername());
+        commands.add(new RngUsernameCommand());
         commands.add(new BubbleWrapCommand());
         commands.add(new QuoteCommand());
         commands.add(new MkwStatsCommand());
-        commands.add(new RngMkw());
+        commands.add(new RngMkwCommand());
     }
 
     @Override

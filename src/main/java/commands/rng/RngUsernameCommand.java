@@ -15,7 +15,7 @@ import java.util.Random;
  * in certain orders, and randomly deciding if the name
  * should follow a specific style such as all caps.
  */
-public class RngUsername implements IBotCommand {
+public class RngUsernameCommand implements IBotCommand {
 
     private String[] adjectives;
     private String[] nounsPeople;
@@ -25,7 +25,7 @@ public class RngUsername implements IBotCommand {
     private String[] determiners;
     private final String PATH_DIR = "resources/words/";
 
-    public RngUsername() {
+    public RngUsernameCommand() {
         adjectives = IO.readAllFileLinesIntoArray(PATH_DIR + "adjectives.txt");
         nounsPeople = IO.readAllFileLinesIntoArray(PATH_DIR + "nounPerson.txt");
         nounsThings = IO.readAllFileLinesIntoArray(PATH_DIR + "nounThing.txt");

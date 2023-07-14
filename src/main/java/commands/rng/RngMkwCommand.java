@@ -9,19 +9,18 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.components.selections.StringSelectInteraction;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
 import java.util.*;
 
 import static mariokart.MKW.*;
 
-public class RngMkw extends ListenerAdapter implements IBotCommand {
+public class RngMkwCommand extends ListenerAdapter implements IBotCommand {
 
     private MKW mkw;
     private Map<User, UserRandomSelection> userSelections;
 
-    public RngMkw() {
+    public RngMkwCommand() {
         userSelections = new HashMap<>();
         mkw = MKW.initialize();
     }
