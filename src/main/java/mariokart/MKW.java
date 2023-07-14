@@ -245,4 +245,21 @@ public class MKW {
 
     /* ----- Random rng-mkw Command ----- */
     public static final String SELECT_RANDOM = "selectrandom";
+    public static final String RANDOM_ALL_WEIGHT = "randomallweight";
+    public static final String RANDOM_LIGHT_WEIGHT = "randomlightweight";
+    public static final String RANDOM_MEDIUM_WEIGHT = "randommediumweight";
+    public static final String RANDOM_HEAVY_WEIGHT = "randomheavyweight";
+    public static final String MENU_SELECT_RANDOM_ENTITY = "randommenuentity";
+    public static final String RANDOM_CHARACTER_VEHICLE = "randomcharvehicle";
+    public static final String RANDOM_CHARACTER = "randomcharacter";
+    public static final String RANDOM_VEHICLE = "randomvehicle";
+    public static final String MENU_SELECT_RANDOM_VEHICLE_TYPE = "randommenuvehicletype";
+    public static final String RANDOM_ALL_VEHICLE_TYPES = "randomallvehicles";
+    public static final String RANDOM_KART_VEHICLE_TYPE = "randomkarttype";
+    public static final String RANDOM_BIKE_VEHICLE_TYPE = "randombiketype";
+    public static final String MENU_SELECT_RANDOM_VEHICLE_DRIFT_TYPE = "randommenudrifttype";
+    public static final String RANDOM_ALL_VEHICLE_DRIFT_TYPES = "randomalldrifttypes";
+    public static final String RANDOM_INNER_VEHICLE_DRIFT_TYPE = "randominnerdrift";
+    public static final String RANDOM_OUTER_VEHICLE_DRIFT_TYPE = "randomouterdrift";
+
 }

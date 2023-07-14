@@ -3,6 +3,7 @@ import commands.basic.BubbleWrapCommand;
 import commands.basic.HiCommand;
 import commands.quotes.QuoteCommand;
 import commands.rng.RngCommand;
+import commands.rng.RngMkw;
 import commands.rng.RngUsername;
 import commands.util.MkwStatsCommand;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -38,7 +39,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new BubbleWrapCommand());
         commands.add(new QuoteCommand());
         commands.add(new MkwStatsCommand());
-
+        commands.add(new RngMkw());
     }
 
     @Override
