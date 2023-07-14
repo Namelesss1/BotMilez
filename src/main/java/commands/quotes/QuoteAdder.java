@@ -1,15 +1,16 @@
 package commands.quotes;
 
 import commands.helper.IO;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,13 +33,14 @@ import static botmilez.config.QUOTE_FILE_SUFFIX;
  */
 public class QuoteAdder extends ListenerAdapter {
 
-    private User user; /* User that initiated command */
-    private Status status;
-    private Quote quote;
-    private QuoteContext context;
+    private Map<User, Status> statuses;
+    private Map<User,Quote> quotes;
+    private Map<User,QuoteContext> contexts;
 
     /* Quote command instance that created this object */
     private QuoteCommand quoteCommand;
+
+    private boolean isEventListener = false;
 
     /**
      * Status: Used to indicate the current state of a user adding a new quote
@@ -53,12 +55,20 @@ public class QuoteAdder extends ListenerAdapter {
         INPUT_CORRECT /* User choosing whether the quote was correctly added */
     }
 
-    public QuoteAdder(User userIn, QuoteCommand instance, ButtonInteractionEvent event) {
-        user = userIn;
-        status = Status.NEW;
-        context = new QuoteContext();
+    public QuoteAdder(QuoteCommand instance) {
         quoteCommand = instance;
-        onNewStatus(event.getChannel());
+        statuses = new HashMap<>();
+        quotes = new HashMap<>();
+        contexts = new HashMap<>();
+    }
+
+    public void setListening(JDA jda) {
+        isEventListener = true;
+        jda.addEventListener(this);
+    }
+
+    public boolean isEventListener() {
+        return isEventListener;
     }
 
     @Override
@@ -67,19 +77,19 @@ public class QuoteAdder extends ListenerAdapter {
         User author = event.getAuthor();
         MessageChannel channel = event.getChannel();
 
-        if (!author.isBot() && event.getAuthor().equals(user)) {
+        if (!author.isBot() && statuses.containsKey(author)) {
             String response = event.getMessage().getContentRaw();
             boolean shorthand = false;
 
 
-            if (status == Status.INPUT_NAME) {
-                shorthand = parseShorthand(response);
+            if (statuses.get(author) == Status.INPUT_NAME) {
+                shorthand = parseShorthand(author, response);
                 if (shorthand) {
-                    status = Status.INPUT_MORE;
+                    statuses.replace(author, Status.INPUT_MORE);
                 }
                 else {
-                    quote.setName(response);
-                    status = Status.INPUT_QUOTE;
+                    quotes.get(author).setName(response);
+                    statuses.replace(author, Status.INPUT_QUOTE);
                     channel.sendMessage("Now enter the quote, WITHOUT \"quotations\"")
                             .queue();
                     return;
@@ -87,9 +97,9 @@ public class QuoteAdder extends ListenerAdapter {
             }
 
 
-            if (status == Status.INPUT_QUOTE) {
-                quote.setQuote(response);
-                status = Status.INPUT_YEAR;
+            if (statuses.get(author) == Status.INPUT_QUOTE) {
+                quotes.get(author).setQuote(response);
+                statuses.replace(author, Status.INPUT_YEAR);
                 channel.sendMessage(
                                 "Now enter the year quote was mentioned \n" +
                                         "This is optional. If you don't want a year, type anything " +
@@ -99,9 +109,9 @@ public class QuoteAdder extends ListenerAdapter {
             }
 
 
-            if (status == Status.INPUT_YEAR) {
-                quote.setYear(response);
-                status = Status.INPUT_MORE;
+            if (statuses.get(author) == Status.INPUT_YEAR) {
+                quotes.get(author).setYear(response);
+                statuses.replace(author, Status.INPUT_MORE);
                 channel.sendMessage(
                                 "Does the quote include any other context? (more quotes?)\n" +
                                         "Input yes if so, anything else otherwise")
@@ -110,29 +120,28 @@ public class QuoteAdder extends ListenerAdapter {
             }
 
 
-            if (status == Status.INPUT_MORE) {
+            if (statuses.get(author) == Status.INPUT_MORE) {
                 if (!shorthand) {
-                    context.addQuoteToContext(quote);
+                    contexts.get(author).addQuoteToContext(quotes.get(author));
                 }
 
                 if (response.equalsIgnoreCase("yes")) {
-                    status = Status.NEW;
+                    statuses.replace(author, Status.NEW);
                 }
                 else {
                     channel.sendMessage("Does the following quote context look correct?" +
                         "Input yes if so, anything else otherwise").queue();
-                    context.setAuthor(user.getName());
-                    context.sendQuoteContext(channel);
-                    status = Status.INPUT_CORRECT;
+                    contexts.get(author).setAuthor(author.getName());
+                    contexts.get(author).sendQuoteContext(channel);
+                    statuses.replace(author, Status.INPUT_CORRECT);
                     return;
                 }
             }
 
 
-            if (status == Status.INPUT_CORRECT) {
+            if (statuses.get(author) == Status.INPUT_CORRECT) {
 
                 if (response.equalsIgnoreCase("yes")) {
-                    //TODO: JSON STORE
                     boolean success = addQuoteToJSON(event);
                     if (success) {
                         quoteCommand.getQuoteViewer().setAsModified(event.getGuild().getIdLong());
@@ -142,20 +151,20 @@ public class QuoteAdder extends ListenerAdapter {
                         channel.sendMessage("Failed to add quote, something went wrong").queue();
                     }
 
-                    quoteCommand.removeQuoteAdder(event, user);
+                    stopCommand(author);
                     return;
                 }
 
                 else {
                     channel.sendMessage("Lets start over.").queue();
-                    context = new QuoteContext();
-                    status = Status.NEW;
+                    contexts.replace(author, new QuoteContext());
+                    statuses.replace(author, Status.NEW);
                 }
             }
 
 
-            if (status == Status.NEW) {
-                onNewStatus(channel);
+            if (statuses.get(author) == Status.NEW) {
+                onNewStatus(author, channel);
             }
         }
 
@@ -166,17 +175,27 @@ public class QuoteAdder extends ListenerAdapter {
      * This method is called when a user is beginning the process of
      * entering a new quote to the context.
      *
+     * @param user user that is adding a quote
      * @param channel channel for the bot to send a prompt to
      */
-    private void onNewStatus(MessageChannel channel) {
+    public void onNewStatus(User user, MessageChannel channel) {
         channel.sendMessage("Enter the name of who said the quote.\n" +
                 "Note: there is a quicker way to set a quote using the following format:\n" +
                 "```\"quote\" nameOfPersonWhoSaidQuote yearWhichIsOptional\n" +
                 "\"quote #2\" nameOfPersonWhoSaidQuote yearWhichIsOptional\n" +
                 "etc...```")
                 .queue();
-        status = Status.INPUT_NAME;
-        quote = new Quote();
+        if (!statuses.containsKey(user)) {
+            statuses.put(user, Status.INPUT_NAME);
+            quotes.put(user, new Quote());
+            contexts.put(user, new QuoteContext());
+        }
+        else {
+            statuses.replace(user, Status.INPUT_NAME);
+            quotes.replace(user, new Quote());
+        }
+
+
     }
 
 
@@ -193,7 +212,7 @@ public class QuoteAdder extends ListenerAdapter {
         JSONArray quoteArray = new JSONArray();
         JSONObject jsonQuote;
 
-        for (Quote quote : context.getQuotes()) {
+        for (Quote quote : contexts.get(event.getAuthor()).getQuotes()) {
             jsonQuote = new JSONObject();
             jsonQuote.put("name", quote.getName());
             jsonQuote.put("quote", quote.getQuote());
@@ -201,7 +220,7 @@ public class QuoteAdder extends ListenerAdapter {
             quoteArray.add(jsonQuote);
         }
 
-        jsonObj.put("author", user.getName());
+        jsonObj.put("author", event.getAuthor().getName());
         jsonObj.put("context", quoteArray);
 
         JSONArray contextArray;
@@ -230,7 +249,7 @@ public class QuoteAdder extends ListenerAdapter {
      * @param text String to parse
      * @return true if string is valid, false if it cannot be taken apart
      */
-    private boolean parseShorthand(String text) {
+    private boolean parseShorthand(User user, String text) {
         String capture;
 
         /* Some IOS devices use curly quotation mark automatically */
@@ -254,7 +273,7 @@ public class QuoteAdder extends ListenerAdapter {
 
         /* Each quote separated by a new line, done on a line-by-line basis */
         for (String line: lines) {
-            quote = new Quote();
+            quotes.put(user, new Quote());
 
             /* Parsing: Quote */
             Matcher patternMatcher = quoteRegex.matcher(line);
@@ -262,14 +281,14 @@ public class QuoteAdder extends ListenerAdapter {
                 return false;
             }
             capture = patternMatcher.group(1); /* Get quote w/out quotation marks */
-            quote.setQuote(capture);
+            quotes.get(user).setQuote(capture);
             line = line.substring(patternMatcher.end()); /* Leaving only name & year */
 
             /* Parsing: Year */
             patternMatcher = yearRegex.matcher(line);
             if (patternMatcher.find()) {
                 capture = patternMatcher.group(0).trim();
-                quote.setYear(capture);
+                quotes.get(user).setYear(capture);
                 line = line.substring(0, patternMatcher.start()); /* Leave only name */
             }
 
@@ -279,13 +298,26 @@ public class QuoteAdder extends ListenerAdapter {
                 return false;
             }
             capture = patternMatcher.group(0).trim();
-            quote.setName(capture);
+            quotes.get(user).setName(capture);
 
-            context.addQuoteToContext(quote);
+            contexts.get(user).addQuoteToContext(quotes.get(user));
         }
 
 
         return true;
+    }
+
+
+    public void stopCommand(User user) {
+        if (statuses.containsKey(user)) {
+            statuses.remove(user);
+        }
+        if (quotes.containsKey(user)) {
+            quotes.remove(user);
+        }
+        if (contexts.containsKey(user)) {
+            contexts.remove(user);
+        }
     }
 
 }

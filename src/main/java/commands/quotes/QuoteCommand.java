@@ -38,17 +38,14 @@ import static commands.quotes.QuoteIDs.*;
 public class QuoteCommand extends ListenerAdapter implements IBotCommand {
 
     private List<OptionData> options;
-    private Map<User, QuoteAdder> activeAdders;
-    private Map<User, QuoteViewer> activeViewers;
-
+    private final QuoteAdder adder;
     private final QuoteViewer viewer;
     private final QuoteRemover remover;
 
 
     public QuoteCommand() {
         options = new ArrayList<>();
-        activeAdders = new HashMap<>();
-        activeViewers = new HashMap<>();
+        adder = new QuoteAdder(this);
         viewer = new QuoteViewer(this);
         remover = new QuoteRemover(this);
     }
@@ -86,15 +83,11 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         MessageChannel channel = event.getChannel();
 
         if (event.getComponentId().equals(BUTTON_ID_ADD)) {
-            if (activeAdders.containsKey(user)) {
-                channel.sendMessage("Error: You are already in the process of adding " +
-                        "a quote.").queue();
+            if (!adder.isEventListener()) {
+                adder.setListening(event.getJDA());
             }
-            else {
-                event.reply("Alright, ").queue();
-                activeAdders.put(user, new QuoteAdder(user, this, event));
-                event.getJDA().addEventListener(activeAdders.get(user));
-            }
+            event.editButton(null).queue();
+            adder.onNewStatus(user, event.getChannel());
         }
 
         if (event.getComponentId().equals(BUTTON_ID_VIEW)) {
@@ -137,21 +130,6 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         }
 
         //event.getMessage().delete().queue();
-    }
-
-
-
-
-    /**
-     * Removes a QuoteAdder object from the set of active instances of
-     * a user adding a quote once they are done.
-     *
-     * @param event event that triggered the user done
-     * @param user user that is now completed the process of adding a quote.
-     */
-    public void removeQuoteAdder(MessageReceivedEvent event, User user) {
-        event.getJDA().removeEventListener(activeAdders.get(user));
-        activeAdders.remove(user);
     }
 
 
