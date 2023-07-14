@@ -64,6 +64,9 @@ public class RngMkwCommand extends ListenerAdapter implements IBotCommand {
 
         String chosen = event.getValues().get(0);
         User user = event.getUser();
+        if (!userSelections.containsKey(user)) {
+            return;
+        }
         UserRandomSelection selection = userSelections.get(user);
 
         /* After selecting weight class */
