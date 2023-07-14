@@ -82,6 +82,11 @@ public class QuoteAdder extends ListenerAdapter implements Stoppable{
             String response = event.getMessage().getContentRaw();
             boolean shorthand = false;
 
+            if (event.getMessage().getContentRaw().equalsIgnoreCase(STOP) ||
+                    event.getMessage().getContentRaw().equalsIgnoreCase(CANCEL) ||
+                    event.getMessage().getContentRaw().equalsIgnoreCase(END)) {
+                stop(event.getAuthor(), event.getChannel());
+            }
 
             if (statuses.get(author) == Status.INPUT_NAME) {
                 shorthand = parseShorthand(author, response);
@@ -320,6 +325,7 @@ public class QuoteAdder extends ListenerAdapter implements Stoppable{
         if (contexts.containsKey(user)) {
             contexts.remove(user);
         }
+        channel.sendMessage("Process ended.").queue();
     }
 
 }
