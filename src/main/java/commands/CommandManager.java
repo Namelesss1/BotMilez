@@ -76,7 +76,7 @@ public class CommandManager extends ListenerAdapter {
 
     /**
      *
-     * @return A map where the values are commands, key's are the command's names.
+     * @return A list of all the commands in the bot.
      */
     public List<IBotCommand> getCommands() {
         return commands;
