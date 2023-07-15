@@ -1,6 +1,6 @@
 package commands.quotes;
 
-import commands.helper.IO;
+import util.IO;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;

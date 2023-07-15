@@ -5,7 +5,7 @@ import commands.quotes.QuoteCommand;
 import commands.rng.RngCommand;
 import commands.rng.RngMkwCommand;
 import commands.rng.RngUsernameCommand;
-import commands.util.MkwStatsCommand;
+import commands.stat.MkwStatsCommand;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

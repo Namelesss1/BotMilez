@@ -1,4 +1,4 @@
-package commands.util;
+package commands.stat;
 
 import mariokart.MKW;
 import commands.IBotCommand;

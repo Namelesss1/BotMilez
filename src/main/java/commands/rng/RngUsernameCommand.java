@@ -1,7 +1,7 @@
 package commands.rng;
 
 import commands.IBotCommand;
-import commands.helper.IO;
+import util.IO;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 

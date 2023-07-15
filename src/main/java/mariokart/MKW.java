@@ -1,6 +1,6 @@
 package mariokart;
 
-import commands.helper.IO;
+import util.IO;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

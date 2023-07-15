@@ -1,7 +1,7 @@
 package commands.quotes;
 
-import commands.helper.EmbedPageBuilder;
-import commands.helper.IO;
+import util.EmbedPageBuilder;
+import util.IO;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -22,7 +22,7 @@ import java.util.List;
 
 import static botmilez.config.QUOTE_FILE_PREFIX;
 import static botmilez.config.QUOTE_FILE_SUFFIX;
-import static commands.helper.EmbedPageBuilder.*;
+import static util.EmbedPageBuilder.*;
 import static commands.quotes.QuoteIDs.*;
 
 

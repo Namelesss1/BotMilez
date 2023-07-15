@@ -1,10 +1,9 @@
-package commands.helper;
+package util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 
-import java.awt.*;
 import java.util.List;
 
 /**
