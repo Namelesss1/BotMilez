@@ -15,7 +15,6 @@ import java.util.Map;
 import static botmilez.config.BOTMILEZ_TOKEN;
 
 //TODO: rng-sentence command including Markov & Basic generator
-//TODO: rng-mkw command
 //TODO: Help command describing each command with examples
 //TODO: Music command
 //TODO: Random image command by scraping the web similar to old university project
