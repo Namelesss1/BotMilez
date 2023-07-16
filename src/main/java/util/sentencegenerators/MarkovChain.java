@@ -24,6 +24,7 @@ public class MarkovChain {
         order = orderIn;
         words = wordsIn;
         maxOutputWords = maxIn;
+        loadDictionary();
     }
 
     /**
