@@ -1,7 +1,9 @@
 package util;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -38,6 +40,43 @@ public class IO {
 
     }
 
+    /**
+     * Reads the entire file given by the String path, returns an array
+     * where each element is a word from the file.
+     *
+     * @param path Location of file to read from
+     * @return A String array where each element is a word from the file.
+     */
+    public static String[] readAllWordsIntoArray(String path) {
+
+        BufferedReader reader = null;
+        ArrayList<String> wordList = new ArrayList<>();
+
+        try {
+            reader = new BufferedReader(new FileReader(path));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                if (!line.isEmpty()) {
+                    Stream.of(line.split("\\s+"))
+                            .forEachOrdered(word -> wordList.add(word));
+                }
+            }
+            String[] words = new String[wordList.size()];
+            return wordList.toArray(words);
+        }
+        catch (FileNotFoundException ex) {
+            System.out.println("File not found");
+            System.out.println(ex.getLocalizedMessage());
+            return null;
+        }
+        catch(IOException e) {
+            System.out.println("An error has occurred when reading words into array");
+            System.out.println(e.getLocalizedMessage());
+            return null;
+        }
+
+    }
 
 
 
