@@ -23,7 +23,7 @@ public class RngUsernameCommand implements IBotCommand {
     private String[] titles;
 
     private String[] determiners;
-    private final String PATH_DIR = "resources/words/";
+    private final String PATH_DIR = "resources/sentencegenerators/words/";
 
     public RngUsernameCommand() {
         adjectives = IO.readAllFileLinesIntoArray(PATH_DIR + "adjectives.txt");
