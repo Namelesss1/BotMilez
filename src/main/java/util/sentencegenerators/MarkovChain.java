@@ -14,7 +14,7 @@ public class MarkovChain {
 
     /* Sequence of words (prefix) -> possible strings that can follow that word (suffix) */
     private Map<String, List<String>> chain;
-    
+
     /* Amount of words to consider in prefix */
     private int order;
     private int maxOutputWords;
