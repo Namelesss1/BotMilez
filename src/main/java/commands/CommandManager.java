@@ -3,6 +3,7 @@ import commands.basic.BubbleWrapCommand;
 import commands.basic.HiCommand;
 import commands.quotes.QuoteCommand;
 import commands.rng.RngCommand;
+import commands.rng.RngMessageCommand;
 import commands.rng.RngMkwCommand;
 import commands.rng.RngUsernameCommand;
 import commands.stat.MkwStatsCommand;
@@ -36,6 +37,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new QuoteCommand());
         commands.add(new MkwStatsCommand());
         commands.add(new RngMkwCommand());
+        commands.add(new RngMessageCommand());
     }
 
     @Override
