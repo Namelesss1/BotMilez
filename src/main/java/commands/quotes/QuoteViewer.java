@@ -261,12 +261,9 @@ public class QuoteViewer extends ListenerAdapter {
                 isDeleting);
         emBuilder.setTitle("All quotes");
         emBuilder.setColor(Color.YELLOW);
-        emBuilder.setPageCounterPlacement(CounterEmbedComponent.FOOTER);
+        emBuilder.setPageCounterPlacement(EmbedComponent.FOOTER);
 
-        channel.sendMessageEmbeds(emBuilder.build()).addActionRow(
-                Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
-                Button.danger(DELETE_QUOTE_EMBED, Emoji.fromUnicode("❌")),
-                Button.primary(BUTTON_NEXT_PAGE, Emoji.fromUnicode("▶")))
+        channel.sendMessageEmbeds(emBuilder.build()).addActionRow(PageBuilderActionRow)
                 .queue((message) ->
                 {
                     long msgId = message.getIdLong();
@@ -322,11 +319,11 @@ public class QuoteViewer extends ListenerAdapter {
             emBuilder.setTitle("Search Results for author: " + searchTerm);
         }
         emBuilder.setColor(Color.YELLOW);
-        emBuilder.setPageCounterPlacement(CounterEmbedComponent.FOOTER);
+        emBuilder.setPageCounterPlacement(EmbedComponent.FOOTER);
 
         event.getChannel().sendMessageEmbeds(emBuilder.build()).addActionRow(
                         Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
-                        Button.danger(DELETE_QUOTE_EMBED, Emoji.fromUnicode("❌")),
+                        Button.danger(DELETE_EMBED, Emoji.fromUnicode("❌")),
                         Button.primary(BUTTON_NEXT_PAGE, Emoji.fromUnicode("▶")))
                 .queue((message) ->
                 {
@@ -404,7 +401,7 @@ public class QuoteViewer extends ListenerAdapter {
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String id = event.getComponentId();
         if (id.equals(BUTTON_NEXT_PAGE) || id.equals(BUTTON_PREVIOUS_PAGE) ||
-                id.equals(DELETE_QUOTE_EMBED)) {
+                id.equals(DELETE_EMBED)) {
 
             long msgId = event.getMessage().getIdLong();
             EmbedPageBuilder emBuilder = pageEmbeds.get(msgId);
