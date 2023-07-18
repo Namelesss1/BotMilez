@@ -2,8 +2,13 @@ package util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -14,24 +19,33 @@ public class EmbedPageBuilder extends EmbedBuilder {
 
     public static final String BUTTON_NEXT_PAGE = "next_page";
     public static final String BUTTON_PREVIOUS_PAGE = "prev_page";
-    public static final String DELETE_QUOTE_EMBED = "delete_embed";
+    public static final String DELETE_EMBED = "delete_embed";
+
+    public static ItemComponent[] PageBuilderActionRow = {
+            Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
+            Button.danger(DELETE_EMBED, Emoji.fromUnicode("❌")),
+            Button.primary(BUTTON_NEXT_PAGE, Emoji.fromUnicode("▶"))
+    };
 
     /**
-     * Possible choices on where to add a page counter to the embed,
-     * if outside methods choose to do so.
+     * Possible choices on where to add a page counter or custom content
+     * of a specific page to the embed if outside methods choose to do so.
      */
-    public enum CounterEmbedComponent {
+    public enum EmbedComponent {
         AUTHOR,
         TITLE,
         DESCRIPTION,
-        FOOTER
+        FOOTER,
+        THUMBNAIL,
+        COLOR,
+        IMAGE
     }
 
     /**
      * Indicates the positioning of a page counter within the embed.
      * If null, then no page counter will be included.
      */
-    private CounterEmbedComponent counterEmbedPlacement = null;
+    private EmbedComponent counterEmbedPlacement = null;
 
     /* Whether to set an id number above each field */
     private boolean fieldCounter;
@@ -50,12 +64,26 @@ public class EmbedPageBuilder extends EmbedBuilder {
     /* Whether the delete_embed has been triggered or not by a user */
     private boolean isErased = false;
 
+    /* Custom components -> page number */
+    private Map<EmbedComponent, Map<Integer, Object>> customPgs;
+
+
+    /* Default components across all pages without set custom componenets */
+    private String title = "";
+    private String desc = "";
+    private String author = "";
+    private String footer = "";
+    private String imgURL = "";
+    private String thumbnail = "";
+    private Color color = null;
+
     public EmbedPageBuilder(int maxFieldsPerPageIn, List<MessageEmbed.Field> elementsIn,
                             boolean doFieldCounter) {
         pageNumber = 1;
         maxFieldsPerPage = maxFieldsPerPageIn;
         elements = elementsIn;
         fieldCounter = doFieldCounter;
+        customPgs = new HashMap<>();
 
         for (int i = 0; i < elements.size() && i < maxFieldsPerPage; i++) {
             if (fieldCounter) {
@@ -94,7 +122,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
      * the page counter to the specified position.
      * @param component where the page counter will go. null indicates no page counter
      */
-    public void setPageCounterPlacement(CounterEmbedComponent component) {
+    public void setPageCounterPlacement(EmbedComponent component) {
         counterEmbedPlacement = component;
         addPageCounter();
     }
@@ -102,6 +130,198 @@ public class EmbedPageBuilder extends EmbedBuilder {
     public void setFieldCounter(boolean doFieldCounter) {
         fieldCounter = doFieldCounter;
     }
+
+
+    @Override
+    public EmbedBuilder setTitle(String title) {
+        this.title = title;
+        super.setTitle(title);
+        return this;
+    }
+
+
+    public EmbedBuilder setDescription(String description) {
+        this.desc = description;
+        super.setDescription(description);
+        return this;
+    }
+
+    @Override
+    public EmbedBuilder setAuthor(String author) {
+        this.author = author;
+        super.setAuthor(author);
+        return this;
+    }
+
+    @Override
+    public EmbedBuilder setFooter(String footer) {
+        this.footer = footer;
+        super.setFooter(footer);
+        return this;
+    }
+
+    @Override
+    public EmbedBuilder setImage(String img) {
+        this.imgURL = img;
+        super.setImage(img);
+        return this;
+    }
+
+    @Override
+    public EmbedBuilder setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+        super.setThumbnail(thumbnail);
+        return this;
+    }
+
+    @Override
+    public EmbedBuilder setColor(Color color) {
+        this.color = color;
+        super.setColor(color);
+        return this;
+    }
+
+    /**
+     * Sets a custom title to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param title String representing the title
+     */
+    public void setPageTitle(int pageNum, String title) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.TITLE)) {
+            customPgs.put(EmbedComponent.TITLE, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.TITLE).put(pageNum, title);
+    }
+
+
+    /**
+     * Sets a custom description to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param desc String representing the description
+     */
+    public void setPageDescription(int pageNum, String desc) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.DESCRIPTION)) {
+            customPgs.put(EmbedComponent.DESCRIPTION, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.DESCRIPTION).put(pageNum, desc);
+    }
+
+
+    /**
+     * Sets a custom author to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param author String representing the author
+     */
+    public void setPageAuthor(int pageNum, String author) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.AUTHOR)) {
+            customPgs.put(EmbedComponent.AUTHOR, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.AUTHOR).put(pageNum, author);
+    }
+
+
+    /**
+     * Sets a custom footer to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param footer String representing the footer
+     */
+    public void setPageFooter(int pageNum, String footer) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.FOOTER)) {
+            customPgs.put(EmbedComponent.FOOTER, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.FOOTER).put(pageNum, footer);
+    }
+
+
+    /**
+     * Sets a custom thumbnail to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param thumbnail String representing the URL of thumbnail
+     */
+    public void setPageThumbnail(int pageNum, String thumbnail) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.THUMBNAIL)) {
+            customPgs.put(EmbedComponent.THUMBNAIL, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.THUMBNAIL).put(pageNum, thumbnail);
+    }
+
+
+    /**
+     * Sets a custom image to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param image String representing the URL of image
+     */
+    public void setPageImage(int pageNum, String image) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.IMAGE)) {
+            customPgs.put(EmbedComponent.IMAGE, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.IMAGE).put(pageNum, image);
+    }
+
+
+    /**
+     * Sets a custom color to a specific page of this embed.
+     *
+     * @param pageNum specific page of embed to set
+     * @param color Color to set to the page
+     */
+    public void setPageColor(int pageNum, Color color) {
+        if (pageNum > maxPageNumber()) {
+            throw new IllegalArgumentException("Given page number cannot" +
+                    "exceed that maximum page number.");
+        }
+
+        if (!customPgs.containsKey(EmbedComponent.COLOR)) {
+            customPgs.put(EmbedComponent.COLOR, new HashMap<>());
+        }
+
+        customPgs.get(EmbedComponent.COLOR).put(pageNum, color);
+    }
+
+
+
 
     /**
      * Adds a page counter to the place specified by counterEmbedPlacement
@@ -122,6 +342,79 @@ public class EmbedPageBuilder extends EmbedBuilder {
                 case FOOTER:
                     this.setFooter(pageCounter);
                     break;
+            }
+        }
+    }
+
+
+    /*
+     * Helper method:
+     * check if page has any custom component. If so, set it. If not,
+     * use the defaults that have been set to prevent all pages afterward
+     * from having the same custom components.
+     */
+    private void addCustomComponents() {
+        if (customPgs.containsKey(EmbedComponent.TITLE)) {
+            Map<Integer, Object> pageToTitle = customPgs.get(EmbedComponent.TITLE);
+            if (pageToTitle.containsKey(pageNumber)) {
+                super.setTitle((String)pageToTitle.get(pageNumber));
+            }
+            else if (!title.equals("")){
+                super.setTitle(title);
+            }
+        }
+        if (customPgs.containsKey(EmbedComponent.DESCRIPTION)) {
+            Map<Integer, Object> pageToDesc = customPgs.get(EmbedComponent.DESCRIPTION);
+            if (pageToDesc.containsKey(pageNumber)) {
+                super.setDescription((String)pageToDesc.get(pageNumber));
+            }
+            else if (!desc.equals("")){
+                super.setDescription(desc);
+            }
+        }
+        if (customPgs.containsKey(EmbedComponent.FOOTER)) {
+            Map<Integer, Object> pageToFooter = customPgs.get(EmbedComponent.FOOTER);
+            if (pageToFooter.containsKey(pageNumber)) {
+                super.setFooter((String)pageToFooter.get(pageNumber));
+            }
+            else if (!footer.equals("")){
+                super.setFooter(footer);
+            }
+        }
+        if (customPgs.containsKey(EmbedComponent.AUTHOR)) {
+            Map<Integer, Object> pageToAuthor = customPgs.get(EmbedComponent.AUTHOR);
+            if (pageToAuthor.containsKey(pageNumber)) {
+                super.setAuthor((String)pageToAuthor.get(pageNumber));
+            }
+            else if (!author.equals("")){
+                super.setAuthor(author);
+            }
+        }
+        if (customPgs.containsKey(EmbedComponent.THUMBNAIL)) {
+            Map<Integer, Object> pageToThumbnail = customPgs.get(EmbedComponent.THUMBNAIL);
+            if (pageToThumbnail.containsKey(pageNumber)) {
+                super.setThumbnail((String)pageToThumbnail.get(pageNumber));
+            }
+            else if (!thumbnail.equals("")){
+                super.setThumbnail(thumbnail);
+            }
+        }
+        if (customPgs.containsKey(EmbedComponent.IMAGE)) {
+            Map<Integer, Object> pageToImg = customPgs.get(EmbedComponent.IMAGE);
+            if (pageToImg.containsKey(pageNumber)) {
+                super.setImage((String)pageToImg.get(pageNumber));
+            }
+            else if (!imgURL.equals("")){
+                super.setImage(imgURL);
+            }
+        }
+        if (customPgs.containsKey(EmbedComponent.COLOR)) {
+            Map<Integer, Object> pageToColor = customPgs.get(EmbedComponent.COLOR);
+            if (pageToColor.containsKey(pageNumber)) {
+                super.setColor((Color)pageToColor.get(pageNumber));
+            }
+            else if (!color.equals("")){
+                super.setColor(color);
             }
         }
     }
@@ -148,7 +441,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
         }
 
         addPageCounter();
-
+        addCustomComponents();
         return this;
     }
 
@@ -169,7 +462,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
 
         }
 
-        if (event.getComponentId().equals(DELETE_QUOTE_EMBED)) {
+        if (event.getComponentId().equals(DELETE_EMBED)) {
             event.getMessage().delete().queue();
         }
 
