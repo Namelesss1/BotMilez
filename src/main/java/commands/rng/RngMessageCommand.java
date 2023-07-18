@@ -75,6 +75,7 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
         long guildId = event.getGuild().getIdLong();
 
+        /* Selecting between sentence-generation methods */
         if (event.getComponentId().equals(MENU_SELECT_SENTENCE_RNG)) {
 
             if (event.getValues().get(0).equals(SELECT_SERVER_HISTORY)) {
