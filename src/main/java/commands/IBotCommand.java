@@ -1,6 +1,7 @@
 package commands;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.util.List;
@@ -46,5 +47,15 @@ public interface IBotCommand {
      * @param event the event that triggered the slash command
      */
     public void doAction(SlashCommandInteractionEvent event);
+
+
+
+
+    /**
+     * Sends message(s) detailing what a command does and how to use the
+     * command.
+     * @param event event that triggered this method.
+     */
+    public void getHelp(StringSelectInteractionEvent event);
 
 }
