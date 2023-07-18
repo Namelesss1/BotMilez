@@ -53,7 +53,6 @@ public class MarkovChain {
             }
             chain.get(key).add(words[word_i + order]);
         }
-
     }
 
 
@@ -72,6 +71,9 @@ public class MarkovChain {
 
         while (true) {
             List<String> suffix = chain.get(prefix);
+            if (suffix == null) {
+                return output.stream().reduce("", (a, b) -> a + " " + b);
+            }
             if (suffix.size() == 1) {
                 if (Objects.equals(suffix.get(0), "")) {
                     return output.stream().reduce("", (a, b) -> a + " " + b);
