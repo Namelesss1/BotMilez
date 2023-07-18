@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class CommandManager extends ListenerAdapter {
 
-    private List<IBotCommand> commands;
+    private static List<IBotCommand> commands;
 
     public CommandManager() {
         /* Initialize command instances */
@@ -80,7 +80,7 @@ public class CommandManager extends ListenerAdapter {
      *
      * @return A list of all the commands in the bot.
      */
-    public List<IBotCommand> getCommands() {
+    public static List<IBotCommand> getCommands() {
         return commands;
     }
 
