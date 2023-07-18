@@ -19,11 +19,19 @@ import java.util.*;
 
 /**
  * ===== RNG MESSAGE COMMAND =====
- * This command outputs a randomly-generated sentence or message
+ * This command outputs a randomly-generated sentence or message.
+ * The method the sentence is generated is determined by the user.
+ * The user can set the training data to be from a specialized file belonging to
+ * this bot, or from all the messages in a channel belonging to the
+ * server where the command is called.
+ *
+ * //TODO: Ensure an empty channel is not used for training data
+ * //TODO: Add another method of sentence-generation using syntactic rules
+ * //TODO: "Proper" starts and ends to sentences being output.
  */
 public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
-    private final int ORDER = 3;
+    private final int ORDER = 2;
     private final int MAX_OUTPUT_SIZE = 30;
     /* Guild ID -> (TextChannel -> All Words in channel) */
     private Map<Long, Map<TextChannel, MarkovChain>> channelChains;
@@ -93,7 +101,6 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
                             List<String> channelWords = new ArrayList<>();
                             MessageHistory history = MessageHistory.getHistoryFromBeginning(channel).complete();
                             for (Message msg : history.getRetrievedHistory()) {
-                                System.out.println(msg.getContentRaw());
                                 if (!msg.getAuthor().isBot()) {
                                     String[] msgWords = msg.getContentRaw().split("\\s");
                                     channelWords.addAll(Arrays.asList(msgWords));
