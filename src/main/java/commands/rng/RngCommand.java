@@ -3,6 +3,7 @@ package commands.rng;
 import commands.IBotCommand;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -113,6 +114,11 @@ public class RngCommand implements IBotCommand {
 
             event.reply(Integer.toString(rand.nextInt(max - min) + min)).queue();
         }
+
+    }
+
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
 
     }
 }

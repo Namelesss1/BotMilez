@@ -57,6 +57,11 @@ public class MkwStatsCommand extends ListenerAdapter implements IBotCommand {
         }
     }
 
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
+
+    }
+
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {

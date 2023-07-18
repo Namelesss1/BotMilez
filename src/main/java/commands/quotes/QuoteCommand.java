@@ -17,8 +17,10 @@ import net.dv8tion.jda.api.interactions.components.LayoutComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import org.json.simple.JSONObject;
+import util.EmbedPageBuilder;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.List;
 
@@ -72,6 +74,61 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
                         Button.danger(BUTTON_ID_DELETE, "Delete a quote"))
                 .queue();
 
+    }
+
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
+        String details = "Did you see or hear someone say something funny? " +
+                "Something interesting? Something weird? You can use this command " +
+                "to store notable quotes from server members! These quotes can be " +
+                "viewed, searched for, or removed later. The bot can store " +
+                "either single stand-alone quotes, or multiple quotes that are all part " +
+                "of the same context.";
+
+        String standalone = "\"Hey I just woke up at 5pm\" - Bill";
+
+        String context = "\"Do you like butterflies?\" - James\n" +
+                "\"I do not know what that is\" - John\n" +
+                "\"How do you not know what butterflies are?\" - James\n";
+
+        String howToUse = "When using the command, three buttons will appear:\n" +
+                "Add a quote(green), View a quote(Blue), or Remove a quote (red)" +
+                "\n You will need to select the button for what you want to do." +
+                "Details on how to do each of these are in the next pages (click" +
+                "the buttons below to scroll!)";
+
+        ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+        fields.add(new MessageEmbed.Field(
+                "Details",
+                details,
+                false
+        ));
+        fields.add(new MessageEmbed.Field(
+                "Standalone Quote",
+                standalone,
+                true
+        ));
+        fields.add(new MessageEmbed.Field(
+                "Quote with context",
+                context,
+                true
+        ));
+        fields.add(new MessageEmbed.Field(
+                "How To Use",
+                howToUse,
+                false
+        ));
+
+
+
+        EmbedPageBuilder pageBuilder = new EmbedPageBuilder(4, fields, false);
+        pageBuilder.setTitle("**/" + getName() + "**");
+        pageBuilder.setFooter("This command will make a person be remembered forever");
+        pageBuilder.setDescription(getDesc());
+        pageBuilder.setColor(Color.YELLOW);
+        pageBuilder.setPageCounterPlacement(EmbedPageBuilder.CounterEmbedComponent.AUTHOR);
+
+        event.editMessageEmbeds(pageBuilder.build()).setComponents().queue();
     }
 
 

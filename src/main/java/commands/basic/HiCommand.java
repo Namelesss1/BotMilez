@@ -1,10 +1,13 @@
 package commands.basic;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import util.IO;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +44,7 @@ public class HiCommand implements IBotCommand {
         return null;
    }
 
+   @Override
     public void doAction(SlashCommandInteractionEvent event) {
         Random random = new Random();
         int choice = random.nextInt(greetings.length);
@@ -48,4 +52,19 @@ public class HiCommand implements IBotCommand {
         event.reply(greetings[choice]).queue();
     }
 
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
+        String details = "The bot will reply back with a randomly-selected" +
+                "greeting or remark!";
+
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setTitle("**/" + getName() + "**");
+        emBuilder.setFooter("Be polite and say hello.");
+        emBuilder.setDescription(getDesc());
+        emBuilder.setColor(Color.ORANGE);
+        emBuilder.setImage("https://img.freepik.com/premium-vector/old-red-vintage-phone-ringing_7496-926.jpg");
+        emBuilder.addField("Details", details, false);
+
+        event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
+    }
 }

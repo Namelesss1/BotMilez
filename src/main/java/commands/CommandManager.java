@@ -1,6 +1,7 @@
 package commands;
 import commands.basic.BubbleWrapCommand;
 import commands.basic.HiCommand;
+import commands.helper.HelpCommand;
 import commands.quotes.QuoteCommand;
 import commands.rng.RngCommand;
 import commands.rng.RngMessageCommand;
@@ -38,6 +39,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new MkwStatsCommand());
         commands.add(new RngMkwCommand());
         commands.add(new RngMessageCommand());
+        commands.add(new HelpCommand());
     }
 
     @Override

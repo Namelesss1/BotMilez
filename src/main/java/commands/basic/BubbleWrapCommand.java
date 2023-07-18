@@ -1,6 +1,7 @@
 package commands.basic;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -71,6 +72,11 @@ public class BubbleWrapCommand implements IBotCommand{
         }
         event.reply(msg.toString()).queue();
 
+
+    }
+
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
 
     }
 

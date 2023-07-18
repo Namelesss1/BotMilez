@@ -58,6 +58,11 @@ public class RngMkwCommand extends ListenerAdapter implements IBotCommand {
                 .queue();
     }
 
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
+
+    }
+
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {

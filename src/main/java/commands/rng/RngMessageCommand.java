@@ -148,6 +148,11 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
         }
     }
 
+    @Override
+    public void getHelp(StringSelectInteractionEvent event) {
+
+    }
+
     private final String MENU_SELECT_SENTENCE_RNG = "menusentencerng";
     private final String SELECT_TRAINING_FILE = "selectrrainingfile";
     private final String SELECT_SERVER_HISTORY = "selectserverhistory";
