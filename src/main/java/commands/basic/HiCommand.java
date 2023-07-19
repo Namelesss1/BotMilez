@@ -62,7 +62,6 @@ public class HiCommand implements IBotCommand {
         emBuilder.setFooter("Be polite and say hello.");
         emBuilder.setDescription(getDesc());
         emBuilder.setColor(Color.ORANGE);
-        emBuilder.setImage("https://img.freepik.com/premium-vector/old-red-vintage-phone-ringing_7496-926.jpg");
         emBuilder.addField("Details", details, false);
 
         event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
