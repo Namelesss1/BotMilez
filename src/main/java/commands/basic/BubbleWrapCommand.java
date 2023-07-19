@@ -32,7 +32,7 @@ public class BubbleWrapCommand implements IBotCommand{
     private final int MAX_SIZE = 7;
     private final int MIN_SIZE = 1;
 
-    private int size = 5;
+    private final int DEFAULT_SIZE = 5;
 
     public BubbleWrapCommand() {
         options = new ArrayList<>();
@@ -60,6 +60,7 @@ public class BubbleWrapCommand implements IBotCommand{
 
     public void doAction(SlashCommandInteractionEvent event) {
 
+        int size = DEFAULT_SIZE;
         if (event.getOption(OPTION_SIZE_NAME) != null) {
             size = event.getOption(OPTION_SIZE_NAME).getAsInt();
         }
@@ -75,7 +76,6 @@ public class BubbleWrapCommand implements IBotCommand{
         }
         event.reply(msg.toString()).queue();
 
-
     }
 
     @Override
@@ -86,7 +86,7 @@ public class BubbleWrapCommand implements IBotCommand{
                 "of making this bot.";
         String args = "You can specify the size of the grid when typing the command.\n" +
                 "Minimum size allowed is " + MIN_SIZE + " and maximum is " + MAX_SIZE + ".\n" +
-                "If you don't specify a size, the default is " + size + "." +
+                "If you don't specify a size, the default is " + DEFAULT_SIZE + "." +
                 "You can specify a size like so:\n" +
                 "```/" + getName() + " 5```";
 
