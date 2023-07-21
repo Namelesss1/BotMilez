@@ -1,11 +1,9 @@
 package commands.rng;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.IPermissionHolder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageHistory;
-import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -15,7 +13,9 @@ import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import util.IO;
 import util.sentencegenerators.MarkovChain;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * ===== RNG MESSAGE COMMAND =====
@@ -150,7 +150,56 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
+        String overview = "This command generates a random sentence or message. There are two ways " +
+                "in which a sentence is generated:";
 
+        String training = "The first is by training data. The bot reads a lot of " +
+                "sentences and messages sent by actual people, finds patterns in what they say, and learns from" +
+                " it. From there, the bot uses these patterns to try to form its own sentence.";
+
+        String syntax = "The second way is through syntactic rules. Humans have general rules within their " +
+                "heads relating to language in general, and also language-specific about what sounds correct " +
+                "and what does not. The bot uses these rules to form a basic sentence. Note that this " +
+                "method of generating a sentence in the bot is currently limited to English-only. " +
+                "\n**This option has not yet been implemented**";
+
+        String options = "When using the command, the bot will ask you to select from three options." +
+                "The options and what they are, are listed below:\n" +
+                "**By training data**: The bot will use training data from a prepared file containing " +
+                "many sentences and phrases.\n" +
+                "**By server history**: Upon choosing this option, the bot asks you what channel to read from. " +
+                "After selecting a channel, the bot will use server history from that channel as training data " +
+                "to try to generate its own sentence.\n" +
+                "**By syntactic rules**: The bot attempts to create a sentence through pre-determined rules." +
+                " (*This option is not yet available!*)";
+
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setTitle("/" + getName());
+        emBuilder.setDescription(getDesc());
+        emBuilder.setColor(Color.RED);
+        emBuilder.setFooter("The bots are now learning how to form their own sentences..");
+        emBuilder.addField(new MessageEmbed.Field(
+                "Command Info",
+                overview,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Method 1: Training Data",
+                training,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Method 2: Syntax Rules",
+                syntax,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Command options",
+                options,
+                false
+        ));
+
+        event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
     }
 
     private final String MENU_SELECT_SENTENCE_RNG = "menusentencerng";

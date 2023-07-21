@@ -4,6 +4,8 @@ import commands.IBotCommand;
 import mariokart.MKW;
 import mariokart.MKWCharacter;
 import mariokart.MKWVehicle;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -11,7 +13,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static mariokart.MKW.*;
 
@@ -61,6 +65,24 @@ public class RngMkwCommand extends ListenerAdapter implements IBotCommand {
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
 
+        String overview = "This command will send a random Mario Kart Wii character, vehicle, or " +
+                "both a combination of random character or vehicle. The command will provide lists " +
+                "of options to choose from if you want to restrain your available options to certain " +
+                "things (e.g. Karts only, give me just a random character, etc.). If you want a fully-" +
+                "random combination, then simply keep selecting the \"all\" options.";
+
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setTitle("/" + getName());
+        emBuilder.setDescription(getDesc());
+        emBuilder.setColor(Color.BLUE);
+        emBuilder.setFooter("Don't know what to pick? Let me choose for ya.");
+        emBuilder.addField(new MessageEmbed.Field(
+                "Command Info",
+                overview,
+                false
+        ));
+
+        event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
     }
 
 

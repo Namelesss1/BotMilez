@@ -54,8 +54,9 @@ public class HiCommand implements IBotCommand {
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
-        String details = "The bot will reply back with a randomly-selected" +
-                "greeting or remark!";
+        String details = "The bot will reply back with a randomly-selected " +
+                "greeting or remark! This command is nothing special, just " +
+                "meant as a way to get used to programming using Discord API.";
 
         EmbedBuilder emBuilder = new EmbedBuilder();
         emBuilder.setTitle("**/" + getName() + "**");

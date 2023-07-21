@@ -1,6 +1,8 @@
 package commands.rng;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
@@ -8,6 +10,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
+import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -120,5 +123,52 @@ public class RngCommand implements IBotCommand {
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
 
+        String info = "This command generates a random number. A user can specify " +
+                "a range of possible numbers that can be generated For example, get a random" +
+                " number up to 10, or get a random number between 24-31. If a specific range " +
+                "or bound is not specified, then this command generates a random number from " +
+                "the range 0 to 2147483647. \n" +
+                "This command can also randomly selected an object from a list of things. Just " +
+                "type the list of objects after the slash command, each one separated by a space.";
+
+        String options = "Options that a user can specify after the slash command:\n" +
+                "**lower_bound**: minimum possible random number that can be generated (inclusive)\n" +
+                "**upper_bound**: maximum possible random number that can be generated (inclusive)\n" +
+                "**list_of_options**: List of objects to pick from, each separated by a space.";
+
+        String examples = "Example usages:\n\n" +
+                "Get a number between 0 to 2147483647 (default)\n" +
+                "```/" + getName() + "```\n" +
+                "Get a number from 0 to 20:\n" +
+                "```/" + getName() + " 20```\n" +
+                "Get a number between 46 and 91:\n" +
+                "```/" + getName() + " 46 91```\n" +
+                "Choose one from the list: a, b, c, d:\n" +
+                "```/" + getName() + " a b c d```" +
+                "Remember to use the correct options (e.g. upper_bound for a maximum limit) when typing" +
+                "the command for your purposes.";
+
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setTitle("/" + getName());
+        emBuilder.setDescription(getDesc());
+        emBuilder.setColor(Color.BLUE);
+        emBuilder.setFooter("RNG is always against me!");
+        emBuilder.addField(new MessageEmbed.Field(
+                "Command Info",
+                info,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Command options",
+                options,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Example Usages",
+                examples,
+                false
+        ));
+
+        event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
     }
 }

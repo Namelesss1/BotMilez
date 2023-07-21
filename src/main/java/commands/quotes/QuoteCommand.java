@@ -92,8 +92,8 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
 
         String howToUse = "When using the command, three buttons will appear:\n" +
                 "Add a quote(green), View a quote(Blue), or Remove a quote (red)" +
-                "\n You will need to select the button for what you want to do." +
-                "Details on how to do each of these are in the next pages (click" +
+                "\n You will need to select the button for what you want to do. " +
+                "Details on how to do each of these are in the next pages (click " +
                 "the buttons below to scroll!)";
 
         ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
@@ -122,30 +122,30 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         /* ------ Page 2: Adding a quote ------ */
 
         String quoteParts = "A quote consists of:\n" +
-                "The quote itself, Who said the quote, and the year it was said\n" +
-                "The year optional, you don't need to specify it.\n" +
-                "A single quote can be added to the bot at once,\n" +
-                "or you can add multiple quotes at once that are all part\n" +
-                "of the same conversational context! There are two ways\n" +
+                "The quote itself, Who said the quote, and the year it was said. " +
+                "The year optional, you don't need to specify it. " +
+                "A single quote can be added to the bot at once, " +
+                "or you can add multiple quotes at once that are all part " +
+                "of the same conversational context! There are two ways " +
                 "of adding quotes to the bot below.";
 
         String adding =
-                "The bot will prompt you to answer some questions\n" +
-                "relating to the quote you want to add such as what the\n" +
-                "quote is, who said the quote, etc. This is the simpler but\n" +
-                "more tedious way of adding a quote. There is a very recommended\n" +
+                "The bot will prompt you to answer some questions " +
+                "relating to the quote you want to add such as what the " +
+                "quote is, who said the quote, etc. This is the simpler but " +
+                "more tedious way of adding a quote. There is a very recommended " +
                 "shortcut to use described below.";
 
         String addingShortcut = "To quickly add a quote, use the following format:\n" +
                 "```\"quote here\" WhoSaidTheQuote YearQuoteWasSaid(OPTIONAL)```\n" +
-                "To add multiple quotes that are all part of the conversation context,\n" +
+                "To add multiple quotes that are all part of the conversation context, " +
                 "simply separate each quote by a new line, for example:\n" +
                 "```\"Who drank all the cups?\" Bob 2023\n" +
                 "\"Not me, I don't drink cups.\" Bill 2023```\n";
 
-        String addConfirmation = "Once you're done adding a quote, the bot will\n" +
-                "show you the quote you added and prompt you whether the quote\n" +
-                "is correct or not. If correct, the quote will then be added to the\n" +
+        String addConfirmation = "Once you're done adding a quote, the bot will " +
+                "show you the quote you added and prompt you whether the quote " +
+                "is correct or not. If correct, the quote will then be added to the " +
                 "bot for later viewing!";
 
         fields.add(new MessageEmbed.Field(
@@ -173,30 +173,30 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         /* ------ Page 3 : Viewing a quote ------ */
 
         String view = "When viewing quotes, you get three choices:\n" +
-                "Viewing a random quote, viewing all quotes, or viewing\n" +
-                "all quotes that match a certain search term \n" +
+                "Viewing a random quote, viewing all quotes, or viewing " +
+                "all quotes that match a certain search term " +
                 "(searching for a quote)";
 
-        String randomQuote = "When selecting the random quote option\n" +
-                "the bot will send one randomly-selected quote out of all\n" +
+        String randomQuote = "When selecting the random quote option " +
+                "the bot will send one randomly-selected quote out of all " +
                 "server quotes stored in the bot.";
 
         String allQuotes = "When selecting the all quotes option," +
-                "The bot will send an embed with all of the quotes for this server\n" +
-                "stored in the bot for viewing. If the server all has a lot\n" +
-                "of quotes, the embed will have more than one page, and you\n" +
-                "can click on the buttons below to go to the next page, previous\n," +
-                "or close the embed once you're done. (Like the buttons below now!)\n";
+                "The bot will send an embed with all of the quotes for this server " +
+                "stored in the bot for viewing. If the server all has a lot " +
+                "of quotes, the embed will have more than one page, and you " +
+                "can click on the buttons below to go to the next page, previous, " +
+                "or close the embed once you're done. (Like the buttons below now!)";
 
-        String search = "When selecting the search option,\n" +
-                "you can see all quotes that match your search terms.\n" +
+        String search = "When selecting the search option, " +
+                "you can see all quotes that match your search terms. " +
                 "You can select from four options:\n" +
                 "By quote: Get all quotes matching what was said\n" +
                 "By Speaker: Get all quotes by a particular person who said quotes\n" +
                 "By Author: Get all quotes added to the bot by a particular user,\n" +
                 "By Year: Get all quotes said in a certain year (or all un-dated quotes)" +
-                "The bot will return an embed with possibly more than one page of\n" +
-                "all quotes matching the search terms (or no quotes if no matches found)\n";
+                "The bot will return an embed with possibly more than one page of " +
+                "all quotes matching the search terms (or no quotes if no matches found) ";
         fields.add(new MessageEmbed.Field(
                 "Options",
                 view,
@@ -219,18 +219,18 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         ));
 
         /* ------- Page 4: Removing a quote ------ */
-        String choosing = "When removing a quote, you are prompted to either select\n" +
-                "from a list of all the quotes, or you can search for a quote to remove.\n" +
+        String choosing = "When removing a quote, you are prompted to either select " +
+                "from a list of all the quotes, or you can search for a quote to remove. " +
                 "both work in the same way as viewing a quote.";
-        String removing = "The bot will show you a list of quotes. All quotes will be \n" +
-                "numbered with a \"#\" symbol on top of it. Type in the number in front of\n" +
+        String removing = "The bot will show you a list of quotes. All quotes will be " +
+                "numbered with a \"#\" symbol on top of it. Type in the number in front of " +
                 "the # symbol to specify the quote you wish to remove from the bot.";
-        String removeConfirmation = "Once you select a quote to remove, the bot will show you the\n" +
-                "specific quote you selected and will prompt you whether this is the correct quote\n" +
+        String removeConfirmation = "Once you select a quote to remove, the bot will show you the " +
+                "specific quote you selected and will prompt you whether this is the correct quote " +
                 "you want to remove or not. If it is, the quote will be removed.";
-        String caution = "Once a quote is removed, it is completely erased without a trace\n" +
-                "from the bot. You cannot recover the quote anymore, so be sure you want to \n" +
-                "remove it before doing so! The closest thing you can do to recovering it is\n" +
+        String caution = "Once a quote is removed, it is completely erased without a trace " +
+                "from the bot. You cannot recover the quote anymore, so be sure you want to " +
+                "remove it before doing so! The closest thing you can do to recovering it is " +
                 "it re-add it to the bot using the add feature of this bot (page 2)";
         fields.add(new MessageEmbed.Field(
                 "Methods",

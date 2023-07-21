@@ -1,11 +1,14 @@
 package commands.rng;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import util.IO;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Random;
 
@@ -126,6 +129,23 @@ public class RngUsernameCommand implements IBotCommand {
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
+        String overview = "This command generates a random username when used. " +
+                "Many potential components of a username such as an adjective, a name, " +
+                "a number, underscores, etc. are put together in a random fashion, creating the username." +
+                " Most components of a username only have a chance of appearing with each use of the command. " +
+                "Underscores, for example, have a 20% chance of appearing.";
 
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setTitle("/" + getName());
+        emBuilder.setDescription(getDesc());
+        emBuilder.setColor(Color.BLUE);
+        emBuilder.setFooter("\"Username is taken\" aw great, just great.");
+        emBuilder.addField(new MessageEmbed.Field(
+                "Command Info",
+                overview,
+                false
+        ));
+
+        event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
     }
 }

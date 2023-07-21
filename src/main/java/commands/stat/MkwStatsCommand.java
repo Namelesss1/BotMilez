@@ -4,6 +4,7 @@ import mariokart.MKW;
 import commands.IBotCommand;
 import mariokart.MKWCharacter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -60,6 +61,62 @@ public class MkwStatsCommand extends ListenerAdapter implements IBotCommand {
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
 
+        String overview = "Use this command to view information and stats on Mario Kart Wii\n" +
+                "characters and vehicles.\n";
+        String vehicles = "When looking up information on a vehicle, the following stats are shown:\n" +
+                "**id**: internal id of vehicle\n" +
+                "**name**: vehicle's name\n" +
+                "**alias**: Other names given to the vehicle\n" +
+                "**type**: Kart or Bike\n" +
+                "**Drift Type**: Outward-drifting or Inward-Drifting\n" +
+                "**codename**: internal string name of vehicle\n" +
+                "**weightclass**: Light, Medium, or Heavy weight\n" +
+                "**speed**: How fast vehicle goes\n" +
+                "**weight**: Vehicle's weight\n" +
+                "**acceleration**: Vehicle's acceleration from standing still\n" +
+                "**handling**: How smooth a vehicle's movement handling is\n" +
+                "**drift**: Vehicle's drift\n" +
+                "**offroad**: How well the vehicle handles offroad\n" +
+                "**miniturbo**: boost obtained from miniturbo\n" +
+                "**total**: total amount of above values summed up\n" +
+                "And an image representing the vehicle.";
+        String characters = "When looking up information on a character, the following stats are shown:\n" +
+                "**id**: internal id of character\n" +
+                "**name**: character's name\n" +
+                "**codename**: internal string name of character\n" +
+                "**weightclass**: Light, Medium, or Heavy weight\n" +
+                "**speed**: Speed boost amount of character\n" +
+                "**weight**: Weight boost of character\n" +
+                "**acceleration**: acceleration boost of character\n" +
+                "**handling**: handling boost of character\n" +
+                "**drift**: drifting boost of character\n" +
+                "**offroad**: offroad boost of character\n" +
+                "**miniturbo**: miniturbo boost of character\n" +
+                "**total**: total amount of above boost values summed up\n" +
+                "And an image representing the character.";
+
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setTitle("/" + getName());
+        emBuilder.setDescription(getDesc());
+        emBuilder.setColor(Color.ORANGE);
+        emBuilder.setFooter("Stats brought to ya faster than Funky Kong on a Flame Runner");
+        emBuilder.addField(new MessageEmbed.Field(
+                "Description",
+                overview,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Vehicle Stats",
+                vehicles,
+                false
+        ));
+        emBuilder.addField(new MessageEmbed.Field(
+                "Character Stats",
+                characters,
+                false
+        ));
+
+        event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
     }
 
 

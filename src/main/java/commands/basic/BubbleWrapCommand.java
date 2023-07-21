@@ -80,13 +80,13 @@ public class BubbleWrapCommand implements IBotCommand{
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
-        String desc = "This command sends a NxN grid of the word \"pop!\" each encased in a \n" +
-                "discord spoiler tag to simulate popping bubble wrap. This command\n" +
-                "is nothing special or interesting, mainly made to get used to some aspects\n" +
+        String desc = "This command sends a NxN grid of the word \"pop!\" each encased in a " +
+                "discord spoiler tag to simulate popping bubble wrap. This command " +
+                "is nothing special or interesting, mainly made to get used to some aspects " +
                 "of making this bot.";
-        String args = "You can specify the size of the grid when typing the command.\n" +
-                "Minimum size allowed is " + MIN_SIZE + " and maximum is " + MAX_SIZE + ".\n" +
-                "If you don't specify a size, the default is " + DEFAULT_SIZE + "." +
+        String args = "You can specify the size of the grid when typing the command. " +
+                "Minimum size allowed is " + MIN_SIZE + " and maximum is " + MAX_SIZE + ". " +
+                "If you don't specify a size, the default is " + DEFAULT_SIZE + ". " +
                 "You can specify a size like so:\n" +
                 "```/" + getName() + " 5```";
 

@@ -47,8 +47,8 @@ public class HelpCommand extends ListenerAdapter implements IBotCommand {
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
 
-        String howToUse = "After typing the command, the bot sends a list" +
-                "of options. Each of these options represents a command belonging" +
+        String howToUse = "After typing the command, the bot sends a list " +
+                "of options. Each of these options represents a command belonging " +
                 "to this bot. Select the command that you want help with.";
 
         EmbedBuilder emBuilder = new EmbedBuilder();
