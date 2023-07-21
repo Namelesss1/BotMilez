@@ -185,10 +185,10 @@ public class QuoteAdder extends ListenerAdapter implements Stoppable{
      * @param channel channel for the bot to send a prompt to
      */
     public void onNewStatus(User user, MessageChannel channel) {
-        channel.sendMessage("Enter the name of who said the quote.\n" +
-                "Note: there is a quicker way to set a quote using the following format:\n" +
-                "```\"quote\" nameOfPersonWhoSaidQuote yearWhichIsOptional\n" +
-                "\"quote #2\" nameOfPersonWhoSaidQuote yearWhichIsOptional\n" +
+        channel.sendMessage("Enter the name of who said the quote." +
+                " Or use the following shortcut to quickly enter a quote: (see help command)\n" +
+                "```\"quote\" name optionalYear\n" +
+                "\"quote #2\" name optionalYear\n" +
                 "etc...```")
                 .queue();
         if (!statuses.containsKey(user)) {
