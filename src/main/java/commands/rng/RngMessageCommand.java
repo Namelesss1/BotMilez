@@ -32,7 +32,7 @@ import java.util.List;
  */
 public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
-    private final List<OptionData> options;
+    //private final List<OptionData> options;
     private final String DEFAULT_NAME = "default";
 
     private final int ORDER = 2;
@@ -48,14 +48,14 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
         channelChains = new HashMap<>();
 
-        options = new ArrayList<>();
-        options.add(
-                new OptionData(
-                        OptionType.STRING,
-                        DEFAULT_NAME,
-                        "type anything to use default settings",
-                        false, true
-                ));
+        //options = new ArrayList<>();
+        //options.add(
+          //      new OptionData(
+            //            OptionType.STRING,
+              //          DEFAULT_NAME,
+                //        "type anything to use default settings",
+                  //      false, true
+     //           ));
     }
     @Override
     public String getName() {
@@ -69,11 +69,16 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
     @Override
     public List<OptionData> getOptions() {
-        return options;
+        return null;
     }
 
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
+
+        if (event.getOption(DEFAULT_NAME) != null) {
+
+        }
+
         event.reply("What method should the bot use to generate the sentence? ")
                 .addActionRow(StringSelectMenu.create(MENU_SELECT_SENTENCE_RNG)
                         .addOption("Using server history", SELECT_SERVER_HISTORY,
