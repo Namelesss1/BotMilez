@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
 import util.IO;
@@ -31,6 +32,9 @@ import java.util.List;
  */
 public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
+    private final List<OptionData> options;
+    private final String DEFAULT_NAME = "default";
+
     private final int ORDER = 2;
     private final int MAX_OUTPUT_SIZE = 30;
     /* Guild ID -> (TextChannel -> All Words in channel) */
@@ -43,6 +47,15 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
         trainingChain = new MarkovChain(ORDER, data, MAX_OUTPUT_SIZE);
 
         channelChains = new HashMap<>();
+
+        options = new ArrayList<>();
+        options.add(
+                new OptionData(
+                        OptionType.STRING,
+                        DEFAULT_NAME,
+                        "type anything to use default settings",
+                        false, true
+                ));
     }
     @Override
     public String getName() {
@@ -56,7 +69,7 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
     @Override
     public List<OptionData> getOptions() {
-        return null;
+        return options;
     }
 
     @Override
@@ -73,46 +86,18 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
     @Override
     public void onStringSelectInteraction(StringSelectInteractionEvent event) {
-        long guildId = event.getGuild().getIdLong();
+        Guild guild = event.getGuild();
+        long guildId = guild.getIdLong();
+
 
         /* Selecting between sentence-generation methods */
         if (event.getComponentId().equals(MENU_SELECT_SENTENCE_RNG)) {
-
             if (event.getValues().get(0).equals(SELECT_SERVER_HISTORY)) {
 
-                /*
-                 * If not done so already, extract all words from messages from each channel
-                 * and store them in the map. Only channels with the VIEW_CHANNEL permission are
-                 * considered, and messages that are sent by bots are ignored.
-                 */
-                if (!channelChains.containsKey(guildId)) {
-                    channelChains.put(guildId, new HashMap<>());
+                IPermissionHolder holder =
+                        (IPermissionHolder) guild.getRolesByName("@everyone", true).toArray() [0];
 
-                    for (TextChannel channel : event.getGuild().getTextChannels()) {
-                        PermissionOverride permissions = channel.getPermissionOverride((IPermissionHolder)
-                                event.getGuild().getRolesByName("@everyone", true).toArray() [0]);
-                        boolean hasPermission = true;
-                        if (permissions != null) {
-                            if (permissions.getDenied().contains(Permission.VIEW_CHANNEL)) {
-                                hasPermission = false;
-                            }
-                        }
-
-                        if (hasPermission) {
-                            List<String> channelWords = new ArrayList<>();
-                            MessageHistory history = MessageHistory.getHistoryFromBeginning(channel).complete();
-                            for (Message msg : history.getRetrievedHistory()) {
-                                if (!msg.getAuthor().isBot()) {
-                                    String[] msgWords = msg.getContentRaw().split("\\s");
-                                    channelWords.addAll(Arrays.asList(msgWords));
-                                }
-                            }
-                            String[] wordsArray = channelWords.toArray(new String[channelWords.size()]);
-                            channelChains.get(guildId).put(
-                                    channel, new MarkovChain(ORDER,wordsArray,MAX_OUTPUT_SIZE));
-                        }
-                    }
-                }
+                storeTextChannelHistory(guildId, guild.getTextChannels(), holder);
 
                 Set<TextChannel> channelSet = channelChains.get(guildId).keySet();
                 StringSelectMenu.Builder SSMBuilder = StringSelectMenu.create(MENU_SELECT_CHANNEL);
@@ -201,6 +186,50 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
 
         event.editMessageEmbeds(emBuilder.build()).setComponents().queue();
     }
+
+
+    /**
+     * If not done so already, extract all words from messages from each channel
+     * and store them in the map. Only channels with the VIEW_CHANNEL permission are
+     * considered, and messages that are sent by bots are ignored.
+     *
+     * @param guildId id of the server in question
+     * @param textChannels list of all text channels in the server
+     * @param permissionHolder information about what channels have the VIEW_CHANNEL permission
+     */
+    private void storeTextChannelHistory(long guildId, List<TextChannel> textChannels,
+                                         IPermissionHolder permissionHolder) {
+
+        if (!channelChains.containsKey(guildId)) {
+            channelChains.put(guildId, new HashMap<>());
+
+            for (TextChannel channel : textChannels) {
+                boolean hasPermission = true;
+
+                PermissionOverride permissions = channel.getPermissionOverride(permissionHolder);
+                if (permissions != null) {
+                    if (permissions.getDenied().contains(Permission.VIEW_CHANNEL)) {
+                        hasPermission = false;
+                    }
+                }
+
+                if (hasPermission) {
+                    List<String> channelWords = new ArrayList<>();
+                    MessageHistory history = MessageHistory.getHistoryFromBeginning(channel).complete();
+                    for (Message msg : history.getRetrievedHistory()) {
+                        if (!msg.getAuthor().isBot()) {
+                            String[] msgWords = msg.getContentRaw().split("\\s");
+                            channelWords.addAll(Arrays.asList(msgWords));
+                        }
+                    }
+                    String[] wordsArray = channelWords.toArray(new String[channelWords.size()]);
+                    channelChains.get(guildId).put(
+                            channel, new MarkovChain(ORDER,wordsArray,MAX_OUTPUT_SIZE));
+                }
+            }
+        }
+    }
+
 
     private final String MENU_SELECT_SENTENCE_RNG = "menusentencerng";
     private final String SELECT_TRAINING_FILE = "selectrrainingfile";
