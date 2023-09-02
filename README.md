@@ -5,15 +5,17 @@ This bot is created using [JDA 5](https://github.com/discord-jda/JDA) which is a
 Eventually, SQL programming will be used for larger-scale input and reading specifically for the training data that will be used by the random message generation command as the bot features become more sophisticated.
 
 ## Current Commands
-* Hi Command (/hi): The bot responds back with a simple greeting
-* Bubble Wrap (/bubblewrap): The bot sends a grid of NxN "bubbles" consisting of the word "pop!" surrounded by discord spoiler markdown texts
-* Help (/help): A command that describes the features of each command in detail as well as how to use the commands
-* Quote (/quotes): A command that allows users to manage funny, interesting, or notable things that have been said by other server members.
-* RNG command (/rng): Sends a random number to the user. A customizable range can be specified i.e. a random number between 9-13. This command can also choose one option randomly from a list of strings.
-* RNG Message Command (/rng-message): Sends a randomly-generated message. This is either generated through training data (like server history) or by other means
-* RNG Mario Kart Wii Command (/rng-mkw): This command randomly selects a character/vehicle combination for use in the game Mario Kart Wii.
-* RNG Username Command (/rng-username): This command randomly generates a plausible-sounding username.
-* MKW Stats Command: This command displays all the stats and information relating to every character and vehicle in the game Mario Kart Wii.
+Commands are primarily slash commands, some accepting optional arguments or further input for more customization. 
+
+* Hi Command (`/hi`): The bot responds back with a simple greeting
+* Bubble Wrap (`/bubblewrap`): The bot sends a grid of NxN "bubbles" consisting of the word "pop!" surrounded by discord spoiler markdown texts. This command can accept a number as an argument specifying a preferred grid size.
+* Help (`/help`): A command that describes the features of each command in detail as well as how to use the commands
+* Quote (`/quotes`): A command that allows users to manage funny, interesting, or notable things that have been said by other server members. Adding, viewing, searching for, and removing quotes are supported.
+* RNG command (`/rng`): Sends a random number to the user. A customizable range can be specified i.e. a random number between 9-13. This command can also choose one option randomly from a list of strings.
+* RNG Message Command (`/rng-message`): Sends a randomly-generated message. This is either generated through training data (like server history) or by other means as chosen by the user.
+* RNG Mario Kart Wii Command (`/rng-mkw`): This command randomly selects a character/vehicle combination for use in the game Mario Kart Wii. If desired, a user can randomly generate from a specific subset of characters/vehicles (e.g.: Randomly select from all lightweight bikes)
+* RNG Username Command (`/rng-username`): This command randomly generates a plausible-sounding username.
+* MKW Stats Command (`/mkwstats`): This command displays all the stats and information relating to every character and vehicle in the game Mario Kart Wii. The user can select which specific character/vehicle stats to display.
 
 ## Planned Features
 * A music command that allows the bot to play music in a voice channel
