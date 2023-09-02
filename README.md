@@ -20,14 +20,15 @@ Commands are primarily slash commands, some accepting optional arguments or furt
 ## Planned Features
 * A music command that allows the bot to play music in a voice channel
 * A command that translates a message in an intentionally-bad manner by running it through a translator many times.
+* A math command with various options such as simplification, arithmetic solver, exact number from an expression, etc.
 * Individual changes and fixes to existing commands based on their issues or room for growth.
 * A new sentence generation option in RNG-Message command using syntactic rules instead of training data.
 * A more customizable Hi command that allows for custom messages
-* A gimmick where the bot changes its username and profile in a certain server to impersonate other members jokingly with a custom "Message of the day command" (Only in one specfic server)
+* A gimmick where the bot changes its username and profile to impersonate other members jokingly with a custom "Message of the day command" (Only in one specfic server)
 * Any other features upon the request of friends or that I come up with.
 
 ## Notes
 This bot is not always online 24/7 given limited hardware resources. The bot is also a major Work-In-Progress currently.
 
-## Discord Invite Link
-[Invite Link](https://discord.com/api/oauth2/authorize?client_id=1104079527770063000&permissions=277062199872&scope=bot%20applications.commands)
+## Discord Invite
+Click on this [Invite Link](https://discord.com/api/oauth2/authorize?client_id=1104079527770063000&permissions=277062199872&scope=bot%20applications.commands)
