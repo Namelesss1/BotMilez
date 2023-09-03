@@ -74,8 +74,7 @@ public class MarkovChain {
 
     /**
      * This method maps what words are likely to come after a certain sequence of
-     * prior words. Same function as loadDictionary() but does so from a file directly to
-     * save memory space.
+     * prior words. Same function as loadDictionary() but does so from a file directly.
      *
      * From the given input training text, this method creates a mapping between
      * every k words called "prefixes" (determined by the order variable when creating an object of this
@@ -89,30 +88,11 @@ public class MarkovChain {
             reader = new BufferedReader(new FileReader(path));
             String line;
 
-            final int MAX_WORDS = 20000000;
-            int wordCount = 0;
-
             System.out.println("Inputting words now");
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty()) {
                     String[] lineWords = line.split("\\s+");
                     for (int word_i = 0; word_i < lineWords.length - order; word_i++) {
-                        wordCount++;
-                        System.out.println(wordCount);
-
-                        if (wordCount >= MAX_WORDS) {
-                            PrintWriter writer = new PrintWriter(path + fileCount);
-                            for (String key : chain.keySet()) {
-                                writer.print(key);
-                                writer.print(" ");
-                                writer.println(chain.get(key).toString());
-                            }
-                            writer.close();
-                            chain.clear();
-                            wordCount = 0;
-                            fileCount++;
-                        }
-
                         StringBuilder keyBuilder = new StringBuilder("");
                         for (int offset = 0; offset < order; offset++) {
                             String token = lineWords[word_i + offset];
@@ -121,17 +101,12 @@ public class MarkovChain {
                                 keyBuilder.append(" ");
                             }
                         }
-
                         String key = keyBuilder.toString();
 
-                        /* Ensure that the key is not contained within any of the other files. */
-                        if (!addExistingKeyToFile(key, lineWords[word_i + order])) {
-                            if (!chain.containsKey(key)) {
-                                chain.put(key, new ArrayList<>());
-                            }
-                            chain.get(key).add(lineWords[word_i + order]);
+                        if (!chain.containsKey(key)) {
+                            chain.put(key, new ArrayList<>());
                         }
-
+                        chain.get(key).add(lineWords[word_i + order]);
                     }
                 }
             }
@@ -145,6 +120,36 @@ public class MarkovChain {
             System.out.println(e.getLocalizedMessage());
         }
 
+    }
+
+
+
+    /**
+     * This method maps what words are likely to come after a certain sequence of
+     * prior words. Same as loadDictionary() but instead of storing the
+     *
+     * From the given input training text, this method creates a mapping between
+     * every k words called "prefixes" (determined by the order variable when creating an object of this
+     * class), and a list of words ("suffixes") that can possibly follow right after the list of k words.
+     */
+    private void loadDictionaryToDatabase() {
+
+        for (int word_i = 0; word_i < words.length - order; word_i++) {
+            StringBuilder keyBuilder = new StringBuilder("");
+            for (int offset = 0; offset < order; offset++) {
+                String token = words[word_i + offset];
+                keyBuilder.append(token);
+                if (offset != order - 1) {
+                    keyBuilder.append(" ");
+                }
+            }
+
+            String key = keyBuilder.toString();
+            if (!chain.containsKey(key)) {
+                chain.put(key, new ArrayList<>());
+            }
+            chain.get(key).add(words[word_i + order]);
+        }
     }
 
 
@@ -183,44 +188,4 @@ public class MarkovChain {
         }
     }
 
-
-    /**
-     * Checks if any split files already contain the given key. If so, add the values to
-     * the current existing values in that file.
-     *
-     * @param key key to search for within the files
-     * @param value string representing the value to add.
-     * @return true if a file containing the key was found, false if not
-     */
-    private boolean addExistingKeyToFile(String key, String value) {
-        boolean success = false;
-
-        try {
-            for (int file_i = 0; file_i < fileCount; file_i++) {
-                PrintWriter writer = new PrintWriter(path + "temp");
-                BufferedReader reader = new BufferedReader(new FileReader(path + file_i));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.length() >= key.length() && line.substring(0, key.length()).equals(key)) {
-                        line = line + " " + value;
-                        success = true;
-                    }
-                    writer.println(line);
-                }
-                writer.close();
-                reader.close();
-                File original = new File("path" + file_i);
-                original.delete();
-                File temp = new File("path" + "temp");
-                temp.renameTo(original);
-            }
-        }
-        catch (IOException e) {
-            System.out.println(e.getLocalizedMessage());
-            success = false;
-        }
-
-        return success;
-    }
 }
