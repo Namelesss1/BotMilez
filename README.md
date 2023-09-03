@@ -31,4 +31,4 @@ Commands are primarily slash commands, some accepting optional arguments or furt
 This bot is not always online 24/7 given limited hardware resources. The bot is also a major Work-In-Progress currently.
 
 ## Discord Invite
-Click on this [Invite Link](https://discord.com/api/oauth2/authorize?client_id=1104079527770063000&permissions=277062199872&scope=bot%20applications.commands)
+Click on this [Invite Link](https://discord.com/api/oauth2/authorize?client_id=1104079527770063000&permissions=277062199872&scope=bot%20applications.commands) and follow the instructions :)
