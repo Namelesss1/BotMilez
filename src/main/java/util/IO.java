@@ -40,6 +40,7 @@ public class IO {
 
     }
 
+
     /**
      * Reads the entire file given by the String path, returns an array
      * where each element is a word from the file.
@@ -56,12 +57,14 @@ public class IO {
             reader = new BufferedReader(new FileReader(path));
             String line;
 
+            System.out.println("Inputting words now");
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty()) {
                     Stream.of(line.split("\\s+"))
                             .forEachOrdered(word -> wordList.add(word));
                 }
             }
+            System.out.println("All words in arrList");
             String[] words = new String[wordList.size()];
             return wordList.toArray(words);
         }

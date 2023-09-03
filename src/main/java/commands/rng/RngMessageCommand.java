@@ -43,8 +43,7 @@ public class RngMessageCommand extends ListenerAdapter implements IBotCommand {
     private final String TRAINING_PATH = "resources/sentencegenerators/training/";
 
     public RngMessageCommand() {
-        String[] data = IO.readAllWordsIntoArray(TRAINING_PATH + "blogRaw.txt");
-        trainingChain = new MarkovChain(ORDER, data, MAX_OUTPUT_SIZE);
+        trainingChain = new MarkovChain(ORDER, TRAINING_PATH + "blogRaw.txt", MAX_OUTPUT_SIZE);
 
         channelChains = new HashMap<>();
 
