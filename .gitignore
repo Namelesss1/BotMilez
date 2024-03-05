@@ -3,6 +3,7 @@ src/main/java/botmilez/config.java
 resources/quotes/guildquotes/
 resources/greetings/greetings.txt
 resources/sentencegenerators/training/
+resources/trivia/custom/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
