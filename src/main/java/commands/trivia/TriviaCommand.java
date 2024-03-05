@@ -1,4 +1,4 @@
-package commands.basic;
+package commands.trivia;
 
 import commands.IBotCommand;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
