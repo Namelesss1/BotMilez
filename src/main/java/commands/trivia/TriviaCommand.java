@@ -30,6 +30,9 @@ public class TriviaCommand implements IBotCommand {
     /* name of option to choose which trivia to play */
     private final String OPTION_NAME_TRIVIA = "name";
 
+    /* Maximum allowed trivias being played on this bot at once */
+    private final int MAX_TRIVIA_COUNT = 10;
+
     public TriviaCommand() {
         options = new ArrayList<>();
 
