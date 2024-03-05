@@ -1,0 +1,20 @@
+{
+  "name": "Paper Mario 64",
+  "author": "Nameless",
+  "is_default": true,
+  "tags": ["paper mario", "nintendo 64", "n64", "64", "pm", "mario", "nintendo"],
+  "qas":[
+	{
+		"id": 0,
+		"question": "For what system is Paper Mario 64 made?",
+		"answer": ["n64", "nin64", "nintendo 64", "64"],
+		"points": 1
+	},
+	{
+		"id": 1,
+		"question": "Who is the first partner you get?",
+		"answer": ["goombario"],
+		"points": 1
+	}
+  ]
+}
