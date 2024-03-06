@@ -10,10 +10,7 @@ import util.IO;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * This class represents an instance of a currently-ongoing game of
@@ -51,6 +48,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Total number of questions in this trivia */
     private int numTotalQuestions;
 
+    /* Number of questions asked thus far */
+    private int numQuestionsAsked;
+
 
     /*
      * An array of size two that helps keep track of which question is
@@ -72,7 +72,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      * @param timeLimit amount of time in seconds before moving on to next question
      * @param channel MessageChannel this trivia is taking place in
      */
-    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel) {
+    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel, User user) {
         maxQuestions = maxQ;
         winningScore = maxPoints;
         questionTimeLimit = timeLimit;
@@ -80,6 +80,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         triviaTypes = new ArrayList<>();
         currentQuestionIndex = new int[2];
         numTotalQuestions = 0;
+        numQuestionsAsked = 0;
+        playerToScore = new HashMap<>();
+        playerToScore.put(user, 0);
         triviaCount++;
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
@@ -142,6 +145,18 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private void generateQuestionSeed() {
         Random random = new Random();
 
+    }
+
+    /**
+     * Determines if this trivia game instance is over. It is over if:
+     * - A player hits the winning score
+     * - All available questions were asked, or total number allowed questions were asked
+     * - Game is forcefully stopped by a user
+     *
+     * @return true if game is over, false if not.
+     */
+    private boolean isOver() {
+        
     }
 
     private String getQuestion() {

@@ -93,7 +93,8 @@ public class TriviaCommand implements IBotCommand {
             questionTime = event.getOption(OPTION_TRIVIA_SECONDS_PER_Q).getAsInt();
         }
 
-        Trivia triviaInstance = new Trivia(tag, maxQuestions, maxPoints, questionTime, event.getChannel());
+        Trivia triviaInstance =
+                new Trivia(tag, maxQuestions, maxPoints, questionTime, event.getChannel(), event.getUser());
         //triviaInstance.start();
 
     }
