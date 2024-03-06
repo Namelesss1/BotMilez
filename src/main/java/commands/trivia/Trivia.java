@@ -16,6 +16,9 @@ import java.util.*;
 /**
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
+ *
+ * TODO: When sending next question, include name, question num, and author of trivia
+ * TODO: Implement stop() functionality
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
 
