@@ -208,6 +208,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 return;
             }
 
+            /* Remove this question to prevent duplicates */
+            triviaTypes.get(currentQuestionIndex[0]).removeQuestion(currentQuestionIndex[1]);
+
             /* Send next question */
             sendNextQuestion();
         }
