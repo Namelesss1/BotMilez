@@ -321,7 +321,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         String message = "**Question " + (numQuestionsAsked + 1) + "** from trivia " +
                 "** " + type.getName() + "** made by ** " + type.getAuthor() + "** " +
                 "(" + type.isDefault() + ") :";
-        channel.sendMessage(getQuestion()).queue();
+        channel.sendMessage(message + "\n" + getQuestion()).queue();
         numQuestionsAsked++;
     }
 
