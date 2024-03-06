@@ -150,14 +150,34 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /**
      * Determines if this trivia game instance is over. It is over if:
      * - A player hits the winning score
-     * - All available questions were asked, or total number allowed questions were asked
-     * - Game is forcefully stopped by a user
+     * - All available questions were asked
+     * - Max number of allowed questions were asked
+     * - Game is forcefully stopped by a user, but this case is handled by the
+     *   event listener.
      *
      * @return true if game is over, false if not.
      */
     private boolean isOver() {
-        
+        /* determine if any player obtained winning score */
+        for (int score : playerToScore.values()) {
+            if (score == winningScore) {
+                return true;
+            }
+        }
+
+        /* Determine if all available questions were exhausted */
+        if (numQuestionsAsked >= numTotalQuestions) {
+            return true;
+        }
+
+        /* Determine if maximum allowed questions were asked */
+        if (numQuestionsAsked >= maxQuestions) {
+            return true;
+        }
+
+        return false;
     }
+
 
     private String getQuestion() {
 
