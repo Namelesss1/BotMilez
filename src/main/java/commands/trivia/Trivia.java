@@ -19,6 +19,7 @@ import java.util.*;
  *
  * TODO: When sending next question, include name, question num, and author of trivia
  * TODO: Implement stop() functionality
+ * TODO: Implement question timer
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
 
@@ -200,16 +201,17 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         if (isCorrect(msg)) {
             addScoreTo(event.getAuthor());
             channel.sendMessage("Correct! **+" + getPointsWorth() + "** to you!").queue();
+
+            /* Check if game over */
+            if (isOver()) {
+                stop(event.getAuthor(), channel);
+                return;
+            }
+
+            /* Send next question */
+            sendNextQuestion();
         }
 
-        /* Check if game over */
-        if (isOver()) {
-            stop(event.getAuthor(), channel);
-            return;
-        }
-
-        /* Send next question */
-        sendNextQuestion();
     }
 
 
