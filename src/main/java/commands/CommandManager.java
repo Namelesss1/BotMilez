@@ -38,7 +38,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new QuoteCommand());
         commands.add(new MkwStatsCommand());
         commands.add(new RngMkwCommand());
-        commands.add(new RngMessageCommand());
+        //commands.add(new RngMessageCommand());
         commands.add(new HelpCommand());
     }
 
