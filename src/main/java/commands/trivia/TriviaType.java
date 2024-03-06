@@ -25,6 +25,7 @@ public class TriviaType {
     private List<String> tags;
 
     private List<QA> questions;
+    private int size;
 
     /**
      * Initializes a trivia type object representing a type of
@@ -50,6 +51,8 @@ public class TriviaType {
 
             questions.add(new QA(id, question, answers, points));
         }
+
+        size = qaArray.size();
     }
 
     /**
@@ -85,6 +88,13 @@ public class TriviaType {
      */
     public List<QA> getQuestions() {
         return questions;
+    }
+
+    /**
+     * @return how many questions are within this triviatype
+     */
+    public int getSize() {
+        return size;
     }
 
 

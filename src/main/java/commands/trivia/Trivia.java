@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * This class represents an instance of a currently-ongoing game of
@@ -47,6 +48,10 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Path to the trivias */
     private final String path = "resources/trivia/";
 
+    /* Total number of questions in this trivia */
+    private int numTotalQuestions;
+
+
     /*
      * An array of size two that helps keep track of which question is
      * currently active.
@@ -74,6 +79,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         this.channel = channel;
         triviaTypes = new ArrayList<>();
         currentQuestionIndex = new int[2];
+        numTotalQuestions = 0;
         triviaCount++;
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
@@ -92,6 +98,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 String trivName = (String)trivObj.get("name");
                 if (tags.contains(tag.toLowerCase()) || tag.equalsIgnoreCase(trivName)) {
                     TriviaType type = new TriviaType(trivObj);
+                    numTotalQuestions += type.getSize();
                     triviaTypes.add(type);
                 }
             }
@@ -129,6 +136,13 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         destroyInstance();
     }
 
+    /**
+     * Randomizes what the next question will be
+     */
+    private void generateQuestionSeed() {
+        Random random = new Random();
+
+    }
 
     private String getQuestion() {
 
