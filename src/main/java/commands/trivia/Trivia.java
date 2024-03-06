@@ -17,7 +17,7 @@ import java.util.*;
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
  *
- * TODO: When sending next question, include name, question num, and author of trivia
+ * TODO: Include a wide range of different ways to say "correct!"
  * TODO: Implement stop() functionality
  * TODO: Implement question timer
  */
