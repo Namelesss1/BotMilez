@@ -3,6 +3,7 @@ package commands.trivia;
 import commands.Stoppable;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -109,6 +110,12 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
     }
 
+
+    /**
+     * Sets up the initial game of trivia. Checks if it is able to do so, then
+     * adds this instance of trivia as an event listener. Then it generates
+     * and sends the first question.
+     */
     public void start() {
 
         channel.getJDA().addEventListener(this);
@@ -122,22 +129,87 @@ public class Trivia extends ListenerAdapter implements Stoppable {
             return;
         }
 
+        if (numTotalQuestions == 0) {
+            channel.sendMessage("A trivia by this name or tag does not exist.").queue();
+            destroyInstance();
+            return;
+        }
 
-
+        sendNextQuestion();
     }
 
+
+    /**
+     * @return how many trivia games are currently active in the bot.
+     */
     public static int getTriviaCount() {
         return triviaCount;
     }
 
+
+
+    /**
+     * Stops the game of trivia. Performs clean up operations and
+     * sends the results to the channel this trivia takes place in.
+     *
+     * @param user user that triggered this event to end
+     * @param channel where the event being ended is taking place
+     */
     @Override
     public void stop(User user, MessageChannel channel) {
         // send results embed
         // Send message: "Trivia ended!"
-
-
         destroyInstance();
     }
+
+
+    /**
+     * Handles an event where a user sends a message to this channel during
+     * the game. Ignores messages from other channels or from bots.
+     * Check if user is ending the game forcefully, then check to see if their
+     * message matches a correct answer.
+     *
+     * @param event
+     */
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event) {
+
+        /* If message recieved in some other channel, ignore */
+        if (!event.getChannel().equals(channel)) {
+            return;
+        }
+        /* If message received is from a bot, ignore */
+        if (event.getAuthor().isBot()) {
+            return;
+        }
+
+        String msg = event.getMessage().getContentRaw();
+
+        /* Check for forceful end of trivia */
+        if (msg.equalsIgnoreCase(Stoppable.CANCEL)
+        || msg.equalsIgnoreCase(Stoppable.END)
+        || msg.equalsIgnoreCase(Stoppable.STOP)) {
+            stop(event.getAuthor(), channel);
+            return;
+        }
+
+        /* Check if correct answer */
+        if (isCorrect(msg)) {
+            addScoreTo(event.getAuthor());
+            channel.sendMessage("Correct! **+" + getPointsWorth() + "** to you!").queue();
+        }
+
+        /* Check if game over */
+        if (isOver()) {
+            stop(event.getAuthor(), channel);
+            return;
+        }
+
+        /* Send next question */
+        sendNextQuestion();
+    }
+
+
 
     /**
      * Randomizes what the next question will be
@@ -210,6 +282,15 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         return false;
     }
 
+    /**
+     * @return how many points current question is worth.
+     */
+    private long getPointsWorth() {
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+        long pointsWorth = type.getPointsAt(currentQuestionIndex[1]);
+        return pointsWorth;
+    }
+
 
     /**
      * Increments a player's score by the amount that the current question is
@@ -221,14 +302,21 @@ public class Trivia extends ListenerAdapter implements Stoppable {
             playerToScore.put(user, new Long(0));
         }
 
-        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
-        long pointsWorth = type.getPointsAt(currentQuestionIndex[1]);
-        long userNewScore = playerToScore.get(user) + pointsWorth;
+        long userNewScore = playerToScore.get(user) + getPointsWorth();
 
         playerToScore.replace(user, userNewScore);
     }
 
-    
+    /**
+     * Generates and sends the next question to the channel
+     */
+    private void sendNextQuestion() {
+        generateQuestionSeed();
+        channel.sendMessage(getQuestion()).queue();
+        numQuestionsAsked++;
+    }
+
+
 
     /**
      * Performs clean-up operations of this trivia instance after it is
