@@ -4,8 +4,12 @@ import commands.Stoppable;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import util.IO;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -43,13 +47,45 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private final String path = "resources/trivia/";
 
 
-    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit) {
+    /**
+     * Constructor for an instance of a trivia game. Initializes needed information
+     * for a trivia game including parameters below, and what questions will be asked
+     * based on the given tag.
+     *
+     * @param tag used to filter what types of trivia questions to ask
+     * @param maxQ maximum amount of questions to ask
+     * @param maxPoints maximum amount of points a player can earn before winning
+     * @param timeLimit amount of time in seconds before moving on to next question
+     * @param channel MessageChannel this trivia is taking place in
+     */
+    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel) {
         maxQuestions = maxQ;
         winningScore = maxPoints;
         questionTimeLimit = timeLimit;
+        this.channel = channel;
         triviaCount++;
 
-        
+        /* Load appropriate trivias into triviaTypes if they contain a matching tag
+         * Loop through all files in trivia directory to see if the user-chosen tag
+         * matches the trivia's tag or name. If so, add it to the trivia type list
+         * for this trivia instance. */
+        //TODO: Modify behavior to account for custom trivias (only those in this server)
+        final FileNameExtensionFilter extensionFilter =
+                new FileNameExtensionFilter("N/A", "json");
+        File tDir = new File(path);
+        for (File file : tDir.listFiles()) {
+            if (extensionFilter.accept(file)) {
+                String fileName = file.getName();
+                JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
+                List<String> tags = (JSONArray)trivObj.get("tags");
+                String trivName = (String)trivObj.get("name");
+                if (tags.contains(tag) || tag.equalsIgnoreCase(trivName)) {
+                    TriviaType type = new TriviaType(trivObj);
+                    triviaTypes.add(type);
+                }
+            }
+        }
+
     }
 
     public void start() {
@@ -86,6 +122,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         triviaCount--;
         channel.getJDA().removeEventListener(this);
     }
+
+
+
 
 
 }
