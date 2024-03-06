@@ -97,6 +97,13 @@ public class TriviaType {
         return size;
     }
 
+    /**
+     * Removes a question from this triviaType.
+     * @param index which index of questions to remove from
+     */
+    public void removeQuestion(int index) {
+        questions.remove(index);
+    }
 
 
 
