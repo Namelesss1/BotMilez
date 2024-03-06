@@ -144,7 +144,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     private void generateQuestionSeed() {
         Random random = new Random();
-
+        currentQuestionIndex[0] = random.nextInt(triviaTypes.size());
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+        currentQuestionIndex[1] = random.nextInt(type.getSize());
     }
 
     /**
