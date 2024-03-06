@@ -28,13 +28,13 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private List<TriviaType> triviaTypes;
 
     /* Maps of active players -> score in this trivia */
-    private Map<User, Integer> playerToScore;
+    private Map<User, Long> playerToScore;
 
     /* Maximum number of questions to ask before ending trivia */
     private int maxQuestions;
 
     /* Max amount of points a player can score to win trivia */
-    private int winningScore;
+    private long winningScore;
 
     /* Time limit for each question (in seconds) before moving on to next */
     private int questionTimeLimit;
@@ -82,7 +82,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         numTotalQuestions = 0;
         numQuestionsAsked = 0;
         playerToScore = new HashMap<>();
-        playerToScore.put(user, 0);
+        playerToScore.put(user, new Long(0));
         triviaCount++;
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
@@ -161,7 +161,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     private boolean isOver() {
         /* determine if any player obtained winning score */
-        for (int score : playerToScore.values()) {
+        for (long score : playerToScore.values()) {
             if (score == winningScore) {
                 return true;
             }
@@ -186,8 +186,49 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     private String getQuestion() {
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
-
+        return type.getQuestionAt(currentQuestionIndex[1]);
     }
+
+    /**
+     * Checks if the given answer by a user is correct.
+     * It is correct if it matches any answer from the question's
+     * answer list.
+     *
+     * @param userAns answer that a user input
+     * @return true if user's answer is correct, false if not.
+     */
+    private boolean isCorrect(String userAns) {
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+        List<String> answers = type.getAnswersAt(currentQuestionIndex[1]);
+
+        for (String ans : answers) {
+            if (userAns.equalsIgnoreCase(ans)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Increments a player's score by the amount that the current question is
+     * worth.
+     * @param user player
+     */
+    private void addScoreTo(User user) {
+        if (!playerToScore.containsKey(user)) {
+            playerToScore.put(user, new Long(0));
+        }
+
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+        long pointsWorth = type.getPointsAt(currentQuestionIndex[1]);
+        long userNewScore = playerToScore.get(user) + pointsWorth;
+
+        playerToScore.replace(user, userNewScore);
+    }
+
+    
 
     /**
      * Performs clean-up operations of this trivia instance after it is
