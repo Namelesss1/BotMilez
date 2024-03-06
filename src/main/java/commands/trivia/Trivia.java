@@ -181,7 +181,11 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     }
 
 
+    /**
+     * @return The current trivia question
+     */
     private String getQuestion() {
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
 
     }
 

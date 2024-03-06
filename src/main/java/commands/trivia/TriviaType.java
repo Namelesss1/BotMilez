@@ -91,6 +91,30 @@ public class TriviaType {
     }
 
     /**
+     * @param index index to retrieve from
+     * @return the question at the current index
+     */
+    public String getQuestionAt(int index) {
+        return questions.get(index).getQuestion();
+    }
+
+    /**
+     * @param index index to retrieve from
+     * @return the answers at the current index
+     */
+    public List<String> getAnswersAt(int index) {
+        return questions.get(index).getAnswers();
+    }
+
+    /**
+     * @param index index to retrieve from
+     * @return the amount of points the question is worth at current index
+     */
+    public long getPointsAt(int index) {
+        return questions.get(index).getPoints();
+    }
+
+    /**
      * @return how many questions are within this triviatype
      */
     public int getSize() {
