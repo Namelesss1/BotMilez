@@ -161,8 +161,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     @Override
     public void stop(User user, MessageChannel channel) {
+        channel.sendMessage("Trivia is over! Here are the results: ").queue();
         // send results embed
-        // Send message: "Trivia ended!"
         destroyInstance();
     }
 
@@ -317,6 +317,10 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     private void sendNextQuestion() {
         generateQuestionSeed();
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+        String message = "**Question " + (numQuestionsAsked + 1) + "** from trivia " +
+                "** " + type.getName() + "** made by ** " + type.getAuthor() + "** " +
+                "(" + type.isDefault() + ") :";
         channel.sendMessage(getQuestion()).queue();
         numQuestionsAsked++;
     }
