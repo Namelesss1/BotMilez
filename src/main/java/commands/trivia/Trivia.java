@@ -312,15 +312,17 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         playerToScore.replace(user, userNewScore);
     }
 
+
     /**
      * Generates and sends the next question to the channel
      */
     private void sendNextQuestion() {
         generateQuestionSeed();
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+        String defaultStr = type.isDefault() ? ("default question") : ("custom question");
         String message = "**Question " + (numQuestionsAsked + 1) + "** from trivia " +
                 "** " + type.getName() + "** made by ** " + type.getAuthor() + "** " +
-                "(" + type.isDefault() + ") :";
+                "(" + defaultStr + ") :";
         channel.sendMessage(message + "\n" + getQuestion()).queue();
         numQuestionsAsked++;
     }

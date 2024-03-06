@@ -127,6 +127,7 @@ public class TriviaType {
      */
     public void removeQuestion(int index) {
         questions.remove(index);
+        size--;
     }
 
 
