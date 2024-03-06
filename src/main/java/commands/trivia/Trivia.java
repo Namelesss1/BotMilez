@@ -10,6 +10,7 @@ import util.IO;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         winningScore = maxPoints;
         questionTimeLimit = timeLimit;
         this.channel = channel;
+        triviaTypes = new ArrayList<>();
         triviaCount++;
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
@@ -74,12 +76,12 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 new FileNameExtensionFilter("N/A", "json");
         File tDir = new File(path);
         for (File file : tDir.listFiles()) {
-            if (extensionFilter.accept(file)) {
+            if (extensionFilter.accept(file) && file.isFile()) {
                 String fileName = file.getName();
                 JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
                 List<String> tags = (JSONArray)trivObj.get("tags");
                 String trivName = (String)trivObj.get("name");
-                if (tags.contains(tag) || tag.equalsIgnoreCase(trivName)) {
+                if (tags.contains(tag.toLowerCase()) || tag.equalsIgnoreCase(trivName)) {
                     TriviaType type = new TriviaType(trivObj);
                     triviaTypes.add(type);
                 }
