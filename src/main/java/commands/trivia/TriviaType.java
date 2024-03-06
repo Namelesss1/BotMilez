@@ -26,6 +26,12 @@ public class TriviaType {
 
     private List<QA> questions;
 
+    /**
+     * Initializes a trivia type object representing a type of
+     * questions that will be asked.
+     *
+     * @param triviaObj jsonObject that contains all data of a trivia type
+     */
     public TriviaType(JSONObject triviaObj) {
         name = (String)triviaObj.get("name");
         author = (String)triviaObj.get("author");
