@@ -47,6 +47,14 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Path to the trivias */
     private final String path = "resources/trivia/";
 
+    /*
+     * An array of size two that helps keep track of which question is
+     * currently active.
+     * index [0]: index of which trivia type in triviaTypes list
+     * index [1]: id of question within the trivia type
+     */
+    private int[] currentQuestionIndex;
+
 
     /**
      * Constructor for an instance of a trivia game. Initializes needed information
@@ -65,6 +73,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         questionTimeLimit = timeLimit;
         this.channel = channel;
         triviaTypes = new ArrayList<>();
+        currentQuestionIndex = new int[2];
         triviaCount++;
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
@@ -120,6 +129,16 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         destroyInstance();
     }
 
+
+    private String getQuestion() {
+
+    }
+
+    /**
+     * Performs clean-up operations of this trivia instance after it is
+     * no-longer needed. Removes this instance from total active triviaCounts,
+     * and removes this as a JDA event listener.
+     */
     private void destroyInstance() {
         triviaCount--;
         channel.getJDA().removeEventListener(this);
