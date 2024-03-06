@@ -15,6 +15,9 @@ import java.util.Map;
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
 
+    /* Maximum allowed trivias being played on this bot at once */
+    private static final int MAX_TRIVIA_COUNT = 10;
+
     /* Amount of currently active trivias */
     private static int triviaCount = 0;
 
@@ -36,8 +39,33 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Message Channel of which this trivia is happening in */
     MessageChannel channel;
 
+    /* Path to the trivias */
+    private final String path = "resources/trivia/";
 
-    public Trivia() {
+
+    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit) {
+        maxQuestions = maxQ;
+        winningScore = maxPoints;
+        questionTimeLimit = timeLimit;
+        triviaCount++;
+
+        
+    }
+
+    public void start() {
+
+        channel.getJDA().addEventListener(this);
+
+        if (Trivia.getTriviaCount() > MAX_TRIVIA_COUNT) {
+            channel.sendMessage("There are currently too many ongoing " +
+                            "trivia games being processed by this bot, perhaps in other servers" +
+                            " as well. Please try again later.")
+                    .queue();
+            destroyInstance();
+            return;
+        }
+
+
 
     }
 
@@ -47,10 +75,16 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
     @Override
     public void stop(User user, MessageChannel channel) {
-        // decrement trivia count
         // send results embed
-        // any general cleanup
         // Send message: "Trivia ended!"
+
+
+        destroyInstance();
+    }
+
+    private void destroyInstance() {
+        triviaCount--;
+        channel.getJDA().removeEventListener(this);
     }
 
 

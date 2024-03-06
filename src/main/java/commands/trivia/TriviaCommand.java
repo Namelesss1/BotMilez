@@ -28,18 +28,37 @@ public class TriviaCommand implements IBotCommand {
     private final List<OptionData> options;
 
     /* name of option to choose which trivia to play */
-    private final String OPTION_NAME_TRIVIA = "name";
+    private final String OPTION_TRIVIA_NAME = "name";
 
-    /* Maximum allowed trivias being played on this bot at once */
-    private final int MAX_TRIVIA_COUNT = 10;
+    /* maximum umber of questions option */
+    private final String OPTION_TRIVIA_MAX_QUESTIONS = "max_questions";
+
+    /* Maximum points to win option */
+    private final String OPTION_TRIVIA_MAX_POINTS = "max_points";
+
+    /* Max time per question in seconds option */
+    private final String OPTION_TRIVIA_SECONDS_PER_Q = "seconds_per_question";
 
     public TriviaCommand() {
         options = new ArrayList<>();
 
         options.add(
-                new OptionData(OptionType.STRING, OPTION_NAME_TRIVIA,
-                        "name of trivia to play",
+                new OptionData(OptionType.STRING, OPTION_TRIVIA_NAME,
+                        "tag to identify which trivias to load",
                         true, true));
+        options.add(
+                new OptionData(OptionType.INTEGER, OPTION_TRIVIA_MAX_QUESTIONS,
+                        "Maximum number of questions to send before ending trivia (up to 50)",
+                        false, true));
+        options.add(
+                new OptionData(OptionType.INTEGER, OPTION_TRIVIA_MAX_POINTS,
+                        "Number of points a player needs to win (up to 100)",
+                        false, true));
+        options.add(
+                new OptionData(OptionType.INTEGER, OPTION_TRIVIA_SECONDS_PER_Q,
+                        "Time you have to guess the answer in seconds",
+                        false, true));
+
     }
 
     @Override
@@ -60,6 +79,22 @@ public class TriviaCommand implements IBotCommand {
 
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
+        String tag = event.getOption(OPTION_TRIVIA_NAME).getAsString();
+        int maxQuestions = 40;
+        int maxPoints = 50;
+        int questionTime = 10;
+        if (event.getOption(OPTION_TRIVIA_MAX_QUESTIONS) != null) {
+            maxQuestions = event.getOption(OPTION_TRIVIA_MAX_QUESTIONS).getAsInt();
+        }
+        if (event.getOption(OPTION_TRIVIA_MAX_POINTS) != null) {
+            maxPoints = event.getOption(OPTION_TRIVIA_MAX_POINTS).getAsInt();
+        }
+        if (event.getOption(OPTION_TRIVIA_SECONDS_PER_Q) != null) {
+            questionTime = event.getOption(OPTION_TRIVIA_SECONDS_PER_Q).getAsInt();
+        }
+
+        Trivia triviaInstance = new Trivia(tag, maxQuestions, maxPoints, questionTime);
+        //triviaInstance.start();
 
     }
 

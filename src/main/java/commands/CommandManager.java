@@ -8,6 +8,7 @@ import commands.rng.RngMessageCommand;
 import commands.rng.RngMkwCommand;
 import commands.rng.RngUsernameCommand;
 import commands.stat.MkwStatsCommand;
+import commands.trivia.TriviaCommand;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -40,6 +41,7 @@ public class CommandManager extends ListenerAdapter {
         commands.add(new RngMkwCommand());
         //commands.add(new RngMessageCommand());
         commands.add(new HelpCommand());
+        commands.add(new TriviaCommand());
     }
 
     @Override
