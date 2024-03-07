@@ -16,6 +16,7 @@ Commands are primarily slash commands, some accepting optional arguments or furt
 * RNG Mario Kart Wii Command (`/rng-mkw`): This command randomly selects a character/vehicle combination for use in the game Mario Kart Wii. If desired, a user can randomly generate from a specific subset of characters/vehicles (e.g.: Randomly select from all lightweight bikes)
 * RNG Username Command (`/rng-username`): This command randomly generates a plausible-sounding username.
 * MKW Stats Command (`/mkwstats`): This command displays all the stats and information relating to every character and vehicle in the game Mario Kart Wii. The user can select which specific character/vehicle stats to display.
+* Trivia Command (`/trivia`): Allows players to compete in games of trivia, featuring many different categories. In the future, it will also allow users to create theeir own custom trivia games!
 
 ## Planned Features
 * A music command that allows the bot to play music in a voice channel
@@ -26,6 +27,7 @@ Commands are primarily slash commands, some accepting optional arguments or furt
 * A more customizable Hi command that allows for custom messages
 * A gimmick where the bot changes its username and profile to impersonate other members jokingly with a custom "Message of the day command" (Only in one specfic server)
 * Any other features upon the request of friends or that I come up with.
+* Abilility for users to create custom trivias
 
 ## Notes
 This bot is not always online 24/7 given limited hardware resources. The bot is also a major Work-In-Progress currently.
