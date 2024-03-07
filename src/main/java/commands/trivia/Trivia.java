@@ -108,7 +108,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 if (tags.contains(tag.toLowerCase()) || tag.equalsIgnoreCase(trivName)) {
                     TriviaType type = new TriviaType(trivObj);
                     numTotalQuestions += type.getSize();
-                    if (type.size() > 0) {
+                    if (type.getSize() > 0) {
                         triviaTypes.add(type);
                     }
                 }
