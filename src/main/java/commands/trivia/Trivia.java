@@ -20,6 +20,7 @@ import java.util.*;
  * TODO: Include a wide range of different ways to say "correct!"
  * TODO: Implement stop() functionality
  * TODO: Implement question timer
+ * TODO: Small pause between each question
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
 
@@ -200,7 +201,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         /* Check if correct answer */
         if (isCorrect(msg)) {
             addScoreTo(event.getAuthor());
-            channel.sendMessage("Correct! **+" + getPointsWorth() + "** to you!").queue();
+            channel.sendMessage(getReplyUponCorrect(event.getAuthor())).queue();
 
             /* Check if game over */
             if (isOver()) {
@@ -322,15 +323,94 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private void sendNextQuestion() {
         generateQuestionSeed();
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
-        String defaultStr = type.isDefault() ? ("default question") : ("custom question");
+        //String defaultStr = type.isDefault() ? ("default question") : ("custom question");
         String message = "**Question " + (numQuestionsAsked + 1) + "** from trivia " +
                 "** " + type.getName() + "** made by ** " + type.getAuthor() + "** " +
-                "(" + defaultStr + ") :";
+                "(points: " + getPointsWorth() + ") :";
         channel.sendMessage(message + "\n" + getQuestion()).queue();
         numQuestionsAsked++;
     }
 
 
+    /**
+     * Generates a string to reply with when a player gets an answer correct
+     * @param user player who got the answer correct
+     * @return reply string upon correct answer
+     */
+    private String getReplyUponCorrect(User user) {
+        Random random = new Random();
+        int seed = random.nextInt(5);
+
+        String userName = user.getName();
+        String triviaName = triviaTypes.get(currentQuestionIndex[0]).getName();
+
+        switch (seed) {
+            case 0:
+                return "Correct! **+" + getPointsWorth() + "** to you!";
+            case 1:
+                return "You're on fire " + userName + "! **+" + getPointsWorth()
+                        +  "** to you!";
+            case 2:
+                return "You're an expert at " + triviaName + ", aren't you?" +
+                        " **+" + getPointsWorth() + " to you!";
+            case 3:
+                return "Amazing job! **+" + getPointsWorth() + "** to " + userName + "!";
+            case 4:
+                return "Wow, look at " + userName + " getting **" + getPointsWorth() + "**" +
+                        " points!";
+            case 5:
+                return userName + " did some studying. **+" + getPointsWorth() + "**!";
+            case 6:
+                return "**$" + getPointsWorth() + "** for you! Just kidding. " +
+                        "**+" + getPointsWorth() + "** POINTS for you! ";
+            case 7:
+                return "LETS GOOOOO **" + getPointsWorth() + "** POINTS FOR " + userName + "!!!";
+            case 8:
+                return "Your knowledge of " + triviaName + " is like Airmilez knowledge of" +
+                        " airplanes! **+" + getPointsWorth() + "**!";
+            case 9:
+                return "Yeah yeah, here are your " + getPointsWorth() + "points.";
+            case 10:
+                return "I can't believe someone got that right! **+" + getPointsWorth() + "**!";
+            case 11:
+                return "**+" + getPointsWorth() + "** to " + userName + "!";
+            case 12:
+                return "**+" + getPointsWorth() + "**! I think " + userName + "is gonna" +
+                        "win this y'all.";
+            case 13:
+                return "Your knowledge of " + triviaName + " is like Becca knowledge of" +
+                        " food! **+" + getPointsWorth() + "**!";
+            case 14:
+                return "Only **+" + getPointsWorth() + "** points? Amateur.";
+            case 15:
+                return "**+" + getPointsWorth() + "**! Maybe " + triviaName + " trivia too easy?";
+            case 16:
+                return "FINALLY someone got that correct. **+" + getPointsWorth() + "** to ya.";
+            case 17:
+                return "Oops, almost forgot to give " + userName + "those " + getPointsWorth() +
+                        " points.";
+            case 18:
+                return "¡Aquí tienes " + getPointsWorth() + "puntos!";
+            case 19:
+                return "私がこっそり日本語を勉強したことを知っていましたか？ **+" + getPointsWorth() + "**!";
+            case 20:
+                return "Look at " + userName + " going BigBrainBecca mode! " +
+                        "**+" + getPointsWorth() + "**!";
+            case 21:
+                return "Looks like ~~Kevin in a Silver Sedan~~ " + userName + " just earned **+" +
+                        getPointsWorth() + "**!";
+            case 22:
+                return "**+" + getPointsWorth() + "** to you! Now go for 1,000 more.";
+            case 23:
+                return "Hey, stop cheating! Ah well, here is **+" + getPointsWorth() + "**!";
+            case 24:
+                return "Nice! Here is **+100000 points!** .. oops, its only **+" +
+                        getPointsWorth() + "**!";
+            default:
+                return "You're amazing, " + userName + "! " +
+                        "heres " + getPointsWorth() + " point for you!";
+        }
+    }
 
     /**
      * Performs clean-up operations of this trivia instance after it is
