@@ -209,8 +209,12 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 return;
             }
 
-            /* Remove this question to prevent duplicates */
+            /* Remove this question to prevent duplicates. If the trivia type removed from
+             *  is now empty, remove it from the triviatype list. */
             triviaTypes.get(currentQuestionIndex[0]).removeQuestion(currentQuestionIndex[1]);
+            if (triviaTypes.get(currentQuestionIndex[0]).getSize() == 0) {
+                triviaTypes.remove(currentQuestionIndex[0]);
+            }
 
             /* Send next question */
             sendNextQuestion();
