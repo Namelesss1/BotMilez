@@ -73,7 +73,7 @@
 	{
 		"id": 11,
 		"question": "What do you receive when you answer one of Chuck Quizmo's quizes correctly?",
-		"answer": ["star piece", "a star piece"],
+		"answer": ["star piece", "a star piece", "star pieces"],
 		"points": 1
 	},
 	{
@@ -129,6 +129,91 @@
 		"question": "What is the name of the elderly Koopa Troopa who always asks for errands to be run? ",
 		"answer": ["koopa koot", "koot"],
 		"points": 3
+	},
+	{
+		"id": 21,
+		"question": "How many Bob-ombs besides Bombette were imprisioned in the jail at the Koopa Bros. Fortress? ",
+		"answer": ["4", "four"],
+		"points": 2
+	},
+	{
+		"id": 22,
+		"question": "Where is the house of the explorer, Kolorado? ",
+		"answer": ["koopa village"],
+		"points": 2
+	},
+	{
+		"id": 23,
+		"question": "What is the destination of the train that departs from Toad Town Station? ",
+		"answer": ["mt rugged", "mt. rugged", "mount rugged", "rugged mountain"],
+		"points": 3
+	},
+	{
+		"id": 24,
+		"question": "What is the name of the fellow who sells Badges in Toad Town?",
+		"answer": ["rowf"],
+		"points": 3
+	},
+	{
+		"id": 25,
+		"question": "What treasure did Bowser steal from Star Haven?",
+		"answer": ["star rod", "the star rod"],
+		"points": 1
+	},
+	{
+		"id": 26,
+		"question": "What is the color of the roof of the house in Koopa Village where you can listen to the radio? ",
+		"answer": ["blue"],
+		"points": 3
+	},
+	{
+		"id": 27,
+		"question": "Who does Kooper idolize?",
+		"answer": ["kolorado", "professor kolorado", "prof. kolorado", "prof kolorado"],
+		"points": 2
+	},
+	{
+		"id": 28,
+		"question": "What enemy hides inside a coffin in Dry Dry Ruins?",
+		"answer": ["poison pokey", "pokey"],
+		"points": 2
+	},
+	{
+		"id": 29,
+		"question": "What kind of item can you get when you take Star Pieces to Merlow at Shooting Star Summit?",
+		"answer": ["badge", "badges"],
+		"points": 2
+	},
+	{
+		"id": 30,
+		"question": "Who knew the location of the Dry Dry Ruins in the Dry Dry Desert? ",
+		"answer": ["moustafa"],
+		"points": 3
+	},
+	{
+		"id": 31,
+		"question": "To make Lemon Candy, what do you need besides a lemon?",
+		"answer": ["cake mix"],
+		"points": 3
+	},
+	{
+		"id": 32,
+		"question": "What is the name of the item that drops when you hit a whacka on Mt. Rugged?",
+		"answer": ["whacka's bump", "whackas bump", "whacka bump"],
+		"points": 3
+	},
+	{
+		"id": 33,
+		"question": "Other than Lemons, what fruit drops when you hit a tree in the desert oasis? ",
+		"answer": ["lime", "limes"],
+		"points": 3
+	},
+	{
+		"id": 34,
+		"question": "What is Bombette's specialty attack (the one that costs 3fp)",
+		"answer": ["bomb"],
+		"points": 2
 	}
+	
   ]
 }
