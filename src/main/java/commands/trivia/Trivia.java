@@ -168,19 +168,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
 
 
-    /**
-     * Stops the game of trivia. Performs clean up operations and
-     * sends the results to the channel this trivia takes place in.
-     *
-     * @param user user that triggered this event to end
-     * @param channel where the event being ended is taking place
-     */
-    @Override
-    public void stop(User user, MessageChannel channel) {
-        channel.sendMessage("Trivia is over! Here are the results: ").queue();
-        channel.sendMessageEmbeds(getResults()).queue();
-        destroyInstance();
-    }
+
 
 
     /**
@@ -291,36 +279,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         currentQuestionIndex[1] = random.nextInt(type.getSize());
     }
 
-    /**
-     * Determines if this trivia game instance is over. It is over if:
-     * - A player hits the winning score
-     * - All available questions were asked
-     * - Max number of allowed questions were asked
-     * - Game is forcefully stopped by a user, but this case is handled by the
-     *   event listener.
-     *
-     * @return true if game is over, false if not.
-     */
-    private boolean isOver() {
-        /* determine if any player obtained winning score */
-        for (long score : playerToScore.values()) {
-            if (score == winningScore) {
-                return true;
-            }
-        }
 
-        /* Determine if all available questions were exhausted */
-        if (numQuestionsAsked >= numTotalQuestions) {
-            return true;
-        }
-
-        /* Determine if maximum allowed questions were asked */
-        if (numQuestionsAsked >= maxQuestions) {
-            return true;
-        }
-
-        return false;
-    }
 
 
     /**
@@ -329,6 +288,27 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private String getQuestion() {
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
         return type.getQuestionAt(currentQuestionIndex[1]);
+    }
+
+    /**
+     * Generates and sends the next question to the channel
+     */
+    private void sendNextQuestion() {
+        generateQuestionSeed();
+        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+
+        String titleMessage = "From trivia \"" + type.getName() + "\" made by " +
+                type.getAuthor();
+
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(Color.BLUE);
+        builder.setTitle(titleMessage);
+        builder.setAuthor("Question " + (numQuestionsAsked + 1) + ".");
+        builder.setFooter("Points: " + getPointsWorth());
+        builder.setDescription(getQuestion());
+
+        channel.sendMessageEmbeds(builder.build()).queue();
+        numQuestionsAsked++;
     }
 
     /**
@@ -377,27 +357,6 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         playerToScore.replace(user, userNewScore);
     }
 
-
-    /**
-     * Generates and sends the next question to the channel
-     */
-    private void sendNextQuestion() {
-        generateQuestionSeed();
-        TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
-
-        String titleMessage = "From trivia \"" + type.getName() + "\" made by " +
-                type.getAuthor();
-
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setColor(Color.BLUE);
-        builder.setTitle(titleMessage);
-        builder.setAuthor("Question " + (numQuestionsAsked + 1) + ".");
-        builder.setFooter("Points: " + getPointsWorth());
-        builder.setDescription(getQuestion());
-
-        channel.sendMessageEmbeds(builder.build()).queue();
-        numQuestionsAsked++;
-    }
 
 
     /**
@@ -479,6 +438,56 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                         "heres " + getPointsWorth() + " point for you!";
         }
     }
+
+
+
+    /**
+     * Determines if this trivia game instance is over. It is over if:
+     * - A player hits the winning score
+     * - All available questions were asked
+     * - Max number of allowed questions were asked
+     * - Game is forcefully stopped by a user, but this case is handled by the
+     *   event listener.
+     *
+     * @return true if game is over, false if not.
+     */
+    private boolean isOver() {
+        /* determine if any player obtained winning score */
+        for (long score : playerToScore.values()) {
+            if (score == winningScore) {
+                return true;
+            }
+        }
+
+        /* Determine if all available questions were exhausted */
+        if (numQuestionsAsked >= numTotalQuestions) {
+            return true;
+        }
+
+        /* Determine if maximum allowed questions were asked */
+        if (numQuestionsAsked >= maxQuestions) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Stops the game of trivia. Performs clean up operations and
+     * sends the results to the channel this trivia takes place in.
+     *
+     * @param user user that triggered this event to end
+     * @param channel where the event being ended is taking place
+     */
+    @Override
+    public void stop(User user, MessageChannel channel) {
+        channel.sendMessage("Trivia is over! Here are the results: ").queue();
+        channel.sendMessageEmbeds(getResults()).queue();
+        destroyInstance();
+    }
+
+
 
     /**
      * Performs clean-up operations of this trivia instance after it is
