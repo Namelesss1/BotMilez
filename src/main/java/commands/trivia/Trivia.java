@@ -14,8 +14,10 @@ import util.IO;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
+import java.sql.Time;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class represents an instance of a currently-ongoing game of
@@ -382,11 +384,18 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private void sendNextQuestion() {
         generateQuestionSeed();
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
-        //String defaultStr = type.isDefault() ? ("default question") : ("custom question");
-        String message = "**Question " + (numQuestionsAsked + 1) + "** from trivia " +
-                "** " + type.getName() + "** made by ** " + type.getAuthor() + "** " +
-                "(points: " + getPointsWorth() + ") :";
-        channel.sendMessage(message + "\n" + getQuestion()).queue();
+
+        String titleMessage = "From trivia \"" + type.getName() + "\" made by " +
+                type.getAuthor();
+
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(Color.BLUE);
+        builder.setTitle(titleMessage);
+        builder.setAuthor("Question " + (numQuestionsAsked + 1) + ".");
+        builder.setFooter("Points: " + getPointsWorth());
+        builder.setDescription(getQuestion());
+
+        channel.sendMessageEmbeds(builder.build()).queue();
         numQuestionsAsked++;
     }
 

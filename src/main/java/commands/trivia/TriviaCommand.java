@@ -82,7 +82,7 @@ public class TriviaCommand implements IBotCommand {
         String tag = event.getOption(OPTION_TRIVIA_NAME).getAsString();
         int maxQuestions = 40;
         int maxPoints = 50;
-        int questionTime = 10;
+        int questionTime = 15;
         if (event.getOption(OPTION_TRIVIA_MAX_QUESTIONS) != null) {
             maxQuestions = event.getOption(OPTION_TRIVIA_MAX_QUESTIONS).getAsInt();
         }
