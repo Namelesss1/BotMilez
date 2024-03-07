@@ -1,6 +1,8 @@
 package commands.trivia;
 
 import commands.Stoppable;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -10,15 +12,15 @@ import org.json.simple.JSONObject;
 import util.IO;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 /**
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
  *
- * TODO: Include a wide range of different ways to say "correct!"
- * TODO: Implement stop() functionality
  * TODO: Implement question timer
  * TODO: Small pause between each question
  */
@@ -31,22 +33,22 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private static int triviaCount = 0;
 
     /* List of trivia types that are used in this trivia instance */
-    private List<TriviaType> triviaTypes;
+    private final List<TriviaType> triviaTypes;
 
     /* Maps of active players -> score in this trivia */
-    private Map<User, Long> playerToScore;
+    private final Map<User, Long> playerToScore;
 
     /* Maximum number of questions to ask before ending trivia */
-    private int maxQuestions;
+    private final int maxQuestions;
 
     /* Max amount of points a player can score to win trivia */
-    private long winningScore;
+    private final long winningScore;
 
     /* Time limit for each question (in seconds) before moving on to next */
-    private int questionTimeLimit;
+    private final int questionTimeLimit;
 
     /* Message Channel of which this trivia is happening in */
-    MessageChannel channel;
+    private final MessageChannel channel;
 
     /* Path to the trivias */
     private final String path = "resources/trivia/";
@@ -56,6 +58,12 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
     /* Number of questions asked thus far */
     private int numQuestionsAsked;
+
+    /* Names of all trivias being played */
+    private List<String> triviaNames;
+
+    /* Given tag that a user specified */
+    private String tag;
 
 
     /*
@@ -79,11 +87,13 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      * @param channel MessageChannel this trivia is taking place in
      */
     public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel, User user) {
+        this.tag = tag;
         maxQuestions = maxQ;
         winningScore = maxPoints;
         questionTimeLimit = timeLimit;
         this.channel = channel;
         triviaTypes = new ArrayList<>();
+        triviaNames = new ArrayList<>();
         currentQuestionIndex = new int[2];
         numTotalQuestions = 0;
         numQuestionsAsked = 0;
@@ -111,6 +121,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                     if (type.getSize() > 0) {
                         triviaTypes.add(type);
                     }
+                    triviaNames.add(type.getName());
                 }
             }
         }
@@ -165,8 +176,50 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     @Override
     public void stop(User user, MessageChannel channel) {
         channel.sendMessage("Trivia is over! Here are the results: ").queue();
-        // send results embed
+        channel.sendMessageEmbeds(getResults()).queue();
         destroyInstance();
+    }
+
+
+    /**
+     * @return a MessageEmbed containing the results of a trivia.
+     */
+    private MessageEmbed getResults() {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle("Results for the trivia!");
+
+        /* Set description to list the chosen tag and all trivias included in this instance */
+        StringBuilder descBuilder = new StringBuilder("Trivias played: ");
+        for (String trivName : triviaNames) {
+            descBuilder.append(trivName).append(",");
+        }
+        descBuilder.replace(descBuilder.length(), descBuilder.length(), "");
+        descBuilder.append(" for tag: **" + tag + "**");
+        String desc = descBuilder.toString();
+        builder.setDescription(desc);
+
+        /* Set fields: Players and their scores ranked from highest to lowest
+         * must first sort players by their score from highest to lowest */
+        List<Map.Entry<User,Long>> sortedScores = new ArrayList<Map.Entry<User, Long>>(
+                playerToScore.entrySet()
+        );
+        Collections.sort(sortedScores, Collections.reverseOrder());
+
+        int rank = 1;
+        for (Map.Entry<User,Long> playerToScore : sortedScores) {
+            User player = playerToScore.getKey();
+            long score = playerToScore.getValue();
+
+            builder.addField(
+                    "**" + rank + ".** " + player.getName(),
+                    Long.toString(score) + " point(s)",
+                    false
+            );
+            rank+= 1;
+        }
+
+        builder.setColor(Color.BLUE);
+        return builder.build();
     }
 
 
@@ -345,7 +398,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     private String getReplyUponCorrect(User user) {
         Random random = new Random();
-        int seed = random.nextInt(5);
+        int seed = random.nextInt(25);
 
         String userName = user.getName();
         String triviaName = triviaTypes.get(currentQuestionIndex[0]).getName();
@@ -358,7 +411,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                         +  "** to you!";
             case 2:
                 return "You're an expert at " + triviaName + ", aren't you?" +
-                        " **+" + getPointsWorth() + " to you!";
+                        " **+" + getPointsWorth() + "** to you!";
             case 3:
                 return "Amazing job! **+" + getPointsWorth() + "** to " + userName + "!";
             case 4:
@@ -381,8 +434,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
             case 11:
                 return "**+" + getPointsWorth() + "** to " + userName + "!";
             case 12:
-                return "**+" + getPointsWorth() + "**! I think " + userName + "is gonna" +
-                        "win this y'all.";
+                return "**+" + getPointsWorth() + "**! I think " + userName + " is gonna" +
+                        " win this y'all.";
             case 13:
                 return "Your knowledge of " + triviaName + " is like Becca knowledge of" +
                         " food! **+" + getPointsWorth() + "**!";
