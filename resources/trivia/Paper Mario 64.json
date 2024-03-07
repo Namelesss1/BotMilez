@@ -15,6 +15,120 @@
 		"question": "Who is the first partner you get?",
 		"answer": ["goombario"],
 		"points": 1
+	},
+		{
+		"id": 2,
+		"question": "What's the name of Goombario's younger sister? ",
+		"answer": ["goombaria"],
+		"points": 1
+	},
+	{
+		"id": 3,
+		"question": "What is the color of the block you can break with the first Hammer you got?",
+		"answer": ["yellow"],
+		"points": 1
+	},
+	{
+		"id": 4,
+		"question": "What ability does Goombario frequently use? (The one that costs 1fp)",
+		"answer": ["tattle", "snitch"],
+		"points": 1
+	},
+	{
+		"id": 5,
+		"question": "That color pants was the Goomba King wearing? Red and: ",
+		"answer": ["white"],
+		"points": 1
+	},
+	{
+		"id": 6,
+		"question": "Which of Mario's battle commands is on the far left side? (top most one)",
+		"answer": ["strategies", "flag", "the flag"],
+		"points": 2
+	},
+	{
+		"id": 7,
+		"question": "How many windows does the Goomba House in Goomba Village have?",
+		"answer": ["1", "one"],
+		"points": 2
+	},
+	{
+		"id": 8,
+		"question": "What is the name of the leader of the Red and Blue Goomba Bros.? ",
+		"answer": ["goomba king", "the goomba king"],
+		"points": 2
+	},
+	{
+		"id": 9,
+		"question": "What color are Luigi's pants? ",
+		"answer": ["blue"],
+		"points": 1
+	},
+	{
+		"id": 10,
+		"question": "How many members are there in Goombario's family?",
+		"answer": ["6", "six"],
+		"points": 2
+	},
+	{
+		"id": 11,
+		"question": "What do you receive when you answer one of Chuck Quizmo's quizes correctly?",
+		"answer": ["star piece", "a star piece"],
+		"points": 1
+	},
+	{
+		"id": 12,
+		"question": "What is the name of the smart Toad living in Toad Town, the one you give the dictionary to? ",
+		"answer": ["russ", "russ t", "russ t."],
+		"points": 3
+	},
+	{
+		"id": 13,
+		"question": "How many buildings are there in Koopa Village? ",
+		"answer": ["6", "six"],
+		"points": 2
+	},
+	{
+		"id": 14,
+		"question": "The members of the Koopa Bros. are Red, Yellow, Green, and: ",
+		"answer": ["black"],
+		"points": 2
+	},	
+	{
+		"id": 15,
+		"question": " How many coins are needed to buy a Mushroom at the shop in Koopa Village? ",
+		"answer": ["4", "four", "4 coins", "four coins"],
+		"points": 2
+	},
+	{
+		"id": 16,
+		"question": "Where does Merluvlee, who tells fortunes, live? ",
+		"answer": ["shooting star summit"],
+		"points": 3
+	},	
+	{
+		"id": 17,
+		"question": "What is the name of the character who joined you at the Koopa Bros. Fortress?",
+		"answer": ["bombette"],
+		"points": 1
+	},	
+	{
+		"id": 18,
+		"question": "What is the color of Bowser's hair? ",
+		"answer": ["red"],
+		"points": 1
+	},	
+	{
+		"id": 19,
+		"question": "How many Star Spirits do you have to save?",
+		"answer": ["7", "seven"],
+		"points": 1
+	},	
+	{
+		"id": 20,
+		"question": "What is the name of the elderly Koopa Troopa who always asks for errands to be run? ",
+		"answer": ["koopa koot", "koot"],
+		"points": 3
 	}
   ]
 }
