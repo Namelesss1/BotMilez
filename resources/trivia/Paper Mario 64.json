@@ -2,6 +2,9 @@
   "name": "Paper Mario 64",
   "author": "Nameless",
   "is_default": true,
+  "all_servers": true,
+  "servers": null,
+  "allowed_editors": nnameless,
   "tags": ["paper mario", "nintendo 64", "n64", "64", "pm", "mario", "nintendo"],
   "qas":[
 	{

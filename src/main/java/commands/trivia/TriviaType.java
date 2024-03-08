@@ -24,6 +24,10 @@ public class TriviaType {
     private boolean is_default;
     private List<String> tags;
 
+    private boolean all_servers;
+    private List<Long> servers;
+    private List<String> allowed_editors;
+
     private List<QA> questions;
     private int size;
 
@@ -38,6 +42,9 @@ public class TriviaType {
         author = (String)triviaObj.get("author");
         is_default = (boolean)triviaObj.get("is_default");
         tags = (JSONArray)triviaObj.get("tags");
+        all_servers = (boolean)triviaObj.get("all_servers");
+        servers = (JSONArray)triviaObj.get("servers");
+        allowed_editors = (JSONArray)triviaObj.get("allowed_editors");
         questions = new ArrayList<>();
 
         /* Set metadata for questions and answers */
@@ -128,6 +135,27 @@ public class TriviaType {
     public void removeQuestion(int index) {
         questions.remove(index);
         size--;
+    }
+
+    /**
+     * @return whether this trivia type can be seen across all servers or not
+     */
+    public boolean isUniversal() {
+        return all_servers;
+    }
+
+    /**
+     * @return A list of all servers that can see this trivia type
+     */
+    public List<Long> getServers() {
+        return servers;
+    }
+
+    /**
+     * @return A list of all allowed editors of this trivia type
+     */
+    public List<String> getEditors() {
+        return allowed_editors;
     }
 
 
