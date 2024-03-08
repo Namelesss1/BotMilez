@@ -1,4 +1,4 @@
-package commands.trivia;
+package commands.trivia.triviaeditor;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
