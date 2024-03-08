@@ -4,7 +4,7 @@
   "is_default": true,
   "all_servers": true,
   "servers": null,
-  "allowed_editors": nnameless,
+  "allowed_editors": ["nnameless"],
   "tags": ["Mario Kart Wii", "mkw", "mkwii", "mario kart", "racing games", "mario", "nintendo"],
   "qas":[
 	{

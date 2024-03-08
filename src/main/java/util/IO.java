@@ -106,6 +106,29 @@ public class IO {
         return successful;
     }
 
+    /**
+     * Writes a json object to the file specified by the given path.
+     * @param jsonObj Object to write to file
+     * @param path file to write to
+     * @return true if successful, false if not.
+     */
+    public static boolean writeJson(JSONObject jsonObj, String path) {
+        boolean successful = true;
+        FileWriter writer = null;
+
+        try {
+            writer = new FileWriter(path, false);
+            writer.write(jsonObj.toJSONString());
+            writer.close();
+        }
+        catch(IOException e) {
+            System.out.println(e.getLocalizedMessage());
+            successful = false;
+        }
+
+        return successful;
+    }
+
 
     /**
      * Reads from a JSON file
@@ -140,6 +163,30 @@ public class IO {
     public static boolean fileExists (String path) {
         File file = new File(path);
         return file.exists();
+    }
+
+
+    /**
+     * Deletes a file at a given path.
+     * @param path file to delete
+     * @return true upon success
+     */
+    public static boolean deleteFile (String path) {
+
+        if (!fileExists(path)) {
+            return false;
+        }
+
+        File file = new File(path);
+        try {
+            file.delete();
+        }
+        catch(Exception e) {
+            System.out.println(e.getLocalizedMessage());
+            return false;
+        }
+
+        return true;
     }
 
 }
