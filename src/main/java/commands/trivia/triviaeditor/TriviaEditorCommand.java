@@ -12,7 +12,7 @@ public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand 
 
     @Override
     public String getName() {
-        return "TriviaEdit";
+        return "trivia_edit";
     }
 
     @Override
