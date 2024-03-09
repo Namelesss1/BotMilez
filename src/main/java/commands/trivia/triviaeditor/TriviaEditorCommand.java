@@ -1,6 +1,7 @@
 package commands.trivia.triviaeditor;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -27,13 +28,18 @@ public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand 
 
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
+        event.reply("Alright, lets start the process. I DM'd you instructions.")
+                .setEphemeral(true)
+                .queue();
 
+        TriviaEditSession session = new TriviaEditSession(event.getUser());
     }
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
 
     }
+
 
 
 }
