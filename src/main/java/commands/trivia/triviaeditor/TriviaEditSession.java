@@ -32,7 +32,6 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
    public TriviaEditSession(User user) {
        this.user = user;
        currState = State.START;
-       
 
        user.getJDA().addEventListener(this);
    }
@@ -54,5 +53,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         user.openPrivateChannel().complete()
                 .sendMessage(msg).queue();
     }
+
+
 
 }
