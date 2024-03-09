@@ -107,7 +107,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
             }
         }
 
-        if (prevState == State.NAME) {
+        else if (prevState == State.NAME) {
 
             String tagStr = "Enter any tags you want for this trivia. These tags help identify" +
                     "what the trivia is about. Seperate each one with a comma. For example," +
