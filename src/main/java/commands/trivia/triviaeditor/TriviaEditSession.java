@@ -147,6 +147,8 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
             inputType = InputType.NAME;
         }
         else if (inputType == InputType.NAME) {
+            channel.sendMessage("Your trivia name is: **" + msg + "**").queue();
+
             triviaType.setName(msg);
             String tagStr = "Enter any tags you want for this trivia. These tags help identify" +
                     "what the trivia is about. Seperate each one with a comma. For example," +
@@ -158,6 +160,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         }
         else if (inputType == InputType.TAGS) {
             List<String> tags = TriviaEditor.parseCommaSeparatedList(msg);
+            channel.sendMessage("Your tags are: **" + tags.toString() + "**").queue();
             triviaType.setTags(tags);
             String universalStr = "Do you want this trivia to be viewable across all servers i'm in?" +
                     "Type yes or no.";
@@ -168,9 +171,11 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         else if (inputType == InputType.UNIVERSAL) {
             boolean universal;
             if (msg.equalsIgnoreCase("yes")) {
+                channel.sendMessage("Your trivia will be viewable across all servers i'm in.").queue();
                 universal = true;
             }
             else if (msg.equalsIgnoreCase("no")) {
+                channel.sendMessage("Your trivia will be viewable in only the servers you choose.").queue();
                 universal = false;
             }
             else {
@@ -190,7 +195,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
             }
             else {
                 str = "Enter the names all of the servers you want this trivia to be" +
-                        "playable in. Use a comma-separated list e.g. \n\n" +
+                        " playable in. Use a comma-separated list e.g. \n\n" +
                         "my test server, The Clubhouse, Jim's Hangout Server";
 
                 inputType = InputType.SERVERS;
