@@ -4,6 +4,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import util.IO;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -505,6 +507,16 @@ public class TriviaEditor {
         }
 
         return obj;
+    }
+
+
+    /**
+     * Helper to extract tokens from a comma-separated string
+     * @param str a string containing a list of separated elements e.g. "word1, ha ha, word3"
+     * @return A list of strings, where each element is a phrase that was seperated by a comma.
+     */
+    public static List<String> parseCommaSeparatedList(String str) {
+        return Arrays.asList(str.split(",\\s*"));
     }
 
 }
