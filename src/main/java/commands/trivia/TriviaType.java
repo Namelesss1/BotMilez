@@ -67,6 +67,55 @@ public class TriviaType {
     }
 
     /**
+     * Sets name of this trivia
+     * @param name name of trivia
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     *
+     * @param author sets the name of the creator of this trivia
+     */
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+
+    /**
+     *
+     * @param universal sets whether this trivia is able to be viewed across all servers or not.
+     */
+    public void setUniversal(boolean universal) {
+        all_servers = universal;
+    }
+
+    /**
+     *
+     * @param tags sets the tags for this trivia
+     */
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    /**
+     *
+     * @param servers sets allowed servers for this trivia
+     */
+    public void setServers(List<Long> servers) {
+        this.servers = servers;
+    }
+
+    /**
+     *
+     * @param editors sets allowed editors/contributors to this trivia
+     */
+    public void setEditors(List<String> editors) {
+        allowed_editors = editors;
+    }
+
+    /**
      * @return name of this trivia type
      */
     public String getName() {
