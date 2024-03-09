@@ -62,6 +62,10 @@ public class TriviaType {
         size = qaArray.size();
     }
 
+    public TriviaType(String user) {
+        author = user;
+    }
+
     /**
      * @return name of this trivia type
      */
