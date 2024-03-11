@@ -212,66 +212,34 @@ public class TriviaType {
     }
 
 
-
-
     /**
-     * This class represents all metadata representing a question in this trivia type
+     * @return the next available unique id for a question
      */
-    private class QA {
-        private long id;
-        private String question;
-        private List<String> answers;
-        private long points;
-        private boolean was_asked;
+    public long getNextQuestionId() {
 
-        public QA(long id, String ques, List<String> ans, long pts) {
-            this.id = id;
-            question = ques;
-            answers = ans;
-            points = pts;
-            was_asked = false;
-        }
-
-        /**
-         * Sets this question as already asked
+        /* Look for the next available id, taking into account potential gaps
+         * in ids due to question removal
          */
-        public void set_asked() {
-            was_asked = true;
+        long availableId = 0;
+        boolean found = false;
+        /* Loop through questions, look for an available id */
+        for (int i = 0; i < questions.size(); i++) {
+            long id = questions.get(i).getId();
+            if (availableId != id) {
+                found = true;
+                break;
+            }
+            availableId++;
         }
 
-        /**
-         * @return id of question
-         */
-        public long getId() {
-            return id;
+        /* If no gaps between ids, simply add it as the highest id */
+        if (!found) {
+            availableId = questions.size();
         }
 
-        /**
-         * @return String representing the question
-         */
-        public String getQuestion() {
-            return question;
-        }
-
-        /**
-         * @return list of possible answers to the question
-         */
-        public List<String> getAnswers() {
-            return answers;
-        }
-
-        /**
-         * @return how many points the question is worth
-         */
-        public long getPoints() {
-            return points;
-        }
-
-        /**
-         * @return true if question was already asked, false if not
-         */
-        public boolean wasAsked() {
-            return was_asked;
-        }
+        return availableId;
     }
+
+
+
 }
