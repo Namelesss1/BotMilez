@@ -29,7 +29,7 @@ public class QA {
         was_asked = false;
     }
 
-    
+
     /**
      * @param id sets the unique id of this question
      */
