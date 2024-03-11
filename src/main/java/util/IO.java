@@ -223,7 +223,7 @@ public class IO {
      * @param name name of file including extension
      * @return raw name of file without extension.
      */
-    public String removeExtensionFromName(String name) {
+    public static String removeExtensionFromName(String name) {
         return name.replaceAll("[.].*", "");
     }
 
