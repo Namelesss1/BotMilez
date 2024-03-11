@@ -1,8 +1,12 @@
 package commands.trivia;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import util.EmbedPageBuilder;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +117,14 @@ public class TriviaType {
      */
     public void setEditors(List<String> editors) {
         allowed_editors = editors;
+    }
+
+    /**
+     * Adds a new question object to this trivia type
+     * @param qa question to add.
+     */
+    public void addQuestion(QA qa) {
+        questions.add(qa);
     }
 
     /**
@@ -238,6 +250,46 @@ public class TriviaType {
         }
 
         return availableId;
+    }
+
+
+    /**
+     * @return this object in an MessageEmbed form
+     */
+    public MessageEmbed asEmbed() {
+        EmbedBuilder em = new EmbedBuilder();
+
+        em.setColor(Color.MAGENTA);
+        em.setTitle(getName());
+        em.setAuthor("Trivia by: " + getAuthor());
+
+        em.addField(
+                "Tags: ",
+                getTags().toString(),
+                false
+        );
+        em.addField(
+                "is viewable across all servers? ",
+                "" + isUniversal(),
+                false
+        );
+        em.addField(
+                "Viewable in these servers: ",
+                servers.toString(),
+                false
+        );
+        em.addField(
+                "Allowed editors: ",
+                allowed_editors.toString(),
+                false
+        );
+        em.addField(
+                "Number of questions: ",
+                "" + getSize(),
+                false
+        );
+
+        return em.build();
     }
 
 
