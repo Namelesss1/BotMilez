@@ -2,11 +2,13 @@ package commands.trivia.triviaeditor;
 
 import commands.Stoppable;
 import commands.trivia.TriviaType;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TriviaEditSession extends ListenerAdapter implements Stoppable {
@@ -67,23 +69,9 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
        user.getJDA().addEventListener(this);
    }
 
-   @Override
-   public void stop(User user, MessageChannel channel) {
-       destroySession();
-   }
 
-   public void destroySession() {
-       user.getJDA().removeEventListener(this);
-   }
 
-    /**
-     * Sends a Private Message to a user.
-     * @param msg message content
-     */
-    private void sendPM(String msg) {
-        user.openPrivateChannel().complete()
-                .sendMessage(msg).queue();
-    }
+
 
 
     @Override
@@ -203,6 +191,14 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
             channel.sendMessage(str).queue();
         }
+        else if (inputType == InputType.SERVERS) {
+            List<String> servers = TriviaEditor.parseCommaSeparatedList(msg);
+            List<Long> serverIds = new ArrayList<>();
+            for (Guild server : user.getMutualGuilds()) {
+                serverIds.add(server.getIdLong());
+            }
+            triviaType.setServers();
+        }
 
     }
 
@@ -230,6 +226,25 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
     }
 
+
+    /**
+     * Sends a Private Message to a user.
+     * @param msg message content
+     */
+    private void sendPM(String msg) {
+        user.openPrivateChannel().complete()
+                .sendMessage(msg).queue();
+    }
+
+    @Override
+    public void stop(User user, MessageChannel channel) {
+        destroySession();
+    }
+
+    public void destroySession() {
+        user.getJDA().removeEventListener(this);
+        //TODO: Close private channel
+    }
 
 
 

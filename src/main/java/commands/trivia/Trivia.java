@@ -67,6 +67,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Given tag that a user specified */
     private String tag;
 
+    /* Command which created this trivia object */
+    private TriviaCommand command;
 
     /*
      * An array of size two that helps keep track of which question is
@@ -88,7 +90,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      * @param timeLimit amount of time in seconds before moving on to next question
      * @param channel MessageChannel this trivia is taking place in
      */
-    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel, User user) {
+    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel, User user,
+        TriviaCommand triviaCommand) {
         this.tag = tag;
         maxQuestions = maxQ;
         winningScore = maxPoints;
@@ -102,6 +105,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         playerToScore = new HashMap<>();
         playerToScore.put(user, new Long(0));
         triviaCount++;
+        this.command = triviaCommand;
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
          * Loop through all files in trivia directory to see if the user-chosen tag
@@ -497,6 +501,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private void destroyInstance() {
         triviaCount--;
         channel.getJDA().removeEventListener(this);
+        command.removeChannelFromActive(channel);
     }
 
 

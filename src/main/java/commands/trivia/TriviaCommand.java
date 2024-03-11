@@ -1,6 +1,7 @@
 package commands.trivia;
 
 import commands.IBotCommand;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -39,7 +40,11 @@ public class TriviaCommand implements IBotCommand {
     /* Max time per question in seconds option */
     private final String OPTION_TRIVIA_SECONDS_PER_Q = "seconds_per_question";
 
+    /* Channels in which active trivia games are happening */
+    private final List<Long> activeTrivias;
+
     public TriviaCommand() {
+        activeTrivias = new ArrayList<>();
         options = new ArrayList<>();
 
         options.add(
@@ -79,6 +84,16 @@ public class TriviaCommand implements IBotCommand {
 
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
+
+        if (activeTrivias.contains(event.getChannel().getIdLong())) {
+            event.reply("There is already an active ongoing trivia!" +
+                    " Please wait until current on finishing in this channel")
+                    .queue();
+            return;
+        }
+
+        activeTrivias.add(event.getChannel().getIdLong());
+
         String tag = event.getOption(OPTION_TRIVIA_NAME).getAsString();
         int maxQuestions = 40;
         int maxPoints = 50;
@@ -96,7 +111,8 @@ public class TriviaCommand implements IBotCommand {
         event.reply("Now preparing the trivia game...").queue();
 
         Trivia triviaInstance =
-                new Trivia(tag, maxQuestions, maxPoints, questionTime, event.getChannel(), event.getUser());
+                new Trivia(tag, maxQuestions, maxPoints, questionTime, event.getChannel(), event.getUser(),
+                        this);
 
         triviaInstance.start();
 
@@ -105,5 +121,14 @@ public class TriviaCommand implements IBotCommand {
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
 
+    }
+
+
+    /**
+     * Removes a channel from the list of channels with an active trivia
+     * @param channelId channel to remove
+     */
+    public void removeChannelFromActive(MessageChannel channelId) {
+        activeTrivias.remove(channelId);
     }
 }

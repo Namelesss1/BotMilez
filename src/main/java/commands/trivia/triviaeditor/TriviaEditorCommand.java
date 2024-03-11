@@ -28,6 +28,14 @@ public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand 
 
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
+
+        if (event.getUser().hasPrivateChannel()) {
+            event.getChannel().sendMessage("Cannot start session, " +
+                            "you already have an active trivia editing session! ")
+                    .queue();
+            return;
+        }
+
         event.reply("Alright, lets start the process. I DM'd you instructions.")
                 .setEphemeral(true)
                 .queue();
