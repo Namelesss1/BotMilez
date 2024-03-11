@@ -3,6 +3,7 @@ package util;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.json.simple.JSONArray;
@@ -187,6 +188,33 @@ public class IO {
         }
 
         return true;
+    }
+
+
+    /**
+     * Returns a list of all filenames in the given directory. If given string
+     * is a file and not a directory, then it returns a list of size 1 containing
+     * the name of the file.
+     *
+     * @param dirPath String representing path to the directory
+     * @return a list of strings - all filenames in given directory
+     */
+    public static List<String> getAllFileNamesIn(String dirPath) {
+
+        File dir = new File(dirPath);
+        List<String> fileNames = new ArrayList<>();
+        if (dir.isFile()) {
+            fileNames.add(dir.getName());
+            return fileNames;
+        }
+
+
+        for (File file : dir.listFiles()) {
+            String name = file.getName();
+            fileNames.add(name);
+        }
+
+        return fileNames;
     }
 
 }
