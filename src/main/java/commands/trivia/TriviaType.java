@@ -293,5 +293,36 @@ public class TriviaType {
     }
 
 
+    /**
+     * @return The questions in this object within an embed.
+     */
+    public MessageEmbed asQuestionsEmbed() {
+
+        List<MessageEmbed.Field> fields = new ArrayList<>();
+
+        for (QA qa : questions) {
+            MessageEmbed.Field idField = new MessageEmbed.Field(
+                    "Question ID ",
+                    "" + qa.getId(),
+                    true
+            );
+            MessageEmbed.Field quesField = new MessageEmbed.Field(
+                    qa.getQuestion() + "(" + qa.getPoints() + " points)",
+                    "answers = " + qa.getAnswers().toString(),
+                    false
+            );
+
+            fields.add(idField);
+            fields.add(quesField);
+        }
+
+        EmbedPageBuilder em = new EmbedPageBuilder(10, fields, false);
+
+        em.setColor(Color.MAGENTA);
+        em.setTitle("Questions in " + getName());
+
+        return em.build();
+    }
+
 
 }
