@@ -1,5 +1,9 @@
 package commands.trivia;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -101,5 +105,19 @@ public class QA {
      */
     public boolean wasAsked() {
         return was_asked;
+    }
+
+    /**
+     *
+     * @return this question as an embed
+     */
+    public MessageEmbed asEmbed() {
+        EmbedBuilder em = new EmbedBuilder();
+        em.setAuthor("Id: " + getId());
+        em.setTitle("Question: " + getQuestion());
+        em.setDescription("Answers: " + getAnswers().toString());
+        em.setFooter(getPoints() + " points");
+        em.setColor(Color.MAGENTA);
+        return em.build();
     }
 }

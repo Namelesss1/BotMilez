@@ -1,5 +1,6 @@
 package commands.trivia.triviaeditor;
 
+import commands.trivia.TriviaType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import util.IO;
@@ -497,7 +498,7 @@ public class TriviaEditor {
      * @param name name of trivia
      * @return JSONObject representing the trivia with the given name.
      */
-    private static JSONObject getTriviaObj(String name) {
+    public static JSONObject getTriviaObj(String name) {
         JSONObject obj;
         if (IO.readJson(path + name) != null) {
             obj = (JSONObject)IO.readJson(path + name);
@@ -510,12 +511,20 @@ public class TriviaEditor {
     }
 
 
+
+
+
     /**
      * Helper to extract tokens from a comma-separated string
      * @param str a string containing a list of separated elements e.g. "word1, ha ha, word3"
      * @return A list of strings, where each element is a phrase that was seperated by a comma.
      */
     public static List<String> parseCommaSeparatedList(String str) {
+        if (!str.contains(",")) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(str);
+            return list;
+        }
         return Arrays.asList(str.split(",\\s*"));
     }
 

@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import util.EmbedPageBuilder;
+import util.IO;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,6 +35,18 @@ public class TriviaType {
 
     private List<QA> questions;
     private int size;
+
+
+    /**
+     * Initialize a trivia type object representing a type of
+     * question asked
+     *
+     * @param path string representing path to read jsonObject from
+     */
+    public TriviaType(String path) {
+        this((JSONObject)IO.readJson(path));
+    }
+
 
     /**
      * Initializes a trivia type object representing a type of
@@ -66,9 +79,11 @@ public class TriviaType {
         size = qaArray.size();
     }
 
-    public TriviaType(String user) {
-        author = user;
+    public TriviaType() {
+        questions = new ArrayList<>();
     }
+
+
 
     /**
      * Sets name of this trivia
@@ -302,8 +317,8 @@ public class TriviaType {
 
         for (QA qa : questions) {
             MessageEmbed.Field idField = new MessageEmbed.Field(
-                    "Question ID ",
-                    "" + qa.getId(),
+                    "",
+                    "ID: " + qa.getId(),
                     true
             );
             MessageEmbed.Field quesField = new MessageEmbed.Field(

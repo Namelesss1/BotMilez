@@ -53,7 +53,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private final MessageChannel channel;
 
     /* Path to the trivias */
-    private final String path = "resources/trivia/";
+    private static final String path = "resources/trivia/";
 
     /* Total number of questions in this trivia */
     private int numTotalQuestions;
@@ -505,7 +505,28 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     }
 
 
+    /**
+     * Returns whether a trivia exists
+     * @param name name of the trivia
+     * @return true if trivia exists, false if not
+     */
+    public static boolean triviaExists(String name) {
+        List<String> defaultFileNames = IO.getAllFileNamesIn(path);
+        List<String> customFileNames = IO.getAllFileNamesIn(path + "custom/");
 
+        for (String fileName : defaultFileNames) {
+            if (IO.removeExtensionFromName(fileName).equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        for (String fileName : customFileNames) {
+            if (IO.removeExtensionFromName(fileName).equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
 }
