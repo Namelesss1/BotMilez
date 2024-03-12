@@ -272,7 +272,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
      * @param element
      */
     private void processElementSelect(String element) {
-        
+
     }
 
     /**
