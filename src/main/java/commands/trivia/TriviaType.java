@@ -340,4 +340,45 @@ public class TriviaType {
     }
 
 
+    /**
+     * Converts this triviaType into a JSONObject then attempts
+     * to write it as a JSON file at the specified path
+     *
+     * @param path name and directory of file to write back
+     * @return true on success, false on an error
+     */
+    public boolean writeTrivia(String path) {
+
+        JSONObject trivObj = new JSONObject();
+        trivObj.put("name", name);
+        trivObj.put("author", author);
+        trivObj.put("is_default", is_default);
+        trivObj.put("all_servers", all_servers);
+
+        JSONArray servers = new JSONArray();
+        for (long serverId : this.servers) {
+            servers.add(serverId);
+        }
+        trivObj.put("servers", servers);
+
+        JSONArray editors = new JSONArray();
+        for (String editor : allowed_editors) {
+            editors.add(editor);
+        }
+        trivObj.put("allowed_editors", editors);
+
+        JSONArray tags = new JSONArray();
+        for (String tag : this.tags) {
+            tags.add(tag);
+        }
+        trivObj.put("tags", tags);
+
+        if (is_default) {
+            return IO.writeJson(trivObj, path + name);
+        }
+        return IO.writeJson(trivObj, path + "/custom" + name);
+
+
+    }
+
 }

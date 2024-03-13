@@ -1,6 +1,5 @@
 package commands.trivia.triviaeditor;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import commands.Stoppable;
 import commands.trivia.QA;
 import commands.trivia.Trivia;
@@ -10,23 +9,20 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.json.simple.JSONObject;
-import util.IO;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Represents an instance of a session where a user is modifying a
  * custom trivia.
  *
- * //TODO: When editing question, check if name is available + further checks
- * //TODO: Verify both user and bot are in mentioned server
  */
 public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
     /* Specifies the potential ways user interacts with the trivia editor */
-    private enum Action {
+    enum Action {
 
         UNDEFINED, /* User has not-yet selected one of the below */
         CREATE, /* Creating a new trivia */
@@ -38,11 +34,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
      * If a user is modifying an existing trivia, specifies the actions
      * being taken
      */
-    private enum ModifyAction {
-
-        SELECT_TRIVIA, /* Selecting what trivia to modify */
-        SELECT_ELEMENT, /* Selecting what to modify e.g. tags, questions, name */
-        SELECT_ADD_OR_REMOVE, /* Selecting whether to add or remove an element */
+    protected enum ModifyAction {
         ADD, /* Adding a new element to the trivia */
         REMOVE /* Removing an element from the trivia */
     }
@@ -50,7 +42,12 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     /* For state machine : what the user is currently inputting.
     * This enum is organized in the order of the states that a user enters
     * when creating a new trivia. From START -> FINISHED */
-    private enum InputType {
+    protected enum InputType {
+
+        SELECT_TRIVIA, /* Selecting what trivia to modify */
+        SELECT_ELEMENT, /* Selecting what to modify e.g. tags, questions, name */
+        SELECT_ADD_OR_REMOVE, /* Selecting whether to add or remove an element */
+
         START, /* Just beginning */
         NAME, /* Inputting name */
         TAGS, /* Inputting tags */
@@ -65,45 +62,49 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     }
 
     /* Specifies whether the user is fixing a mistake */
-    private enum CorrectState {
+    protected enum CorrectState {
         CORRECT, /* User has not made a mistake in input */
         MISTAKE /* User has made a mistake in input, has to correct */
     }
 
     /* Specifies whether the user is confirming a choice they have made */
-    private enum ConfirmState {
+    protected enum ConfirmState {
         NORMAL,
         CONFIRM /* User is confirming an input choice they have made */
     }
 
     /* User that is currently editing/creating this trivia */
-   private User user;
+   protected User user;
 
-   private MessageChannel channel;
+   protected MessageChannel channel;
 
    /* Channel for DM with user */
-   private String channelId;
+   protected String channelId;
 
 
-   private InputType inputType;
+   protected InputType inputType;
 
-  private Action action;
+  protected Action action;
 
-  private ModifyAction modifyAction;
+  protected ModifyAction modifyAction;
 
-  private CorrectState correctState;
+  protected CorrectState correctState;
 
-  private ConfirmState confirmState;
+  protected ConfirmState confirmState;
 
    /* TriviaType object containing the modified information to write back */
-   private TriviaType triviaType;
+   protected TriviaType triviaType;
 
    /* Question object containing current question information to write back */
-   private QA questionObj;
+   protected QA questionObj;
 
-    private static final String path = "resources/trivia/";
+    protected static final String path = "resources/trivia/";
 
-   private String startStr = "Type one of the below options to either create a new" +
+    private TriviaCreator creator;
+
+    private TriviaModifier modifier;
+
+   protected String startStr = "Type one of the below options to either create a new" +
            "trivia, modify an existing one, or delete a trivia entirely.\n" +
            "Remember, to end this process at anytime you can type 'stop' \n\n" +
            "```create``` | ```modify``` | ```delete```";
@@ -152,128 +153,35 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         if (action == Action.UNDEFINED) {
             if (msg.equalsIgnoreCase("create")) {
                 action = Action.CREATE;
+                creator = new TriviaCreator(this);
             }
             else if (msg.equalsIgnoreCase("modify")) {
                 action = Action.MODIFY;
-                modifyAction = ModifyAction.SELECT_TRIVIA;
+                inputType = inputType.SELECT_TRIVIA;
+                modifier = new TriviaModifier(this);
             }
             else if (msg.equalsIgnoreCase("delete")) {
                 action = Action.DELETE;
             }
             else {
                 channel.sendMessage("You did not select an appropriate option").queue();
+                return;
             }
         }
 
+        else if (action == Action.CREATE) {
+            creator.handleInput(msg);
+        }
 
-        if (inputType == InputType.START) {
-            promptName();
-        }
-        else if (inputType == InputType.NAME) {
-            processNameInput(msg);
-        }
-        else if (inputType == InputType.TAGS) {
-            processTagsInput(msg);
-        }
-        else if (inputType == InputType.UNIVERSAL) {
-            processUniversalInput(msg);
-        }
-        else if (inputType == InputType.SERVERS) {
-            processServersInput(msg);
-        }
-        else if (inputType == InputType.EDITORS) {
-            processEditorsInput(msg);
-        }
-        else if (inputType == InputType.QUESTION) {
-            processQuestionInput(msg);
-        }
-        else if (inputType == InputType.ANSWERS) {
-            processAnswerInput(msg);
-        }
-        else if (inputType == InputType.POINTS) {
-            processPointsInput(msg);
-        }
-        else if (inputType == InputType.FINISHED) {
-            processMoreQuestionPrompt(msg);
-
+        else if (action == Action.MODIFY) {
+            modifier.handleInput(msg);
         }
 
     }
 
 
-    /**
-     * Handles queries when a user chooses to modify an existing trivia
-     * @param event
-     */
-    private void handleModify(MessageReceivedEvent event) {
-
-        String msg = event.getMessage().getContentRaw();
 
 
-
-
-    }
-
-
-    /**
-     * Handles queries when a user chooses to delete an existing trivia
-     * @param event
-     */
-    private void handleDelete(MessageReceivedEvent event) {
-
-        String msg = event.getMessage().getContentRaw();
-        MessageChannel channel = event.getChannel();
-
-    }
-
-
-    private void processStartInput(String input) {
-        if (action == Action.CREATE) {
-            triviaType = new TriviaType();
-            triviaType.setAuthor(user.getName());
-            inputType = InputType.NAME;
-        }
-
-        promptName();
-    }
-
-
-    /**
-     * If a user selected to modify an existing trivia, ensures the trivia
-     * exists and then prompts what element of the trivia the user wants to modify.
-     * Sends an error to the user if trivia does not exist, or they don't have permissions
-     * to modify it and prompts them to try again.
-     *
-     * @param name name of trivia to modify
-     */
-    private void processTriviaSelect(String name) {
-        if (!Trivia.triviaExists(name)) {
-            channel.sendMessage("The trivia, " + name + " does not exist!" +
-                    " Please try inputting another name.")
-                    .queue();
-            return;
-        }
-
-        /* Load the trivia if found */
-        triviaType = new TriviaType(path + "/custom" +name);
-        modifyAction = ModifyAction.SELECT_ELEMENT;
-
-        if (!triviaType.getEditors().contains(user.getName())) {
-            channel.sendMessage("You do not have permission to edit this trivia." +
-                    " Maybe you can request permission from the creator.").queue();
-            stop(user, channel);
-            return;
-        }
-    }
-
-
-    /**
-     *
-     * @param element
-     */
-    private void processElementSelect(String element) {
-
-    }
 
     /**
      * Sets the name of a trivia and verifies it is correct
@@ -321,7 +229,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
      */
     private void processTagsInput(String tagsStr) {
         if (action == Action.CREATE) {
-            List<String> tags = TriviaEditor.parseCommaSeparatedList(tagsStr);
+            List<String> tags = parseCommaSeparatedList(tagsStr);
             channel.sendMessage("Your tags are: **" + tags.toString() + "**").queue();
             triviaType.setTags(tags);
             String universalStr = "Do you want this trivia to be viewable across all servers i'm in?" +
@@ -383,7 +291,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
      * @param serverStr User response representing all server names they want to allow.
      */
     private void processServersInput(String serverStr) {
-        List<String> servers = TriviaEditor.parseCommaSeparatedList(serverStr);
+        List<String> servers = parseCommaSeparatedList(serverStr);
         List<Long> serverIds = new ArrayList<>();
         for (Guild server : user.getMutualGuilds()) {
             if (servers.contains(server.getName().toLowerCase())) {
@@ -418,7 +326,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         List<String> editors = new ArrayList<>();
         editors.add(triviaType.getAuthor());
         if (!editorStr.trim().equalsIgnoreCase("none")) {
-            List<String> additionalEditors = TriviaEditor.parseCommaSeparatedList(editorStr);
+            List<String> additionalEditors = parseCommaSeparatedList(editorStr);
             editors.addAll(additionalEditors);
         }
 
@@ -461,7 +369,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
      */
     private void processAnswerInput(String ansStr) {
         if (correctState == CorrectState.CORRECT) {
-            List<String> answers = TriviaEditor.parseCommaSeparatedList(ansStr);
+            List<String> answers = parseCommaSeparatedList(ansStr);
             questionObj.setAnswer(answers);
         }
 
@@ -537,53 +445,6 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
 
 
-    public void promptName() {
-        if (action == Action.CREATE) {
-            channel.sendMessage("What would you like to name this new trivia?").queue();
-        }
-        else if (action == Action.MODIFY) {
-            if (modifyAction == ModifyAction.SELECT_TRIVIA) {
-                channel.sendMessage("Enter name of the trivia you want to edit").queue();
-            }
-            else {
-                channel.sendMessage("What would you like to rename this trivia to?").queue();
-            }
-        }
-    }
-
-
-
-    public void promptTags() {
-
-    }
-
-    public void promptUniversal() {
-
-    }
-
-    public void promptServers() {
-
-    }
-
-    public void promptEditors() {
-
-    }
-
-    public void promptQuestion() {
-
-    }
-
-    public void promptAnswers() {
-
-    }
-
-    public void promptPoints() {
-
-    }
-
-    public void promptMoreQuestions() {
-
-    }
 
 
 
@@ -600,6 +461,19 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     }
 
 
+    /**
+     * Helper to extract tokens from a comma-separated string
+     * @param str a string containing a list of separated elements e.g. "word1, ha ha, word3"
+     * @return A list of strings, where each element is a phrase that was seperated by a comma.
+     */
+    public static List<String> parseCommaSeparatedList(String str) {
+        if (!str.contains(",")) {
+            ArrayList<String> list = new ArrayList<>();
+            list.add(str);
+            return list;
+        }
+        return Arrays.asList(str.split(",\\s*"));
+    }
 
 
 
