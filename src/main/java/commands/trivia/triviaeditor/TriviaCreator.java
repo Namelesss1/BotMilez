@@ -75,7 +75,7 @@ public class TriviaCreator {
 
         session.channel.sendMessage("Your trivia name is: **" + name + "**").queue();
         session.triviaType.setName(name);
-        promptName();
+        promptTags();
         session.inputType = TriviaEditSession.InputType.TAGS;
 
     }
