@@ -52,6 +52,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Message Channel of which this trivia is happening in */
     private final MessageChannel channel;
 
+    /* ID of channel this trivia is happening in */
+    private long channelId;
+
     /* Path to the trivias */
     private static final String path = "resources/trivia/";
 
@@ -97,6 +100,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         winningScore = maxPoints;
         questionTimeLimit = timeLimit;
         this.channel = channel;
+        channelId = channel.getIdLong();
         triviaTypes = new ArrayList<>();
         triviaNames = new ArrayList<>();
         currentQuestionIndex = new int[2];
@@ -106,6 +110,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         playerToScore.put(user, new Long(0));
         triviaCount++;
         this.command = triviaCommand;
+
+        System.out.println(channel);
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
          * Loop through all files in trivia directory to see if the user-chosen tag
@@ -501,7 +507,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     private void destroyInstance() {
         triviaCount--;
         channel.getJDA().removeEventListener(this);
-        command.removeChannelFromActive(channel);
+        command.removeChannelFromActive(channelId);
     }
 
 

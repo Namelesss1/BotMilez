@@ -128,7 +128,8 @@ public class TriviaCommand implements IBotCommand {
      * Removes a channel from the list of channels with an active trivia
      * @param channelId channel to remove
      */
-    public void removeChannelFromActive(MessageChannel channelId) {
+    public void removeChannelFromActive(long channelId) {
+        System.out.println(channelId);
         activeTrivias.remove(channelId);
     }
 }
