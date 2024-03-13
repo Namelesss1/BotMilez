@@ -80,7 +80,11 @@ public class TriviaType {
     }
 
     public TriviaType() {
+
         questions = new ArrayList<>();
+        tags = new ArrayList<>();
+        servers = new ArrayList<>();
+        allowed_editors = new ArrayList<>();
     }
 
 
