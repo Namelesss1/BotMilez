@@ -98,7 +98,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
    protected String startStr = "Type one of the below options to either create a new" +
            "trivia, modify an existing one, or delete a trivia entirely.\n" +
            "Remember, to end this process at anytime you can type 'stop' \n\n" +
-           "```create``` | ```modify``` | ```delete```";
+           "```create``` ```modify``` ```delete```";
 
    public TriviaEditSession(User user) {
        this.user = user;
