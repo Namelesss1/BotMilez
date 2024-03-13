@@ -115,7 +115,6 @@ public class Trivia extends ListenerAdapter implements Stoppable {
          * Loop through all files in trivia directory to see if the user-chosen tag
          * matches the trivia's tag or name. If so, add it to the trivia type list
          * for this trivia instance. */
-        //TODO: Modify behavior to account for custom trivias (only those in this server)
         final FileNameExtensionFilter extensionFilter =
                 new FileNameExtensionFilter("N/A", "json");
         File tDir = new File(path);
@@ -125,7 +124,26 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
                 List<String> tags = (JSONArray)trivObj.get("tags");
                 String trivName = (String)trivObj.get("name");
-                if (tags.contains(tag.toLowerCase()) || tag.equalsIgnoreCase(trivName)) {
+                if (tags.stream().anyMatch(tag::equalsIgnoreCase)
+                        || tag.equalsIgnoreCase(trivName)) {
+                    TriviaType type = new TriviaType(trivObj);
+                    numTotalQuestions += type.getSize();
+                    if (type.getSize() > 0) {
+                        triviaTypes.add(type);
+                    }
+                    triviaNames.add(type.getName());
+                }
+            }
+        }
+        tDir = new File(path + "/custom");
+        for (File file : tDir.listFiles()) {
+            if (extensionFilter.accept(file) && file.isFile()) {
+                String fileName = file.getName();
+                JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
+                List<String> tags = (JSONArray)trivObj.get("tags");
+                String trivName = (String)trivObj.get("name");
+                if (tags.stream().anyMatch(tag::equalsIgnoreCase)
+                        || tag.equalsIgnoreCase(trivName)) {
                     TriviaType type = new TriviaType(trivObj);
                     numTotalQuestions += type.getSize();
                     if (type.getSize() > 0) {

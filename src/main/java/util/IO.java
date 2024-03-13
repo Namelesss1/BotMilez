@@ -143,6 +143,7 @@ public class IO {
         try {
             FileReader reader = new FileReader(path);
             res = parser.parse(reader);
+            reader.close();
         }
         catch(ParseException e) {
             System.out.println(e.getLocalizedMessage());
