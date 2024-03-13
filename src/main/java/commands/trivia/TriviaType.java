@@ -34,7 +34,6 @@ public class TriviaType {
     private List<String> allowed_editors;
 
     private List<QA> questions;
-    private int size;
 
 
     /**
@@ -76,7 +75,6 @@ public class TriviaType {
             questions.add(new QA(id, question, answers, points));
         }
 
-        size = qaArray.size();
     }
 
     public TriviaType() {
@@ -209,7 +207,7 @@ public class TriviaType {
      * @return how many questions are within this triviatype
      */
     public int getSize() {
-        return size;
+        return questions.size();
     }
 
     /**
@@ -218,7 +216,6 @@ public class TriviaType {
      */
     public void removeQuestion(int index) {
         questions.remove(index);
-        size--;
     }
 
     /**
