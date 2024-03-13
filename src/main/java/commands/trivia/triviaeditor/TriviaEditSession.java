@@ -110,7 +110,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
                privChannel -> {
                    channelId = privChannel.getId();
                    channel = privChannel;
-                   TriviaEditorCommand.addToActiveUser(channelId);
+                   TriviaEditorCommand.addToActiveUser(user.getId());
                    return privChannel.sendMessage(startStr);
                }
        ).queue();
@@ -140,6 +140,13 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         }
 
         String msg = event.getMessage().getContentRaw();
+
+        if (msg.equalsIgnoreCase(Stoppable.STOP) ||
+        msg.equalsIgnoreCase(Stoppable.CANCEL) ||
+        msg.equalsIgnoreCase(Stoppable.END)) {
+            stop(user, channel);
+            return;
+        }
 
         if (action == Action.UNDEFINED) {
             if (msg.equalsIgnoreCase("create")) {
