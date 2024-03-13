@@ -374,10 +374,18 @@ public class TriviaType {
         }
         trivObj.put("tags", tags);
 
-        if (is_default) {
-            return IO.writeJson(trivObj, path + name);
+        JSONArray questions = new JSONArray();
+        for (QA qa : this.questions) {
+            JSONObject obj = new JSONObject();
+            obj.put("id", qa.getId());
+            obj.put("question", qa.getQuestion());
+            obj.put("answer", qa.getAnswers());
+            obj.put("points", qa.getPoints());
+            questions.add(obj);
         }
-        return IO.writeJson(trivObj, path + "/custom" + name);
+        trivObj.put("qas", questions);
+
+        return IO.writeJson(trivObj, path + ".json");
 
 
     }

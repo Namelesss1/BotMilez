@@ -111,8 +111,6 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         triviaCount++;
         this.command = triviaCommand;
 
-        System.out.println(channel);
-
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
          * Loop through all files in trivia directory to see if the user-chosen tag
          * matches the trivia's tag or name. If so, add it to the trivia type list

@@ -256,15 +256,23 @@ public class TriviaCreator {
         if (response.trim().equalsIgnoreCase("yes")) {
             promptQuestion();
             session.inputType = TriviaEditSession.InputType.QUESTION;
+            return;
         }
-        else {
-            //TODO: Write triviaType to file using TriviaEditor
+
+
+        boolean success = session.triviaType.writeTrivia(
+                session.path + "custom/" + session.triviaType.getName());
+        if (success) {
             session.channel.sendMessage("Here is the trivia you created. " +
                     "You may edit it at any time if you want to modify something." +
                     " Thanks for making a trivia!").queue();
             session.channel.sendMessageEmbeds(session.triviaType.asEmbed()).queue();
             session.channel.sendMessageEmbeds(session.triviaType.asQuestionsEmbed()).queue();
             session.stop(session.user, session.channel);
+        }
+        else {
+            session.channel.sendMessage("Oops, something went wrong when saving the" +
+                    "trivia. Please try again later.").queue();
         }
     }
 
