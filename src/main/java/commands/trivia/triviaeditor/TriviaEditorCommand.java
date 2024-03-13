@@ -1,15 +1,21 @@
 package commands.trivia.triviaeditor;
 
 import commands.IBotCommand;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand {
+
+    private static List<String> activeEditIDs;
+
+    public TriviaEditorCommand() {
+        activeEditIDs = new ArrayList<>();
+    }
 
     @Override
     public String getName() {
@@ -29,14 +35,15 @@ public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand 
     @Override
     public void doAction(SlashCommandInteractionEvent event) {
 
-        if (event.getUser().hasPrivateChannel()) {
+        if (activeEditIDs.contains(event.getUser().getId())) {
             event.getChannel().sendMessage("Cannot start session, " +
-                            "you already have an active trivia editing session! ")
+                    "you already have an active trivia editing session! ")
                     .queue();
             return;
+
         }
 
-        event.reply("Alright, lets start the process. I DM'd you instructions.")
+        event.reply("Lets start the process.")
                 .setEphemeral(true)
                 .queue();
 
@@ -48,6 +55,15 @@ public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand 
 
     }
 
+    /**
+     * Adds an active user to the list of active ones
+     * @param id id of channel to add
+     */
+    public static void addToActiveUser(String id) {
+        activeEditIDs.add(id);
+    }
 
-
+    public static void removeActiveUsers(String id) {
+        activeEditIDs.remove(id);
+    }
 }

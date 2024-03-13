@@ -2,10 +2,9 @@ package commands.trivia.triviaeditor;
 
 import commands.Stoppable;
 import commands.trivia.QA;
-import commands.trivia.Trivia;
 import commands.trivia.TriviaType;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -70,7 +69,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     /* User that is currently editing/creating this trivia */
    protected User user;
 
-   protected MessageChannel channel;
+   protected PrivateChannel channel;
 
    /* Channel for DM with user */
    protected String channelId;
@@ -111,6 +110,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
                privChannel -> {
                    channelId = privChannel.getId();
                    channel = privChannel;
+                   TriviaEditorCommand.addToActiveUser(channelId);
                    return privChannel.sendMessage(startStr);
                }
        ).queue();
@@ -179,7 +179,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
     public void destroySession() {
         user.getJDA().removeEventListener(this);
-        //TODO: Close private channel
+        TriviaEditorCommand.removeActiveUsers(user.getId());
     }
 
 
