@@ -3,8 +3,11 @@ package commands.trivia.triviaeditor;
 import commands.trivia.QA;
 import commands.trivia.Trivia;
 import commands.trivia.TriviaType;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,13 +141,12 @@ public class TriviaCreator {
      * @param serverStr User response representing all server names they want to allow.
      */
     private void processServersInput(String serverStr) {
-        List<String> servers = TriviaEditSession.parseCommaSeparatedList(serverStr);
+        List<String> inputServers = TriviaEditSession.parseCommaSeparatedList(serverStr);
         List<Long> serverIds = new ArrayList<>();
         for (Guild server : session.user.getMutualGuilds()) {
-            if (servers.contains(server.getName().toLowerCase())) {
+            if (inputServers.stream().anyMatch(server.getName()::equalsIgnoreCase)) {
                 serverIds.add(server.getIdLong());
             }
-
         }
         session.triviaType.setServers(serverIds);
 
@@ -289,7 +291,7 @@ public class TriviaCreator {
     public void promptTags() {
         session.channel.sendMessage("Enter any tags you want for this trivia. " +
                                 "These tags help identify" +
-                "what the trivia is about. Seperate each one with a comma. For example," +
+                "what the trivia is about. Seperate each one with a comma. For example, " +
                 "if I make a trivia for Super Mario Bros., I might type this:\n\n" +
                 "super mario bros, mario, nintendo, nes, fun game, mario bros")
                 .queue();
@@ -307,12 +309,24 @@ public class TriviaCreator {
                         " playable in. Use a comma-separated list e.g. \n\n" +
                         "my test server, The Clubhouse, Jim's Hangout Server")
                 .queue();
+        session.channel.sendMessage("Here are our mutual servers: ").queue();
+        EmbedBuilder emBuilder = new EmbedBuilder();
+        emBuilder.setColor(Color.MAGENTA);
+        emBuilder.setTitle("Servers");
+        for (Guild server : session.user.getMutualGuilds()) {
+            emBuilder.addField(new MessageEmbed.Field(
+                    server.getName(),
+                    "Mutual Server",
+                    false
+            ));
+        }
+        session.channel.sendMessageEmbeds(emBuilder.build()).queue();
     }
 
     public void promptEditors() {
         session.channel.sendMessage("Enter the discord usernames of all " +
                         "people you want to be able to " +
-                        "contribute to this trivia. These people will be able to edit, modify," +
+                        "contribute to this trivia. These people will be able to edit, modify, " +
                         "contribute to it, or delete it. Use a comma-separated list e.g.:\n\n" +
                         "bob41, mike10, awesomeUser")
                 .queue();
@@ -320,8 +334,7 @@ public class TriviaCreator {
 
     public void promptQuestion() {
         session.channel.sendMessage("Enter a question you would like " +
-                        "to ask in this trivia. Or type" +
-                        "stop if you are finished")
+                        "to ask in this trivia.")
                 .queue();
     }
 
