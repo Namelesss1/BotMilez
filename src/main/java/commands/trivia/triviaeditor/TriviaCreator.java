@@ -70,18 +70,14 @@ public class TriviaCreator {
             session.channel.sendMessage("A trivia named " + name + " already exists! " +
                             "try another name.")
                     .queue();
-
-            session.correctState = TriviaEditSession.CorrectState.MISTAKE;
             return;
         }
 
-        if (session.correctState == session.correctState.CORRECT) {
-                session.channel.sendMessage("Your trivia name is: **" + name + "**").queue();
-                session.triviaType.setName(name);
-                promptName();
-                session.inputType = TriviaEditSession.InputType.TAGS;
-                session.correctState = TriviaEditSession.CorrectState.CORRECT;
-        }
+        session.channel.sendMessage("Your trivia name is: **" + name + "**").queue();
+        session.triviaType.setName(name);
+        promptName();
+        session.inputType = TriviaEditSession.InputType.TAGS;
+
     }
 
 
@@ -193,15 +189,12 @@ public class TriviaCreator {
      * @param quesStr string representing question prompt user wants to ask
      */
     private void processQuestionInput(String quesStr) {
-        if (session.correctState == TriviaEditSession.CorrectState.CORRECT) {
-            session.questionObj = new QA();
-            session.questionObj.setId(session.triviaType.getNextQuestionId());
-            session.questionObj.setQuestion(quesStr);
-        }
+        session.questionObj = new QA();
+        session.questionObj.setId(session.triviaType.getNextQuestionId());
+        session.questionObj.setQuestion(quesStr);
 
         promptAnswers();
         session.inputType = TriviaEditSession.InputType.ANSWERS;
-        session.correctState = TriviaEditSession.CorrectState.CORRECT;
     }
 
 
@@ -210,14 +203,11 @@ public class TriviaCreator {
      * @param ansStr string representing a list of answers the user wants
      */
     private void processAnswerInput(String ansStr) {
-        if (session.correctState == TriviaEditSession.CorrectState.CORRECT) {
-            List<String> answers = TriviaEditSession.parseCommaSeparatedList(ansStr);
-            session.questionObj.setAnswer(answers);
-        }
+        List<String> answers = TriviaEditSession.parseCommaSeparatedList(ansStr);
+        session.questionObj.setAnswer(answers);
 
         promptPoints();
         session.inputType = TriviaEditSession.InputType.POINTS;
-
     }
 
 
@@ -236,26 +226,22 @@ public class TriviaCreator {
         catch (NumberFormatException e) {
             session.channel.sendMessage("You did not enter a number. Please try again.")
                     .queue();
-            session.correctState = TriviaEditSession.CorrectState.MISTAKE;
             return;
         }
 
         if (pts < 0 || pts > 3) {
             session.channel.sendMessage("Your number is not in the inclusive range of 1-3." +
                     " Please try again.").queue();
-            session.correctState = TriviaEditSession.CorrectState.MISTAKE;
             return;
         }
 
         session.questionObj.setPoints(pts);
         session.triviaType.addQuestion(session.questionObj);
-
         session.channel.sendMessage("Here is your question:").queue();
         session.channel.sendMessageEmbeds(session.questionObj.asEmbed()).queue();
 
         promptMoreQuestions();
         session.inputType = TriviaEditSession.InputType.FINISHED;
-        session.correctState = TriviaEditSession.CorrectState.CORRECT;
     }
 
 
