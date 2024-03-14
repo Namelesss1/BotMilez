@@ -181,7 +181,9 @@ public class IO {
 
         File file = new File(path);
         try {
-            file.delete();
+            if (!file.delete()) {
+                return false;
+            }
         }
         catch(Exception e) {
             System.out.println(e.getLocalizedMessage());

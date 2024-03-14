@@ -387,7 +387,6 @@ public class TriviaType {
 
         return IO.writeJson(trivObj, path + ".json");
 
-
     }
 
 }

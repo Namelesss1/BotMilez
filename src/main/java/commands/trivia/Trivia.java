@@ -135,11 +135,11 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 }
             }
         }
-        tDir = new File(path + "/custom");
+        tDir = new File(path + "custom/");
         for (File file : tDir.listFiles()) {
             if (extensionFilter.accept(file) && file.isFile()) {
                 String fileName = file.getName();
-                JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
+                JSONObject trivObj = (JSONObject)IO.readJson(path + "custom/" + fileName);
                 List<String> tags = (JSONArray)trivObj.get("tags");
                 String trivName = (String)trivObj.get("name");
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)

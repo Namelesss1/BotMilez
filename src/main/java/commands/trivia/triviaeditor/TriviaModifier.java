@@ -2,6 +2,7 @@ package commands.trivia.triviaeditor;
 
 import commands.trivia.Trivia;
 import commands.trivia.TriviaType;
+import util.IO;
 
 public class TriviaModifier {
 
@@ -23,6 +24,9 @@ public class TriviaModifier {
         else if (session.inputType == TriviaEditSession.InputType.SELECT_ELEMENT) {
             processElementSelect(input);
         }
+        else if (session.inputType == TriviaEditSession.InputType.NAME) {
+            processNameInput(input);
+        }
     }
 
     /**
@@ -42,7 +46,8 @@ public class TriviaModifier {
         }
 
         /* Load the trivia if found */
-        session.triviaType = new TriviaType(session.path + "/custom" +name);
+        session.triviaType = new TriviaType(session.path + "/custom/" + name + ".json");
+        System.out.println(session.triviaType.getName());
         session.inputType = TriviaEditSession.InputType.SELECT_ADD_OR_REMOVE;
 
         if (!session.triviaType.getEditors().contains(session.user.getName())) {
@@ -57,11 +62,15 @@ public class TriviaModifier {
 
 
     private void processAddOrRemove(String response) {
-        if (response.equalsIgnoreCase("add")) {
+        if (response.equalsIgnoreCase("add")||
+                response.equalsIgnoreCase("adding")) {
             session.modifyAction = TriviaEditSession.ModifyAction.ADD;
+            session.inputType = TriviaEditSession.InputType.SELECT_ELEMENT;
         }
-        else if (response.equalsIgnoreCase("remove")) {
+        else if (response.equalsIgnoreCase("remove") ||
+                response.equalsIgnoreCase("removing")) {
             session.modifyAction = TriviaEditSession.ModifyAction.REMOVE;
+            session.inputType = TriviaEditSession.InputType.SELECT_ELEMENT;
         }
         else {
             session.channel.sendMessage("Invalid response. Type" +
@@ -84,21 +93,27 @@ public class TriviaModifier {
     private void processElementSelect(String element) {
         if (element.equalsIgnoreCase("name")) {
             promptName();
+            session.inputType = TriviaEditSession.InputType.NAME;
         }
         else if (element.equalsIgnoreCase("tags")) {
             promptTags();
+            session.inputType = TriviaEditSession.InputType.TAGS;
         }
         else if (element.equalsIgnoreCase("universal")) {
             promptUniversal();
+            session.inputType = TriviaEditSession.InputType.UNIVERSAL;
         }
         else if (element.equalsIgnoreCase("servers")) {
             promptServers();
+            session.inputType = TriviaEditSession.InputType.SERVERS;
         }
         else if (element.equalsIgnoreCase("editors")) {
             promptEditors();
+            session.inputType = TriviaEditSession.InputType.EDITORS;
         }
         else if (element.equalsIgnoreCase("questions")) {
             promptQuestion();
+            session.inputType = TriviaEditSession.InputType.QUESTION;
         }
         else {
             session.channel.sendMessage(element + " is not recognized. Type" +
@@ -122,13 +137,56 @@ public class TriviaModifier {
             return;
         }
 
-        //TODO: WRite back result
-        session.channel.sendMessage("Success: Your new trivia name is: **" + name + "**")
-                        .queue();
+        String oldName = session.triviaType.getName();
+        session.triviaType.setName(name);
+        boolean success = session.triviaType.writeTrivia(
+                session.path + "custom/" + session.triviaType.getName());
+
+        /* If failed to create the new file */
+        if (!success) {
+            session.channel.sendMessage(" There was an error when saving the name" +
+                    "to the trivia. Please try again")
+                    .queue();
+            session.stop(session.user, session.channel);
+            return;
+        }
+
+        boolean deleteSuccess = IO.deleteFile(session.path + "custom/" + oldName + ".json");
+        /* If failed to delete the previous file with old name, send error and
+         * delete the new one.
+         */
+        if (!deleteSuccess) {
+            session.channel.sendMessage("There was a problem when replacing the previous " +
+                    "trivia's name file. Please try again.")
+                    .queue();
+            IO.deleteFile(session.path + "custom/" + session.triviaType.getName());
+            session.stop(session.user, session.channel);
+            return;
+        }
+
+        session.channel.sendMessage("Success: your new trivia name was changed " +
+                "from " + oldName + " to " + session.triviaType.getName())
+                .queue();
+
         session.stop(session.user, session.channel);
 
     }
 
+
+
+    private void writeBack(String successMsg) {
+        boolean success = session.triviaType.writeTrivia(
+                session.path + "custom/" + session.triviaType.getName());
+        if (success) {
+            session.channel.sendMessage("Success: " + successMsg)
+                    .queue();
+            session.stop(session.user, session.channel);
+        }
+        else {
+            session.channel.sendMessage("Oops, something went wrong."  +
+                    " Please try again").queue();
+        }
+    }
 
     public void promptTrivia() {
         session.channel.sendMessage("Enter the name of the trivia you wish to edit")
