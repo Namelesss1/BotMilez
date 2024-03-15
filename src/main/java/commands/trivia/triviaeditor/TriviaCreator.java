@@ -28,7 +28,12 @@ public class TriviaCreator {
     }
 
     public void handleInput(String input) {
-        if (session.inputType == TriviaEditSession.InputType.START) {
+
+        if (session.confirmState == TriviaEditSession.ConfirmState.CONFIRM) {
+            processConfirm(input);
+        }
+
+        else if (session.inputType == TriviaEditSession.InputType.START) {
             promptName();
         }
         else if (session.inputType == TriviaEditSession.InputType.NAME) {
@@ -76,11 +81,11 @@ public class TriviaCreator {
             return;
         }
 
-        session.channel.sendMessage("Your trivia name is: **" + name + "**").queue();
+        session.channel.sendMessage("Your trivia name is: **" + name + "**" +
+                "").queue();
         session.triviaType.setName(name);
-        promptTags();
-        session.inputType = TriviaEditSession.InputType.TAGS;
-
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -92,8 +97,8 @@ public class TriviaCreator {
         List<String> tags = TriviaEditSession.parseCommaSeparatedList(tagsStr);
         session.channel.sendMessage("Your tags are: **" + tags.toString() + "**").queue();
         session.triviaType.setTags(tags);
-        promptUniversal();
-        session.inputType = TriviaEditSession.InputType.UNIVERSAL;
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -122,16 +127,8 @@ public class TriviaCreator {
             return;
         }
         session.triviaType.setUniversal(universal);
-
-
-        if (universal) {
-            promptEditors();
-            session.inputType = TriviaEditSession.InputType.EDITORS;
-        }
-        else {
-           promptServers();
-            session.inputType = TriviaEditSession.InputType.SERVERS;
-        }
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -157,8 +154,8 @@ public class TriviaCreator {
         session.channel.sendMessage("Your trivia will be viewable in the following servers: " +
                 serverNames.toString()).queue();
 
-        promptEditors();
-        session.inputType = TriviaEditSession.InputType.EDITORS;
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -179,9 +176,8 @@ public class TriviaCreator {
                 "permission to edit your trivia: " +
                 editors.toString()).queue();
 
-
-        promptQuestion();
-        session.inputType = TriviaEditSession.InputType.QUESTION;
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -194,9 +190,11 @@ public class TriviaCreator {
         session.questionObj = new QA();
         session.questionObj.setId(session.triviaType.getNextQuestionId());
         session.questionObj.setQuestion(quesStr);
+        session.channel.sendMessage("Question is: ```" + quesStr + "```")
+                        .queue();
 
-        promptAnswers();
-        session.inputType = TriviaEditSession.InputType.ANSWERS;
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -207,9 +205,12 @@ public class TriviaCreator {
     private void processAnswerInput(String ansStr) {
         List<String> answers = TriviaEditSession.parseCommaSeparatedList(ansStr);
         session.questionObj.setAnswer(answers);
+        session.channel.sendMessage("Answers to your question are: " +
+                "```" + answers + "```")
+                        .queue();
 
-        promptPoints();
-        session.inputType = TriviaEditSession.InputType.POINTS;
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -239,11 +240,10 @@ public class TriviaCreator {
 
         session.questionObj.setPoints(pts);
         session.triviaType.addQuestion(session.questionObj);
-        session.channel.sendMessage("Here is your question:").queue();
-        session.channel.sendMessageEmbeds(session.questionObj.asEmbed()).queue();
-
-        promptMoreQuestions();
-        session.inputType = TriviaEditSession.InputType.FINISHED;
+        session.channel.sendMessage("This question is worth " + pts + " points.")
+                        .queue();
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
 
@@ -255,6 +255,9 @@ public class TriviaCreator {
      * @param response user's response to prompt whether they want to continue inputting more questions.
      */
     public void processMoreQuestionPrompt(String response) {
+        session.channel.sendMessage("Here is your question:").queue();
+        session.channel.sendMessageEmbeds(session.questionObj.asEmbed()).queue();
+
         if (response.trim().equalsIgnoreCase("yes")) {
             promptQuestion();
             session.inputType = TriviaEditSession.InputType.QUESTION;
@@ -275,6 +278,88 @@ public class TriviaCreator {
         else {
             session.channel.sendMessage("Oops, something went wrong when saving the" +
                     "trivia. Please try again later.").queue();
+        }
+    }
+
+
+    public void processConfirm(String input) {
+
+        if (input.equalsIgnoreCase("yes")) {
+            session.confirmState = TriviaEditSession.ConfirmState.NORMAL;
+            if (session.inputType == TriviaEditSession.InputType.NAME) {
+                promptTags();
+                session.inputType = TriviaEditSession.InputType.TAGS;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.TAGS) {
+                promptUniversal();
+                session.inputType = TriviaEditSession.InputType.UNIVERSAL;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.UNIVERSAL) {
+                if (session.triviaType.isUniversal()) {
+                    promptEditors();
+                    session.inputType = TriviaEditSession.InputType.EDITORS;
+                }
+                else {
+                    promptServers();
+                    session.inputType = TriviaEditSession.InputType.SERVERS;
+                }
+            }
+            else if (session.inputType == TriviaEditSession.InputType.SERVERS) {
+                promptEditors();
+                session.inputType = TriviaEditSession.InputType.EDITORS;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.EDITORS) {
+                promptQuestion();
+                session.inputType = TriviaEditSession.InputType.QUESTION;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
+                promptAnswers();
+                session.inputType = TriviaEditSession.InputType.ANSWERS;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {
+                promptPoints();
+                session.inputType = TriviaEditSession.InputType.POINTS;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.POINTS) {
+                promptMoreQuestions();
+                session.inputType = TriviaEditSession.InputType.FINISHED;
+            }
+        }
+
+        else if (input.equalsIgnoreCase("no")) {
+            session.confirmState = TriviaEditSession.ConfirmState.NORMAL;
+
+            if (session.inputType == TriviaEditSession.InputType.NAME) {
+                promptName();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.TAGS) {
+                promptTags();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.UNIVERSAL) {
+                promptUniversal();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.SERVERS) {
+                promptServers();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.EDITORS) {
+                promptEditors();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
+
+                promptQuestion();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {
+                promptAnswers();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.POINTS) {
+                promptPoints();
+            }
+        }
+
+        else {
+            session.channel.sendMessage(input + " is not a recognized answer. " +
+                    "Please type yes or no.")
+                    .queue();
         }
     }
 
@@ -354,6 +439,11 @@ public class TriviaCreator {
     public void promptMoreQuestions() {
         session.channel.sendMessage("Do you wish to input another question? " +
                 "Type yes or no")
+                .queue();
+    }
+
+    public void promptConfirm() {
+        session.channel.sendMessage("Is this okay? Type yes or no")
                 .queue();
     }
 }
