@@ -34,6 +34,8 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
      * being taken
      */
     protected enum ModifyAction {
+        NONE,
+        SELECT_ADD_OR_REMOVE,
         ADD, /* Adding a new element to the trivia */
         REMOVE /* Removing an element from the trivia */
     }
@@ -45,7 +47,6 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
         SELECT_TRIVIA, /* Selecting what trivia to modify */
         SELECT_ELEMENT, /* Selecting what to modify e.g. tags, questions, name */
-        SELECT_ADD_OR_REMOVE, /* Selecting whether to add or remove an element */
 
         START, /* Just beginning */
         NAME, /* Inputting name */
