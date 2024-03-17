@@ -32,6 +32,7 @@ public class TriviaModifier {
         this.session = session;
         session.modifyAction = TriviaEditSession.ModifyAction.NONE;
         promptTrivia();
+
     }
 
 
@@ -64,7 +65,6 @@ public class TriviaModifier {
             processUniversalInput(input);
         }
         else if (session.inputType == TriviaEditSession.InputType.SERVERS) {
-            /* Convert server names to server ids */
             processServerInput(input);
         }
         else if (session.inputType == TriviaEditSession.InputType.EDITORS) {
@@ -569,6 +569,11 @@ public class TriviaModifier {
     }
 
     public void promptElement() {
+        session.channel.sendMessage("Here is your trivia:").queue();
+        session.channel.sendMessageEmbeds(session.triviaType.asEmbed())
+                        .queue();
+        session.channel.sendMessageEmbeds(session.triviaType.asQuestionsEmbed())
+                .queue();
         session.channel.sendMessage("What would you like to modify? " +
                 "Type any of the following:\n\n" +
                 " ```Name```" +

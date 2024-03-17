@@ -25,11 +25,10 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
     /* Specifies the potential ways user interacts with the trivia editor */
     enum Action {
-
         UNDEFINED, /* User has not-yet selected one of the below */
         CREATE, /* Creating a new trivia */
         MODIFY, /* Modifying a specific element of an existing trivia */
-        DELETE /* Deleting a trivia */
+        DELETE, /* Deleting a trivia */
     }
 
     /*
@@ -99,10 +98,12 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
     private TriviaModifier modifier;
 
-   protected String startStr = "Type one of the below options to either create a new" +
+   protected String startStr = "Type one of the below options to either create a new " +
            "trivia, modify an existing one, or delete a trivia entirely.\n" +
            "Remember, to end this process at anytime you can type 'stop' \n\n" +
-           "```create``` ```modify``` ```delete```";
+           "```create (to make a new trivia)``` " +
+           "```modify (to edit an existing trivia)``` " +
+           "```delete (to delete an existing trivia entirely)``` ";
 
    public TriviaEditSession(User user) {
        this.user = user;
