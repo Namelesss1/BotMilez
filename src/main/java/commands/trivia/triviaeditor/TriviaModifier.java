@@ -93,8 +93,9 @@ public class TriviaModifier {
         }
 
         /* Load the trivia if found */
-        session.triviaType = new TriviaType(session.path + "/custom/" + name + ".json");
-        modifiedTrivia = new TriviaType(session.triviaType);
+        session.triviaType = new TriviaType(session.path + "/custom/" + name + ".json",
+                session.user.getJDA());
+        modifiedTrivia = new TriviaType(session.triviaType, session.user.getJDA());
         session.inputType = TriviaEditSession.InputType.SELECT_ELEMENT;
 
         if (!session.triviaType.getEditors().contains(session.user.getName())

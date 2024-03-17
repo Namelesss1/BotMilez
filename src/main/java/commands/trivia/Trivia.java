@@ -126,7 +126,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 String trivName = (String)trivObj.get("name");
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)
                         || tag.equalsIgnoreCase(trivName)) {
-                    TriviaType type = new TriviaType(trivObj);
+                    TriviaType type = new TriviaType(trivObj, channel.getJDA());
                     numTotalQuestions += type.getSize();
                     if (type.getSize() > 0) {
                         triviaTypes.add(type);
@@ -144,7 +144,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 String trivName = (String)trivObj.get("name");
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)
                         || tag.equalsIgnoreCase(trivName)) {
-                    TriviaType type = new TriviaType(trivObj);
+                    TriviaType type = new TriviaType(trivObj, channel.getJDA());
                     numTotalQuestions += type.getSize();
                     if (type.getSize() > 0) {
                         triviaTypes.add(type);

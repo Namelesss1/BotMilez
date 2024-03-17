@@ -21,7 +21,7 @@ public class TriviaCreator {
         /* Create new triviaType to represent the trivia. Then prompt the
          * user for the name of the new trivia
          */
-        session.triviaType = new TriviaType();
+        session.triviaType = new TriviaType(session.user.getJDA());
         session.triviaType.setAuthor(session.user.getName());
         session.inputType = TriviaEditSession.InputType.NAME;
         promptName();

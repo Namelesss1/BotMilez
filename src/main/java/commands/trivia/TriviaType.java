@@ -1,6 +1,7 @@
 package commands.trivia;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,6 +25,9 @@ import java.util.List;
  * qas (pairs of questions, corresponding answers, corresponding points worth)
  */
 public class TriviaType {
+
+    /* jda object - to retrieve information about server names */
+    private JDA jda;
     private String name;
     private String author;
     private boolean is_default;
@@ -42,8 +46,8 @@ public class TriviaType {
      *
      * @param path string representing path to read jsonObject from
      */
-    public TriviaType(String path) {
-        this((JSONObject)IO.readJson(path));
+    public TriviaType(String path, JDA jda) {
+        this((JSONObject)IO.readJson(path), jda);
     }
 
 
@@ -53,7 +57,7 @@ public class TriviaType {
      *
      * @param triviaObj jsonObject that contains all data of a trivia type
      */
-    public TriviaType(JSONObject triviaObj) {
+    public TriviaType(JSONObject triviaObj, JDA jda) {
         name = (String)triviaObj.get("name");
         author = (String)triviaObj.get("author");
         is_default = (boolean)triviaObj.get("is_default");
@@ -62,6 +66,7 @@ public class TriviaType {
         servers = (JSONArray)triviaObj.get("servers");
         allowed_editors = (JSONArray)triviaObj.get("allowed_editors");
         questions = new ArrayList<>();
+        this.jda = jda;
 
         /* Set metadata for questions and answers */
         JSONArray qaArray = (JSONArray)triviaObj.get("qas");
@@ -77,8 +82,9 @@ public class TriviaType {
 
     }
 
-    public TriviaType() {
+    public TriviaType(JDA jda) {
 
+        this.jda = jda;
         questions = new ArrayList<>();
         tags = new ArrayList<>();
         servers = new ArrayList<>();
@@ -89,7 +95,8 @@ public class TriviaType {
      * Creates a new trivia type object as a copy of another
      * @param other other triviaType object to copy from
      */
-    public TriviaType(TriviaType other) {
+    public TriviaType(TriviaType other, JDA jda) {
+        this.jda = jda;
         name = other.getName();
         is_default = other.isDefault();
         author = other.getAuthor();
@@ -329,9 +336,13 @@ public class TriviaType {
                 "" + isUniversal(),
                 false
         );
+        List<String> serverNames = new ArrayList<>();
+        for (String id : servers) {
+            serverNames.add(jda.getGuildById(id).getName());
+        }
         em.addField(
                 "Viewable in these servers: ",
-                servers.toString(),
+                serverNames.toString(),
                 false
         );
         em.addField(
