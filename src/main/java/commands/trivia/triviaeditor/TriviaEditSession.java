@@ -259,5 +259,31 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     }
 
 
+    /**
+     * Takes a string list, and removes the duplicate string from it.
+     * Even if two strings have different cases, they can still be duplicates
+     * in this method. Which is why simply converting it to a set will not do
+     * as it will retain string if it is in different cases.
+     * @param list
+     * @return
+     */
+    public static List<String> removeDuplicateStringsFromList(List<String> list) {
+        Set<Integer> indexesToRemoveFrom = new HashSet<>();
+        List<String> noDuplicatesList = new ArrayList<>(list);
+
+        for (int index = 0; index < (list.size() - 1); index++) {
+            for (int compareIndex = index + 1; compareIndex < list.size(); compareIndex++) {
+                if (list.get(index).equalsIgnoreCase(list.get(compareIndex))) {
+                    indexesToRemoveFrom.add(compareIndex);
+                }
+            }
+        }
+
+        for (Integer i : indexesToRemoveFrom) {
+            noDuplicatesList.remove(list.get(i));
+        }
+
+        return noDuplicatesList;
+    }
 
 }

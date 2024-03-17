@@ -252,7 +252,9 @@ public class TriviaModifier {
      */
     private void processTagsInput(String input) {
 
-        Set<String> userInputTags = new HashSet<>(TriviaEditSession.parseCommaSeparatedList(input));
+        Set<String> userInputTags = new HashSet<>(
+                TriviaEditSession.removeDuplicateStringsFromList(
+                        TriviaEditSession.parseCommaSeparatedList(input)));
         List<String> currElements = session.triviaType.getTags();
 
         if (session.modifyAction == TriviaEditSession.ModifyAction.ADD) {
@@ -311,7 +313,9 @@ public class TriviaModifier {
         Set<String> mutualServers = new HashSet<>();
 
         for (Guild server : session.user.getMutualGuilds()) {
-            Set<String> userInputSet = new HashSet<>(TriviaEditSession.parseCommaSeparatedList(input));
+            Set<String> userInputSet = new HashSet<>(
+                    TriviaEditSession.removeDuplicateStringsFromList(
+                            TriviaEditSession.parseCommaSeparatedList(input)));
 
             if (userInputSet.stream().anyMatch(server.getName()::equalsIgnoreCase)) {
                 mutualServers.add(server.getId());
@@ -379,7 +383,9 @@ public class TriviaModifier {
      */
     private void processEditorsInput(String input) {
 
-        Set<String> userInputEditors = new HashSet<>(TriviaEditSession.parseCommaSeparatedList(input));
+        Set<String> userInputEditors = new HashSet<>(
+                TriviaEditSession.removeDuplicateStringsFromList(
+                        TriviaEditSession.parseCommaSeparatedList(input)));
         List<String> currElements = session.triviaType.getEditors();
 
         if (session.modifyAction == TriviaEditSession.ModifyAction.ADD) {

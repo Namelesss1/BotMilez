@@ -94,7 +94,9 @@ public class TriviaCreator {
      * @param tagsStr tags to set
      */
     private void processTagsInput(String tagsStr) {
-        List<String> tags = TriviaEditSession.parseCommaSeparatedList(tagsStr);
+        List<String> tags =
+                TriviaEditSession.removeDuplicateStringsFromList(
+                        TriviaEditSession.parseCommaSeparatedList(tagsStr));
         session.channel.sendMessage("Your tags are: **" + tags.toString() + "**").queue();
         session.triviaType.setTags(tags);
         promptConfirm();
@@ -138,7 +140,9 @@ public class TriviaCreator {
      * @param serverStr User response representing all server names they want to allow.
      */
     private void processServersInput(String serverStr) {
-        List<String> inputServers = TriviaEditSession.parseCommaSeparatedList(serverStr);
+        List<String> inputServers =
+                TriviaEditSession.removeDuplicateStringsFromList(
+                        TriviaEditSession.parseCommaSeparatedList(serverStr));
         List<String> serverIds = new ArrayList<>();
         for (Guild server : session.user.getMutualGuilds()) {
             if (inputServers.stream().anyMatch(server.getName()::equalsIgnoreCase)) {
@@ -167,7 +171,9 @@ public class TriviaCreator {
         List<String> editors = new ArrayList<>();
         editors.add(session.triviaType.getAuthor());
         if (!editorStr.trim().equalsIgnoreCase("none")) {
-            List<String> additionalEditors = TriviaEditSession.parseCommaSeparatedList(editorStr);
+            List<String> additionalEditors =
+                    TriviaEditSession.removeDuplicateStringsFromList(
+                            TriviaEditSession.parseCommaSeparatedList(editorStr));
             editors.addAll(additionalEditors);
         }
 
