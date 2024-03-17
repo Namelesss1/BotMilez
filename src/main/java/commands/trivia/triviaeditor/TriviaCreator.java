@@ -139,16 +139,16 @@ public class TriviaCreator {
      */
     private void processServersInput(String serverStr) {
         List<String> inputServers = TriviaEditSession.parseCommaSeparatedList(serverStr);
-        List<Long> serverIds = new ArrayList<>();
+        List<String> serverIds = new ArrayList<>();
         for (Guild server : session.user.getMutualGuilds()) {
             if (inputServers.stream().anyMatch(server.getName()::equalsIgnoreCase)) {
-                serverIds.add(server.getIdLong());
+                serverIds.add(server.getId());
             }
         }
         session.triviaType.setServers(serverIds);
 
         List<String> serverNames = new ArrayList<>();
-        for (Long serverId : serverIds) {
+        for (String serverId : serverIds) {
             serverNames.add(session.user.getJDA().getGuildById(serverId).getName());
         }
         session.channel.sendMessage("Your trivia will be viewable in the following servers: " +

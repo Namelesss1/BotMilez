@@ -3,7 +3,7 @@
   "author": "Nameless",
   "is_default": true,
   "all_servers": true,
-  "servers": null,
+  "servers": [],
   "allowed_editors": ["nnameless"],
   "tags": ["Mario Kart Wii", "mkw", "mkwii", "mario kart", "racing games", "mario", "nintendo"],
   "qas":[

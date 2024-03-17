@@ -30,7 +30,7 @@ public class TriviaType {
     private List<String> tags;
 
     private boolean all_servers;
-    private List<Long> servers;
+    private List<String> servers;
     private List<String> allowed_editors;
 
     private List<QA> questions;
@@ -85,6 +85,46 @@ public class TriviaType {
         allowed_editors = new ArrayList<>();
     }
 
+    /**
+     * Creates a new trivia type object as a copy of another
+     * @param other other triviaType object to copy from
+     */
+    public TriviaType(TriviaType other) {
+        name = other.getName();
+        is_default = other.isDefault();
+        author = other.getAuthor();
+        all_servers = other.isUniversal();
+
+        /* Copy tags over */
+        tags = new ArrayList<>();
+        for (String tag : other.getTags()) {
+            tags.add(tag);
+        }
+
+        /* Copy servers over */
+        servers = new ArrayList<>();
+        for (String id : other.getServers()) {
+            servers.add(id);
+        }
+
+        /* Copy editors over */
+        allowed_editors = new ArrayList<>();
+        for (String editor : other.getEditors()) {
+            allowed_editors.add(editor);
+        }
+
+        /* Copy Question objects over */
+        questions = new ArrayList<>();
+        for (QA otherQA : other.getQuestions()) {
+            QA qa = new QA();
+            qa.setId(otherQA.getId());
+            qa.setQuestion(otherQA.getQuestion());
+            qa.setAnswer(otherQA.getAnswers());
+            qa.setPoints(otherQA.getPoints());
+            questions.add(qa);
+        }
+    }
+
 
 
     /**
@@ -124,7 +164,7 @@ public class TriviaType {
      *
      * @param servers sets allowed servers for this trivia
      */
-    public void setServers(List<Long> servers) {
+    public void setServers(List<String> servers) {
         this.servers = servers;
     }
 
@@ -228,7 +268,7 @@ public class TriviaType {
     /**
      * @return A list of all servers that can see this trivia type
      */
-    public List<Long> getServers() {
+    public List<String> getServers() {
         return servers;
     }
 
@@ -357,7 +397,7 @@ public class TriviaType {
         trivObj.put("all_servers", all_servers);
 
         JSONArray servers = new JSONArray();
-        for (long serverId : this.servers) {
+        for (String serverId : this.servers) {
             servers.add(serverId);
         }
         trivObj.put("servers", servers);

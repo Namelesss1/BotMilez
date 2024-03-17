@@ -8,10 +8,13 @@ import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import util.IO;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.util.*;
 
 /**
  * Represents an instance of a session where a user is modifying a
@@ -206,6 +209,53 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     }
 
 
+    /**
+     * Gets a list of the names of trivias that a user has access to edit.
+     * @param username username of user requesting edit access
+     * @return a list of strings representing each trivia name that a user can access
+     */
+    public static Set<String> getAllowedTriviasForUser(String username) {
+
+        Set<String> triviaNames = new HashSet<>();
+
+        /* Load appropriate trivias into triviaTypes if they contain a matching tag
+         * Loop through all files in trivia directory to see if the user-chosen tag
+         * matches the trivia's tag or name. If so, add it to the trivia type list
+         * for this trivia instance. */
+        final FileNameExtensionFilter extensionFilter =
+                new FileNameExtensionFilter("N/A", "json");
+        File tDir = new File(path);
+        for (File file : tDir.listFiles()) {
+            if (extensionFilter.accept(file) && file.isFile()) {
+                String fileName = file.getName();
+                JSONObject trivObj = (JSONObject) IO.readJson(path + fileName);
+                List<String> editors = (JSONArray)trivObj.get("allowed_editors");
+                String trivName = (String)trivObj.get("name");
+                String trivAuthor = (String)trivObj.get("author");
+                if (editors.stream().anyMatch(username::equalsIgnoreCase)
+                        || username.equalsIgnoreCase(trivAuthor)) {
+                    triviaNames.add(trivName);
+                }
+            }
+        }
+
+        tDir = new File(path + "custom/");
+        for (File file : tDir.listFiles()) {
+            if (extensionFilter.accept(file) && file.isFile()) {
+                String fileName = file.getName();
+                JSONObject trivObj = (JSONObject)IO.readJson(path + "custom/" + fileName);
+                String trivAuthor = (String)trivObj.get("author");
+                List<String> editors = (JSONArray)trivObj.get("allowed_editors");
+                String trivName = (String)trivObj.get("name");
+                if (editors.stream().anyMatch(username::equalsIgnoreCase)
+                        || username.equalsIgnoreCase(trivAuthor)) {
+                   triviaNames.add(trivName);
+                }
+            }
+        }
+
+        return triviaNames;
+    }
 
 
 
