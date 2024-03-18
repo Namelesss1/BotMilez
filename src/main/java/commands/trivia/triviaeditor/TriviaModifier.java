@@ -6,6 +6,7 @@ import commands.trivia.TriviaType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import util.EmbedPageBuilder;
 import util.IO;
 
 import java.awt.*;
@@ -28,9 +29,13 @@ public class TriviaModifier {
      * that they wish to revert before writing back the final trivia */
     private TriviaType modifiedTrivia;
 
+
+
     public TriviaModifier(TriviaEditSession session) {
         this.session = session;
         session.modifyAction = TriviaEditSession.ModifyAction.NONE;
+        session.modifyScrollId = "triviamodify" + session.user.getName();
+        session.scrollQuestionId = "triviamodifyquestion" + session.user.getName();
         promptTrivia();
 
     }
@@ -579,7 +584,10 @@ public class TriviaModifier {
         session.channel.sendMessage("Here is your trivia:").queue();
         session.channel.sendMessageEmbeds(session.triviaType.asEmbed())
                         .queue();
-        session.channel.sendMessageEmbeds(session.triviaType.asQuestionsEmbed())
+        EmbedPageBuilder builder = session.triviaType.asQuestionsEmbed(session.modifyScrollId);
+        session.idToPageBuilder.put(session.modifyScrollId,builder);
+        session.channel.sendMessageEmbeds(builder.build())
+                .setComponents().setActionRow(builder.getPageBuilderActionRow())
                 .queue();
         session.channel.sendMessage("What would you like to modify? " +
                 "Type any of the following:\n\n" +
@@ -703,7 +711,10 @@ public class TriviaModifier {
                             "of the questions you want to remove. Use a comma-separated list e.g.\n\n" +
                             "3, 7, 15 ")
                     .queue();
-            session.channel.sendMessageEmbeds(session.triviaType.asQuestionsEmbed())
+            EmbedPageBuilder builder = session.triviaType.asQuestionsEmbed(session.scrollQuestionId);
+            session.idToPageBuilder.put(session.scrollQuestionId,builder);
+            session.channel.sendMessageEmbeds(builder.build())
+                    .setComponents().setActionRow(builder.getPageBuilderActionRow())
                     .queue();
         }
 

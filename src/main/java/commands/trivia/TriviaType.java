@@ -12,6 +12,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Represents an instance of a specific type of trivia in-use
  *
@@ -361,9 +362,10 @@ public class TriviaType {
 
 
     /**
+     * @param id id of the buttoncomponent that will be used to scroll
      * @return The questions in this object within an embed.
      */
-    public MessageEmbed asQuestionsEmbed() {
+    public EmbedPageBuilder asQuestionsEmbed(String id) {
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
@@ -383,12 +385,12 @@ public class TriviaType {
             fields.add(quesField);
         }
 
-        EmbedPageBuilder em = new EmbedPageBuilder(10, fields, false);
+        EmbedPageBuilder em = new EmbedPageBuilder(10, fields, false, id);
 
         em.setColor(Color.MAGENTA);
         em.setTitle("Questions in " + getName());
 
-        return em.build();
+        return em;
     }
 
 

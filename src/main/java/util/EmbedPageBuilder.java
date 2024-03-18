@@ -21,11 +21,10 @@ public class EmbedPageBuilder extends EmbedBuilder {
     public static final String BUTTON_PREVIOUS_PAGE = "prev_page";
     public static final String DELETE_EMBED = "delete_embed";
 
-    public static ItemComponent[] PageBuilderActionRow = {
-            Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
-            Button.danger(DELETE_EMBED, Emoji.fromUnicode("❌")),
-            Button.primary(BUTTON_NEXT_PAGE, Emoji.fromUnicode("▶"))
-    };
+    /* Used to differentiate between different events that use this class */
+    private String id;
+
+    private ItemComponent[] pageBuilderActionRow = new ItemComponent[3];
 
     /**
      * Possible choices on where to add a page counter or custom content
@@ -78,7 +77,13 @@ public class EmbedPageBuilder extends EmbedBuilder {
     private Color color = null;
 
     public EmbedPageBuilder(int maxFieldsPerPageIn, List<MessageEmbed.Field> elementsIn,
-                            boolean doFieldCounter) {
+                            boolean doFieldCounter, String id) {
+
+        this.id = id;
+        pageBuilderActionRow[0] = Button.primary(BUTTON_PREVIOUS_PAGE + id, Emoji.fromUnicode("◀"));
+        pageBuilderActionRow[1] = Button.danger(DELETE_EMBED + id, Emoji.fromUnicode("❌"));
+        pageBuilderActionRow[2] = Button.primary(BUTTON_NEXT_PAGE + id, Emoji.fromUnicode("▶"));
+
         pageNumber = 1;
         maxFieldsPerPage = maxFieldsPerPageIn;
         elements = elementsIn;
@@ -452,7 +457,7 @@ public class EmbedPageBuilder extends EmbedBuilder {
      */
     public void scroll(ButtonInteractionEvent event) {
 
-        if (event.getComponentId().equals(BUTTON_NEXT_PAGE)) {
+        if (event.getComponentId().equals(BUTTON_NEXT_PAGE + id)) {
             if (pageNumber < maxPageNumber()) {
                 pageNumber++;
                 event.editMessageEmbeds(getEmbedPage().build()).queue();
@@ -462,11 +467,11 @@ public class EmbedPageBuilder extends EmbedBuilder {
 
         }
 
-        if (event.getComponentId().equals(DELETE_EMBED)) {
+        if (event.getComponentId().equals(DELETE_EMBED + id)) {
             event.getMessage().delete().queue();
         }
 
-        if (event.getComponentId().equals(BUTTON_PREVIOUS_PAGE)) {
+        if (event.getComponentId().equals(BUTTON_PREVIOUS_PAGE + id)) {
             if (pageNumber > 1) {
                 pageNumber--;
                 event.editMessageEmbeds(getEmbedPage().build()).queue();
@@ -477,4 +482,8 @@ public class EmbedPageBuilder extends EmbedBuilder {
         }
     }
 
+
+    public ItemComponent[] getPageBuilderActionRow() {
+        return pageBuilderActionRow;
+    }
 }

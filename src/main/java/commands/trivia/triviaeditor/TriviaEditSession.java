@@ -6,15 +6,19 @@ import commands.trivia.TriviaType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import util.EmbedPageBuilder;
 import util.IO;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.util.*;
+
+import static util.EmbedPageBuilder.*;
 
 /**
  * Represents an instance of a session where a user is modifying a
@@ -22,6 +26,13 @@ import java.util.*;
  *
  */
 public class TriviaEditSession extends ListenerAdapter implements Stoppable {
+
+    protected String modifyScrollId;
+
+    protected String scrollQuestionId;
+    protected String createScrollId;
+
+    Map<String, EmbedPageBuilder> idToPageBuilder;
 
     /* Specifies the potential ways user interacts with the trivia editor */
     enum Action {
@@ -110,6 +121,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
        inputType = InputType.START;
        action = Action.UNDEFINED;
        confirmState = ConfirmState.NORMAL;
+       idToPageBuilder = new HashMap<>();
 
        user.openPrivateChannel().flatMap(
                privChannel -> {
@@ -284,6 +296,24 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         }
 
         return noDuplicatesList;
+    }
+
+
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (event.getComponentId().equals(BUTTON_NEXT_PAGE + createScrollId) ||
+                event.getComponentId().equals(BUTTON_PREVIOUS_PAGE + createScrollId) ||
+                event.getComponentId().equals(DELETE_EMBED + createScrollId)) {
+            idToPageBuilder.get(createScrollId).scroll(event);
+        } else if (event.getComponentId().equals(BUTTON_NEXT_PAGE + modifyScrollId) ||
+                event.getComponentId().equals(BUTTON_PREVIOUS_PAGE + modifyScrollId) ||
+                event.getComponentId().equals(DELETE_EMBED + modifyScrollId)) {
+            idToPageBuilder.get(modifyScrollId).scroll(event);
+        } else if (event.getComponentId().equals(BUTTON_NEXT_PAGE + scrollQuestionId) ||
+                event.getComponentId().equals(BUTTON_PREVIOUS_PAGE + scrollQuestionId) ||
+                event.getComponentId().equals(DELETE_EMBED + scrollQuestionId)) {
+            idToPageBuilder.get(scrollQuestionId).scroll(event);
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import commands.trivia.TriviaType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import util.EmbedPageBuilder;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 public class TriviaCreator {
 
     private TriviaEditSession session;
+
 
     public TriviaCreator(TriviaEditSession session) {
         this.session = session;
@@ -24,6 +26,7 @@ public class TriviaCreator {
         session.triviaType = new TriviaType(session.user.getJDA());
         session.triviaType.setAuthor(session.user.getName());
         session.inputType = TriviaEditSession.InputType.NAME;
+        session.createScrollId = "trivia_create" + session.user.getName();
         promptName();
     }
 
@@ -278,7 +281,11 @@ public class TriviaCreator {
                     "You may edit it at any time if you want to modify something." +
                     " Thanks for making a trivia!").queue();
             session.channel.sendMessageEmbeds(session.triviaType.asEmbed()).queue();
-            session.channel.sendMessageEmbeds(session.triviaType.asQuestionsEmbed()).queue();
+            EmbedPageBuilder builder =  session.triviaType.asQuestionsEmbed(session.createScrollId);
+            session.idToPageBuilder.put(session.createScrollId, builder);
+            session.channel.sendMessageEmbeds(builder.build())
+                    .setComponents().setActionRow(builder.getPageBuilderActionRow())
+                    .queue();
             session.stop(session.user, session.channel);
         }
         else {
@@ -351,7 +358,6 @@ public class TriviaCreator {
                 promptEditors();
             }
             else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
-
                 promptQuestion();
             }
             else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {

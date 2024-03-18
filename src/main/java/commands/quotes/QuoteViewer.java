@@ -33,6 +33,8 @@ import static commands.quotes.QuoteIDs.*;
  */
 public class QuoteViewer extends ListenerAdapter {
 
+    private String scrollId;
+
     /* serverId -> server's quotes */
     private Map<Long, List<QuoteContext>> quotesArrays;
 
@@ -57,6 +59,7 @@ public class QuoteViewer extends ListenerAdapter {
         pageEmbeds = new HashMap<>();
         usersSearching = new HashMap<>();
         command = instance;
+        scrollId = "quoteview";
     }
 
     /**
@@ -258,12 +261,12 @@ public class QuoteViewer extends ListenerAdapter {
         }
 
         EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields,
-                isDeleting);
+                isDeleting, scrollId);
         emBuilder.setTitle("All quotes");
         emBuilder.setColor(Color.YELLOW);
         emBuilder.setPageCounterPlacement(EmbedComponent.FOOTER);
 
-        channel.sendMessageEmbeds(emBuilder.build()).addActionRow(PageBuilderActionRow)
+        channel.sendMessageEmbeds(emBuilder.build()).addActionRow(emBuilder.getPageBuilderActionRow())
                 .queue((message) ->
                 {
                     long msgId = message.getIdLong();
@@ -304,7 +307,7 @@ public class QuoteViewer extends ListenerAdapter {
         String searchBy = usersSearching.get(event.getAuthor());
 
         EmbedPageBuilder emBuilder = new EmbedPageBuilder(MAX_QUOTES_PER_EMBED, quoteFields,
-                isDeleting);
+                isDeleting, scrollId);
 
         if (searchBy.equals(SELECT_CHOICE_BY_SAID)) {
             emBuilder.setTitle("Search Results for term: \"" + searchTerm + "\"");
@@ -322,9 +325,7 @@ public class QuoteViewer extends ListenerAdapter {
         emBuilder.setPageCounterPlacement(EmbedComponent.FOOTER);
 
         event.getChannel().sendMessageEmbeds(emBuilder.build()).addActionRow(
-                        Button.primary(BUTTON_PREVIOUS_PAGE, Emoji.fromUnicode("◀")),
-                        Button.danger(DELETE_EMBED, Emoji.fromUnicode("❌")),
-                        Button.primary(BUTTON_NEXT_PAGE, Emoji.fromUnicode("▶")))
+                        emBuilder.getPageBuilderActionRow())
                 .queue((message) ->
                 {
                     long msgId = message.getIdLong();
@@ -400,8 +401,8 @@ public class QuoteViewer extends ListenerAdapter {
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
         String id = event.getComponentId();
-        if (id.equals(BUTTON_NEXT_PAGE) || id.equals(BUTTON_PREVIOUS_PAGE) ||
-                id.equals(DELETE_EMBED)) {
+        if (id.equals(BUTTON_NEXT_PAGE + id) || id.equals(BUTTON_PREVIOUS_PAGE + id) ||
+                id.equals(DELETE_EMBED + id)) {
 
             long msgId = event.getMessage().getIdLong();
             EmbedPageBuilder emBuilder = pageEmbeds.get(msgId);

@@ -38,6 +38,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
     private final QuoteRemover remover;
 
     private EmbedPageBuilder helpEmbed;
+    private String scrollId;
 
 
     public QuoteCommand() {
@@ -45,6 +46,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         adder = new QuoteAdder(this);
         viewer = new QuoteViewer(this);
         remover = new QuoteRemover(this);
+        scrollId = "quotehelp";
     }
 
     @Override
@@ -254,7 +256,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         ));
 
 
-        helpEmbed = new EmbedPageBuilder(4, fields, false);
+        helpEmbed = new EmbedPageBuilder(4, fields, false, scrollId);
         helpEmbed.setTitle("**/" + getName() + "**");
         helpEmbed.setFooter("This command will make a person be remembered forever");
         helpEmbed.setDescription(getDesc());
@@ -277,7 +279,7 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
         helpEmbed.setPageColor(4, Color.RED);
 
         event.editMessageEmbeds(helpEmbed.build()).setComponents()
-                .setActionRow(PageBuilderActionRow).queue();
+                .setActionRow(helpEmbed.getPageBuilderActionRow()).queue();
     }
 
 
@@ -337,9 +339,9 @@ public class QuoteCommand extends ListenerAdapter implements IBotCommand {
 
 
         /* For Embed page */
-        if (event.getComponentId().equals(BUTTON_NEXT_PAGE) ||
-            event.getComponentId().equals(BUTTON_PREVIOUS_PAGE) ||
-            event.getComponentId().equals(DELETE_EMBED)) {
+        if (event.getComponentId().equals(BUTTON_NEXT_PAGE + scrollId) ||
+            event.getComponentId().equals(BUTTON_PREVIOUS_PAGE + scrollId) ||
+            event.getComponentId().equals(DELETE_EMBED + scrollId)) {
 
             helpEmbed.scroll(event);
         }
