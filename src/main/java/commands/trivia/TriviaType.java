@@ -10,6 +10,7 @@ import util.IO;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -80,6 +81,8 @@ public class TriviaType {
 
             questions.add(new QA(id, question, answers, points));
         }
+
+        Collections.sort(questions, new QA.QAsorter());
 
     }
 
@@ -186,10 +189,15 @@ public class TriviaType {
 
     /**
      * Adds a new question object to this trivia type
+     * After additions is done, the questions list must
+     * be sorted by id to accurately judge what the next
+     * available id is when another question is added.
+     *
      * @param qa question to add.
      */
     public void addQuestion(QA qa) {
         questions.add(qa);
+        Collections.sort(questions, new QA.QAsorter());
     }
 
     /**
@@ -264,6 +272,33 @@ public class TriviaType {
      */
     public void removeQuestion(int index) {
         questions.remove(index);
+    }
+
+    /**
+     * Removes a question that has an id matching the given id
+     * @param id of question to remove
+     * @return true if question with id found, false if not.
+     */
+    public boolean removeQuestionById(long id) {
+        long indexToRemoveFrom = -1;
+
+        for (int i = 0; i < questions.size(); i++) {
+            QA qa = questions.get(i);
+            long questionId = qa.getId();
+            if (questionId == id) {
+                indexToRemoveFrom = i;
+                break;
+            }
+        }
+
+        System.out.println(indexToRemoveFrom);
+        if (indexToRemoveFrom != -1) {
+            questions.remove(questions.get((int)indexToRemoveFrom));
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     /**

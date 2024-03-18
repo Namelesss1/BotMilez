@@ -43,7 +43,9 @@ public class TriviaEditorCommand extends ListenerAdapter implements IBotCommand 
 
         }
 
-        event.reply("Lets start the process.")
+        event.reply("Check your dms. Instructions to editing your trivia are there to " +
+                        "prevent other users from seeing information of it such as" +
+                        " answers to your questions.")
                 .setEphemeral(true)
                 .queue();
 

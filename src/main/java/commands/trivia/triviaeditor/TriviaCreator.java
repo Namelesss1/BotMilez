@@ -248,7 +248,6 @@ public class TriviaCreator {
         }
 
         session.questionObj.setPoints(pts);
-        session.triviaType.addQuestion(session.questionObj);
         session.channel.sendMessage("This question is worth " + pts + " points.")
                         .queue();
         promptConfirm();
@@ -334,6 +333,7 @@ public class TriviaCreator {
                 session.inputType = TriviaEditSession.InputType.POINTS;
             }
             else if (session.inputType == TriviaEditSession.InputType.POINTS) {
+                session.triviaType.addQuestion(session.questionObj);
                 promptMoreQuestions();
                 session.inputType = TriviaEditSession.InputType.FINISHED;
             }

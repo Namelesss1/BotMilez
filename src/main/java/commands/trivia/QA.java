@@ -4,12 +4,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * This class represents all metadata representing a question in this trivia type
  */
-public class QA {
+public class QA  {
     private long id;
     private String question;
     private List<String> answers;
@@ -119,5 +120,24 @@ public class QA {
         em.setFooter(getPoints() + " points");
         em.setColor(Color.MAGENTA);
         return em.build();
+    }
+
+
+    /**
+     * A class that defines a comparator for a question object.
+     * Question objects are sorted by their numerical ids.
+     */
+    public static class QAsorter implements Comparator<QA> {
+
+        @Override
+        public int compare(QA qa, QA other) {
+            if (qa.id > other.id) {
+                return 1;
+            }
+            if (qa.id < other.id) {
+                return -1;
+            }
+            return 0;
+        }
     }
 }

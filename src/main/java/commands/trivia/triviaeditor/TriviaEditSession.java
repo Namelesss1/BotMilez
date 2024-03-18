@@ -31,6 +31,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
     protected String scrollQuestionId;
     protected String createScrollId;
+    protected String scrollUpdatedQuestionId;
 
     Map<String, EmbedPageBuilder> idToPageBuilder;
 

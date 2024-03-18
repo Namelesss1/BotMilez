@@ -36,6 +36,7 @@ public class TriviaModifier {
         session.modifyAction = TriviaEditSession.ModifyAction.NONE;
         session.modifyScrollId = "triviamodify" + session.user.getName();
         session.scrollQuestionId = "triviamodifyquestion" + session.user.getName();
+        session.scrollUpdatedQuestionId = "triviaupdatedquestion" + session.user.getName();
         promptTrivia();
 
     }
@@ -77,6 +78,15 @@ public class TriviaModifier {
         }
         else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
             processQuestionInput(input);
+        }
+        else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {
+            processAnswerInput(input);
+        }
+        else if (session.inputType == TriviaEditSession.InputType.POINTS) {
+            processPointsInput(input);
+        }
+        else if (session.inputType == TriviaEditSession.InputType.FINISHED) {
+            processMoreQuestionPrompt(input);
         }
 
     }
@@ -441,10 +451,69 @@ public class TriviaModifier {
      * @param quesStr string representing question prompt user wants to ask
      */
     private void processQuestionInput(String quesStr) {
-        session.questionObj = new QA();
-        session.questionObj.setId(session.triviaType.getNextQuestionId());
-        session.questionObj.setQuestion(quesStr);
-        session.channel.sendMessage("Question is: ```" + quesStr + "```")
+        if (session.modifyAction == TriviaEditSession.ModifyAction.ADD) {
+            session.questionObj = new QA();
+            session.questionObj.setId(modifiedTrivia.getNextQuestionId());
+            session.questionObj.setQuestion(quesStr);
+            session.channel.sendMessage("Question is: ```" + quesStr + "```")
+                    .queue();
+
+            promptConfirm();
+            session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
+        }
+
+        else {
+            List<String> userInput =
+                    TriviaEditSession.removeDuplicateStringsFromList(
+                            TriviaEditSession.parseCommaSeparatedList(quesStr));
+            Set<Long> questionsIdsToRemove = new HashSet<>();
+            Set<QA> questionsToRemove = new HashSet<>();
+            List<QA> questionsList = session.triviaType.getQuestions();
+
+            /* Convert each string to integer */
+            for (String num : userInput) {
+                try {
+                    Long quesNum = Long.parseLong(num);
+                    questionsIdsToRemove.add(quesNum);
+                }
+                catch (NumberFormatException e) {
+                    session.channel.sendMessage(num + " is not an integer. " +
+                            "please input a number (the id of the question you want to remove)")
+                            .queue();
+                    return;
+                }
+            }
+
+            for (Long id : questionsIdsToRemove) {
+                boolean success = modifiedTrivia.removeQuestionById(id);
+                if (!success) {
+                    session.channel.sendMessage("The question id " + id + " is not" +
+                            "valid. Failed to remove this question")
+                            .queue();
+
+                }
+                else {
+                    session.channel.sendMessage("Removed question with id " + id)
+                            .queue();
+                }
+            }
+
+            promptConfirm();
+            session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
+        }
+
+    }
+
+
+    /**
+     * Processes answers that the user wants to set for a corresponding question prompt
+     * @param ansStr string representing a list of answers the user wants
+     */
+    private void processAnswerInput(String ansStr) {
+        List<String> answers = TriviaEditSession.parseCommaSeparatedList(ansStr);
+        session.questionObj.setAnswer(answers);
+        session.channel.sendMessage("Answers to your question are: " +
+                        "```" + answers + "```")
                 .queue();
 
         promptConfirm();
@@ -452,7 +521,77 @@ public class TriviaModifier {
     }
 
 
+    /**
+     * Processes the points that the user wants a corresponding question to be worth.
+     * Checks that user's input is a number, and a number between the allowed range
+     * that points can be.
+     *
+     * @param ptStr string representing number of points that the question is worth.
+     */
+    private void processPointsInput(String ptStr) {
+        long pts;
+        try {
+            pts = Long.parseLong(ptStr.trim());
+        }
+        catch (NumberFormatException e) {
+            session.channel.sendMessage("You did not enter a number. Please try again.")
+                    .queue();
+            return;
+        }
+
+        if (pts < 0 || pts > 3) {
+            session.channel.sendMessage("Your number is not in the inclusive range of 1-3." +
+                    " Please try again.").queue();
+            return;
+        }
+
+        session.questionObj.setPoints(pts);
+        session.channel.sendMessage("This question is worth " + pts + " points.")
+                .queue();
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
+    }
+
+
+    /**
+     * Processes a user's response to being asked if they want to input more questions to a trivia.
+     * Answer must be "yes" or "no", otherwise error message sent to user so they can try again.
+     *
+     * @param response user's response to prompt whether they want to continue inputting more questions.
+     */
+    public void processMoreQuestionPrompt(String response) {
+        session.channel.sendMessage("Here is your question:").queue();
+        session.channel.sendMessageEmbeds(session.questionObj.asEmbed()).queue();
+
+        if (response.trim().equalsIgnoreCase("yes")) {
+            promptQuestion();
+            session.inputType = TriviaEditSession.InputType.QUESTION;
+            return;
+        }
+
+
+        boolean success = modifiedTrivia.writeTrivia(
+                session.path + "custom/" + session.triviaType.getName());
+        if (success) {
+            session.channel.sendMessage("Here are your updated questions: ")
+                    .queue();
+            EmbedPageBuilder builder =  modifiedTrivia.asQuestionsEmbed(session.scrollUpdatedQuestionId);
+            session.idToPageBuilder.put(session.scrollUpdatedQuestionId, builder);
+            session.channel.sendMessageEmbeds(builder.build())
+                    .setComponents().setActionRow(builder.getPageBuilderActionRow())
+                    .queue();
+            session.stop(session.user, session.channel);
+        }
+        else {
+            session.channel.sendMessage("Oops, something went wrong when saving the" +
+                    "trivia. Please try again later.").queue();
+        }
+    }
+
+
     public void processConfirm(String input) {
+
+        session.confirmState = TriviaEditSession.ConfirmState.NORMAL;
 
         if (input.equalsIgnoreCase("yes")) {
 
@@ -496,16 +635,34 @@ public class TriviaModifier {
                 writeBack("your new editors have been updated. ");
             }
             else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
-                writeBack("your new questions have been updated.");
+                if (session.modifyAction == TriviaEditSession.ModifyAction.ADD) {
+                    session.inputType = TriviaEditSession.InputType.ANSWERS;
+                    promptAnswers();
+                    return;
+                }
+                else {
+                    session.channel.sendMessage("Here are your updated questions.")
+                            .queue();
+                    EmbedPageBuilder builder = modifiedTrivia.asQuestionsEmbed(session.scrollUpdatedQuestionId);
+                    session.idToPageBuilder.put(session.scrollUpdatedQuestionId,builder);
+                    session.channel.sendMessageEmbeds(builder.build())
+                            .setComponents().setActionRow(builder.getPageBuilderActionRow())
+                            .queue();
+                    writeBack("Success. Any questions with valid ids have been removed.");
+                }
             }
             else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {
-                writeBack("your new answers have been updated.");
+                session.inputType = TriviaEditSession.InputType.POINTS;
+                promptPoints();
+                return;
             }
             else if (session.inputType == TriviaEditSession.InputType.POINTS) {
-                writeBack("your new points have been updated.");
+                session.inputType = TriviaEditSession.InputType.FINISHED;
+                modifiedTrivia.addQuestion(session.questionObj);
+                promptMoreQuestions();
+                return;
             }
 
-            session.confirmState = TriviaEditSession.ConfirmState.NORMAL;
             session.stop(session.user, session.channel);
 
 
