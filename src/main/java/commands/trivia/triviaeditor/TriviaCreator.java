@@ -272,24 +272,31 @@ public class TriviaCreator {
             return;
         }
 
-
-        boolean success = session.triviaType.writeTrivia(
-                session.path + "custom/" + session.triviaType.getName());
-        if (success) {
-            session.channel.sendMessage("Here is the trivia you created. " +
-                    "You may edit it at any time if you want to modify something." +
-                    " Thanks for making a trivia!").queue();
-            session.channel.sendMessageEmbeds(session.triviaType.asEmbed()).queue();
-            EmbedPageBuilder builder =  session.triviaType.asQuestionsEmbed(session.createScrollId);
-            session.idToPageBuilder.put(session.createScrollId, builder);
-            session.channel.sendMessageEmbeds(builder.build())
-                    .setComponents().setActionRow(builder.getPageBuilderActionRow())
-                    .queue();
-            session.stop(session.user, session.channel);
+        else if (response.trim().equalsIgnoreCase("no")){
+            boolean success = session.triviaType.writeTrivia(
+                    session.path + "custom/" + session.triviaType.getName());
+            if (success) {
+                session.channel.sendMessage("Here is the trivia you created. " +
+                        "You may edit it at any time if you want to modify something." +
+                        " Thanks for making a trivia!").queue();
+                session.channel.sendMessageEmbeds(session.triviaType.asEmbed()).queue();
+                EmbedPageBuilder builder =  session.triviaType.asQuestionsEmbed(session.createScrollId);
+                session.idToPageBuilder.put(session.createScrollId, builder);
+                session.channel.sendMessageEmbeds(builder.build())
+                        .setComponents().setActionRow(builder.getPageBuilderActionRow())
+                        .queue();
+                session.stop(session.user, session.channel);
+            }
+            else {
+                session.channel.sendMessage("Oops, something went wrong when saving the" +
+                        "trivia. Please try again later.").queue();
+                session.stop(session.user, session.channel);
+            }
         }
+
         else {
-            session.channel.sendMessage("Oops, something went wrong when saving the" +
-                    "trivia. Please try again later.").queue();
+            session.channel.sendMessage("Invalid response. Please type yes or no.")
+                    .queue();
         }
     }
 

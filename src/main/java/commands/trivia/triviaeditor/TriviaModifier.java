@@ -568,24 +568,25 @@ public class TriviaModifier {
             session.inputType = TriviaEditSession.InputType.QUESTION;
             return;
         }
-
-
-        boolean success = modifiedTrivia.writeTrivia(
-                session.path + "custom/" + session.triviaType.getName());
-        if (success) {
-            session.channel.sendMessage("Here are your updated questions: ")
-                    .queue();
-            EmbedPageBuilder builder =  modifiedTrivia.asQuestionsEmbed(session.scrollUpdatedQuestionId);
-            session.idToPageBuilder.put(session.scrollUpdatedQuestionId, builder);
-            session.channel.sendMessageEmbeds(builder.build())
-                    .setComponents().setActionRow(builder.getPageBuilderActionRow())
-                    .queue();
-            session.stop(session.user, session.channel);
+        else if (response.trim().equalsIgnoreCase("no")) {
+            boolean success = modifiedTrivia.writeTrivia(
+                    session.path + "custom/" + session.triviaType.getName());
+            if (success) {
+                session.stop(session.user, session.channel);
+            }
+            else {
+                session.channel.sendMessage("Oops, something went wrong when saving the" +
+                        "trivia. Please try again later.").queue();
+                session.stop(session.user, session.channel);
+            }
         }
         else {
-            session.channel.sendMessage("Oops, something went wrong when saving the" +
-                    "trivia. Please try again later.").queue();
+            session.channel.sendMessage("Invalid response. Please type yes or no")
+                    .queue();
         }
+
+
+
     }
 
 
@@ -641,13 +642,6 @@ public class TriviaModifier {
                     return;
                 }
                 else {
-                    session.channel.sendMessage("Here are your updated questions.")
-                            .queue();
-                    EmbedPageBuilder builder = modifiedTrivia.asQuestionsEmbed(session.scrollUpdatedQuestionId);
-                    session.idToPageBuilder.put(session.scrollUpdatedQuestionId,builder);
-                    session.channel.sendMessageEmbeds(builder.build())
-                            .setComponents().setActionRow(builder.getPageBuilderActionRow())
-                            .queue();
                     writeBack("Success. Any questions with valid ids have been removed.");
                 }
             }
@@ -858,8 +852,7 @@ public class TriviaModifier {
     public void promptQuestion() {
         if (session.modifyAction == TriviaEditSession.ModifyAction.ADD) {
             session.channel.sendMessage("Enter a question you would like " +
-                            "to ask in this trivia. Or type" +
-                            "stop if you are finished")
+                            "to ask in this trivia. ")
                     .queue();
         }
 
