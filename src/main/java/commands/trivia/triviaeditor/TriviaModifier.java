@@ -560,8 +560,6 @@ public class TriviaModifier {
      * @param response user's response to prompt whether they want to continue inputting more questions.
      */
     public void processMoreQuestionPrompt(String response) {
-        session.channel.sendMessage("Here is your question:").queue();
-        session.channel.sendMessageEmbeds(session.questionObj.asEmbed()).queue();
 
         if (response.trim().equalsIgnoreCase("yes")) {
             promptQuestion();
@@ -653,6 +651,8 @@ public class TriviaModifier {
             else if (session.inputType == TriviaEditSession.InputType.POINTS) {
                 session.inputType = TriviaEditSession.InputType.FINISHED;
                 modifiedTrivia.addQuestion(session.questionObj);
+                session.channel.sendMessage("Here is your question:").queue();
+                session.channel.sendMessageEmbeds(session.questionObj.asEmbed()).queue();
                 promptMoreQuestions();
                 return;
             }
