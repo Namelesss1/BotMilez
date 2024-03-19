@@ -411,16 +411,22 @@ public class TriviaType {
                     true
             );
             MessageEmbed.Field quesField = new MessageEmbed.Field(
-                    qa.getQuestion() + "(" + qa.getPoints() + " points)",
-                    "answers = " + qa.getAnswers().toString(),
+                    "Question",
+                    qa.getQuestion(),
+                    false
+            );
+            MessageEmbed.Field ansField = new MessageEmbed.Field(
+                    "Answers",
+                    qa.getAnswers().toString() + "(" + qa.getPoints() + " points)",
                     false
             );
 
             fields.add(idField);
             fields.add(quesField);
+            fields.add(ansField);
         }
 
-        EmbedPageBuilder em = new EmbedPageBuilder(10, fields, false, id);
+        EmbedPageBuilder em = new EmbedPageBuilder(15, fields, false, id);
 
         em.setColor(Color.MAGENTA);
         em.setTitle("Questions in " + getName());

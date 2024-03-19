@@ -115,8 +115,22 @@ public class QA  {
     public MessageEmbed asEmbed() {
         EmbedBuilder em = new EmbedBuilder();
         em.setAuthor("Id: " + getId());
-        em.setTitle("Question: " + getQuestion());
-        em.setDescription("Answers: " + getAnswers().toString());
+        if (getQuestion().length() >= 246) {
+            em.addField(
+                    "Question",
+                    getQuestion(),
+                    false
+            );
+            em.addField(
+                    "Answers",
+                    getAnswers().toString(),
+                    false
+            );
+        }
+        else {
+            em.setTitle("Question: " + getQuestion());
+            em.setDescription("Answers: " + getAnswers().toString());
+        }
         em.setFooter(getPoints() + " points");
         em.setColor(Color.MAGENTA);
         return em.build();
