@@ -120,7 +120,7 @@ public class TriviaCommand implements IBotCommand {
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
-
+        
     }
 
 
