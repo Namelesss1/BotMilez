@@ -77,7 +77,7 @@ public class TriviaCreator {
      * @param name name of trivia
      */
     private void processNameInput(String name) {
-        if (Trivia.triviaExists(name)) {
+        if (Trivia.triviaExists(name, true)) {
             session.channel.sendMessage("A trivia named " + name + " already exists! " +
                             "try another name.")
                     .queue();

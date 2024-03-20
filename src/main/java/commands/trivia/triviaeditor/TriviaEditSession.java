@@ -109,6 +109,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     private TriviaCreator creator;
 
     private TriviaModifier modifier;
+    private TriviaRemover remover;
 
    protected String startStr = "Type one of the below options to either create a new " +
            "trivia, modify an existing one, or delete a trivia entirely.\n" +
@@ -178,6 +179,8 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
             }
             else if (msg.equalsIgnoreCase("delete")) {
                 action = Action.DELETE;
+                inputType = inputType.SELECT_TRIVIA;
+                remover = new TriviaRemover(this);
             }
             else {
                 channel.sendMessage("You did not select an appropriate option").queue();
@@ -191,6 +194,10 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
 
         else if (action == Action.MODIFY) {
             modifier.handleInput(msg);
+        }
+
+        else if (action == Action.DELETE) {
+            remover.handleInput(msg);
         }
 
     }
@@ -226,9 +233,10 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
     /**
      * Gets a list of the names of trivias that a user has access to edit.
      * @param username username of user requesting edit access
+     * @param creatorOnly true to set a strict condition that user must be trivia creator
      * @return a list of strings representing each trivia name that a user can access
      */
-    public static Set<String> getAllowedTriviasForUser(String username) {
+    public static Set<String> getAllowedTriviasForUser(String username, boolean creatorOnly) {
 
         Set<String> triviaNames = new HashSet<>();
 
@@ -243,13 +251,21 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
             if (extensionFilter.accept(file) && file.isFile()) {
                 String fileName = file.getName();
                 JSONObject trivObj = (JSONObject) IO.readJson(path + fileName);
-                List<String> editors = (JSONArray)trivObj.get("allowed_editors");
                 String trivName = (String)trivObj.get("name");
                 String trivAuthor = (String)trivObj.get("author");
-                if (editors.stream().anyMatch(username::equalsIgnoreCase)
-                        || username.equalsIgnoreCase(trivAuthor)) {
-                    triviaNames.add(trivName);
+                if (!creatorOnly) {
+                    List<String> editors = (JSONArray)trivObj.get("allowed_editors");
+                    if (editors.stream().anyMatch(username::equalsIgnoreCase)
+                            || username.equalsIgnoreCase(trivAuthor)) {
+                        triviaNames.add(trivName);
+                    }
                 }
+                else {
+                    if (username.equalsIgnoreCase(trivAuthor)) {
+                        triviaNames.add(trivName);
+                    }
+                }
+
             }
         }
 
@@ -258,18 +274,27 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
             if (extensionFilter.accept(file) && file.isFile()) {
                 String fileName = file.getName();
                 JSONObject trivObj = (JSONObject)IO.readJson(path + "custom/" + fileName);
-                String trivAuthor = (String)trivObj.get("author");
-                List<String> editors = (JSONArray)trivObj.get("allowed_editors");
                 String trivName = (String)trivObj.get("name");
-                if (editors.stream().anyMatch(username::equalsIgnoreCase)
-                        || username.equalsIgnoreCase(trivAuthor)) {
-                   triviaNames.add(trivName);
+                String trivAuthor = (String)trivObj.get("author");
+                if (!creatorOnly) {
+                    List<String> editors = (JSONArray)trivObj.get("allowed_editors");
+                    if (editors.stream().anyMatch(username::equalsIgnoreCase)
+                            || username.equalsIgnoreCase(trivAuthor)) {
+                        triviaNames.add(trivName);
+                    }
+                }
+                else {
+                    if (username.equalsIgnoreCase(trivAuthor)) {
+                        triviaNames.add(trivName);
+                    }
                 }
             }
         }
 
         return triviaNames;
     }
+
+
 
 
     /**

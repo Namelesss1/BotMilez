@@ -100,7 +100,7 @@ public class TriviaModifier {
      * @param name name of trivia to modify
      */
     private void processTriviaSelect(String name) {
-        if (!Trivia.triviaExists(name)) {
+        if (!Trivia.triviaExists(name, true)) {
             session.channel.sendMessage("The trivia, " + name + " does not exist!" +
                             " Please try inputting another name.")
                     .queue();
@@ -213,7 +213,7 @@ public class TriviaModifier {
      * @param name name of trivia
      */
     private void processNameInput(String name) {
-        if (Trivia.triviaExists(name)) {
+        if (Trivia.triviaExists(name, true)) {
             session.channel.sendMessage("A trivia named " + name + " already exists! " +
                             "try another name.")
                     .queue();
@@ -607,7 +607,8 @@ public class TriviaModifier {
                     return;
                 }
 
-                boolean deleteSuccess = IO.deleteFile(session.path + "custom/" + session.triviaType.getName() + ".json");
+                boolean deleteSuccess = IO.deleteFile(session.path +
+                        "custom/" + session.triviaType.getName() + ".json");
                 /* If failed to delete the previous file with old name, send error and
                  * delete the new one.
                  */
@@ -713,7 +714,7 @@ public class TriviaModifier {
     }
 
     public void promptTrivia() {
-        Set<String> allowedTrivias = TriviaEditSession.getAllowedTriviasForUser(session.user.getName());
+        Set<String> allowedTrivias = TriviaEditSession.getAllowedTriviasForUser(session.user.getName(), false);
         if (allowedTrivias.isEmpty()) {
             session.channel.sendMessage("You have no trivias you are allowed to edit. If you would like " +
                     "to create your own, type the command again in the server and in DMs select 'create'. Or " +

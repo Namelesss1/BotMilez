@@ -1,12 +1,15 @@
 package commands.trivia;
 
 import commands.IBotCommand;
+import commands.Stoppable;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,8 +98,8 @@ public class TriviaCommand implements IBotCommand {
         activeTrivias.add(event.getChannel().getIdLong());
 
         String tag = event.getOption(OPTION_TRIVIA_NAME).getAsString();
-        int maxQuestions = 40;
-        int maxPoints = 50;
+        int maxQuestions = 20;
+        int maxPoints = 30;
         int questionTime = 15;
         if (event.getOption(OPTION_TRIVIA_MAX_QUESTIONS) != null) {
             maxQuestions = event.getOption(OPTION_TRIVIA_MAX_QUESTIONS).getAsInt();
@@ -120,7 +123,69 @@ public class TriviaCommand implements IBotCommand {
 
     @Override
     public void getHelp(StringSelectInteractionEvent event) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setTitle(getName());
+        builder.setDescription(getDesc());
+        builder.setFooter("Time to show the world what you know");
+        builder.setColor(Color.MAGENTA);
 
+        builder.addField(
+                "Options",
+                "name: This is mandatory. This determines what kinds of questions" +
+                        " will be sent during the game. The name of the trivia to play if only" +
+                        " one strict trivia is desired. If you want multiple trivia categories" +
+                        " in a game, enter a tag that identifies a multiple trivias that share that tag. " +
+                        "\n\n" +
+                        OPTION_TRIVIA_MAX_POINTS + ": optional. The maximum amount of points a player can" +
+                        " earn before the trivia ends. The default is 30" +
+                        "\n\n" +
+                        OPTION_TRIVIA_MAX_QUESTIONS + ": optional. The maximum amount of questions that can " +
+                        "be asked by the trivia. The default is 20 questions" +
+                        OPTION_TRIVIA_SECONDS_PER_Q + ": optional. The time limit in seconds before the next " +
+                        "question is asked if no one is getting the current one correct. The default is " +
+                        "15 seconds.",
+                false
+        );
+
+        builder.addField(
+                "Starting the game",
+                "Type the command /" + getName() + "followed by the name/tags of the types of trivia" +
+                        " questions you want, and any additional options (mentioned above) that you want. " +
+                        "The trivia will then begin. Anyone who sends a message in the channel the trivia is" +
+                        " happening in is automatically entered as a participant of the game. Only one trivia game" +
+                        " can happen in the same channel at once.",
+                false
+        );
+
+        builder.addField(
+                "Playing the game",
+                "The bot will ask a question. Players will type an answer. If a player is correct, " +
+                        "the amount of points the question was worth will be added to their score." +
+                        "If wrong, a small cooldown will apply to the player where they will be unable" +
+                        "to answer. This is to prevent guess spamming. The next question is shown " +
+                        "when someone gets the answer correct or the question's time limit is up." +
+                        " Once the game ends, the final scoreboard is displayed. ",
+                false
+
+        );
+
+        builder.addField(
+                "Stopping the game",
+                "The game ends when someone gets the maximum amount of points, all available questions " +
+                        "in a trivia were asked, or the maximum chosen amount of questions were asked." +
+                        " Whichever happens first. You can also forcefully end a trivia by typing " +
+                        Stoppable.CANCEL + " or " + Stoppable.END + " or " + Stoppable.END + ".",
+                false
+        );
+
+        builder.addField(
+                "Creating custom Trivia questions",
+                "Use the trivia_edit command. For more info, use /help and " +
+                        "select the /trivia_edit command.",
+                false
+        );
+
+        event.editMessageEmbeds(builder.build()).queue();
     }
 
 
