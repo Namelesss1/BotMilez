@@ -2,6 +2,7 @@ package commands.trivia;
 
 import commands.Stoppable;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -14,18 +15,16 @@ import util.IO;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
-import java.sql.Time;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
  *
- * TODO: Implement question timer
- * TODO: Small pause between each question
  * TODO: Cooldown between wrong answers for users
+ * TODO: Ensure selected trivias have permission in the requesting server
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
 
@@ -74,6 +73,9 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /* Command which created this trivia object */
     private TriviaCommand command;
 
+    /* previous question embed that was sent */
+    private Message questionMsg;
+
     /*
      * An array of size two that helps keep track of which question is
      * currently active.
@@ -81,6 +83,24 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      * index [1]: id of question within the trivia type
      */
     private int[] currentQuestionIndex;
+
+    /* Timer that delays the next question being sent */
+    private Timer questionDelayTimer;
+
+    /* Main Question timer */
+    private Timer questionTimer;
+
+    /* Visual timer that the players see on display in an embed
+     * to show how much time is left to answer a question
+     */
+    private Timer visualCountdownTimer;
+
+    /* True if the trivia is ready to receive user responses. Otherwise, ignores them.
+     * Used to prevent players from luckily guessing answers before a question is sent,
+     * since a small intentional delay is added between questions.
+     * Responses to end the trivia are still acknowledged.
+     */
+    private boolean readyToReceiveMessages;
 
 
     /**
@@ -104,13 +124,19 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         channelId = channel.getIdLong();
         triviaTypes = new ArrayList<>();
         triviaNames = new ArrayList<>();
+
         currentQuestionIndex = new int[2];
+        currentQuestionIndex[0] = -1;
+        currentQuestionIndex[1] = -1;
+
         numTotalQuestions = 0;
         numQuestionsAsked = 0;
         playerToScore = new HashMap<>();
         playerToScore.put(user, new Long(0));
         triviaCount++;
         this.command = triviaCommand;
+        questionDelayTimer = new Timer();
+
 
         /* Load appropriate trivias into triviaTypes if they contain a matching tag
          * Loop through all files in trivia directory to see if the user-chosen tag
@@ -270,26 +296,18 @@ public class Trivia extends ListenerAdapter implements Stoppable {
             return;
         }
 
+        if (!readyToReceiveMessages) {
+            return;
+        }
+
         /* Check if correct answer */
         if (isCorrect(msg)) {
             addScoreTo(event.getAuthor());
             channel.sendMessage(getReplyUponCorrect(event.getAuthor())).queue();
-
-            /* Check if game over */
-            if (isOver()) {
-                stop(event.getAuthor(), channel);
-                return;
-            }
-
-            /* Remove this question to prevent duplicates. If the trivia type removed from
-             *  is now empty, remove it from the triviatype list. */
-            triviaTypes.get(currentQuestionIndex[0]).removeQuestion(currentQuestionIndex[1]);
-            if (triviaTypes.get(currentQuestionIndex[0]).getSize() == 0) {
-                triviaTypes.remove(currentQuestionIndex[0]);
-            }
-
-            /* Send next question */
-            sendNextQuestion();
+            readyToReceiveMessages = false;
+            questionTimer.cancel();
+            visualCountdownTimer.cancel();
+            questionDelayTimer.schedule(new NextQuestionTask(), 3000);
         }
 
     }
@@ -319,23 +337,46 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
     /**
      * Generates and sends the next question to the channel
+     * Sets up a timer for the question as a time limit
      */
     private void sendNextQuestion() {
+        removeCurrentQuestion();
+
         generateQuestionSeed();
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
 
-        String titleMessage = "From trivia \"" + type.getName() + "\" made by " +
+        String fromMessage = "From trivia \"" + type.getName() + "\" made by " +
                 type.getAuthor();
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.BLUE);
-        builder.setTitle(titleMessage);
-        builder.setAuthor("Question " + (numQuestionsAsked + 1) + ".");
-        builder.setFooter("Points: " + getPointsWorth());
-        builder.setDescription(getQuestion());
+        builder.setTitle("Question " + (numQuestionsAsked + 1) + ". (" +
+                getPointsWorth() + " points)");
+        builder.setFooter(Integer.toString(questionTimeLimit));
 
-        channel.sendMessageEmbeds(builder.build()).queue();
+        builder.addField(
+                fromMessage,
+                getQuestion(),
+                false
+        );
+
+        questionTimer = new Timer();
+        questionTimer.schedule(new NextQuestionTask(), questionTimeLimit * 1000);
+
+        /* Callback so we can reference the embed later to countdown the timer */
+        Consumer<Message> callback = (msg) -> {
+            questionMsg = msg;
+            if (visualCountdownTimer != null) {
+                visualCountdownTimer.cancel();
+            }
+            visualCountdownTimer = new Timer();
+            visualCountdownTimer.scheduleAtFixedRate(
+                    new TimerCountDownTask(questionTimeLimit),0, 1000);
+        };
+        channel.sendMessageEmbeds(builder.build()).queue(callback);
+
         numQuestionsAsked++;
+        readyToReceiveMessages = true;
     }
 
     /**
@@ -382,6 +423,24 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         long userNewScore = playerToScore.get(user) + getPointsWorth();
 
         playerToScore.replace(user, userNewScore);
+    }
+
+
+    /** Removes current question to prevent duplicates. If the trivia type removed from
+     *  is now empty, remove it from the triviatype list. */
+    private void removeCurrentQuestion() {
+
+        /* Do nothing if current question has not been generated yet e.g. its the
+         * first question of the trivia
+         */
+        if (currentQuestionIndex[0] == -1 || currentQuestionIndex[1] == -1) {
+            return;
+        }
+
+        triviaTypes.get(currentQuestionIndex[0]).removeQuestion(currentQuestionIndex[1]);
+        if (triviaTypes.get(currentQuestionIndex[0]).getSize() == 0) {
+            triviaTypes.remove(currentQuestionIndex[0]);
+        }
     }
 
 
@@ -503,6 +562,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     /**
      * Stops the game of trivia. Performs clean up operations and
      * sends the results to the channel this trivia takes place in.
+     * Cancels any future timers that were awaiting execution.
      *
      * @param user user that triggered this event to end
      * @param channel where the event being ended is taking place
@@ -511,6 +571,16 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     public void stop(User user, MessageChannel channel) {
         channel.sendMessage("Trivia is over! Here are the results: ").queue();
         channel.sendMessageEmbeds(getResults()).queue();
+        if (questionDelayTimer != null) {
+            questionDelayTimer.cancel();
+        }
+        if (questionTimer != null) {
+            questionTimer.cancel();
+        }
+        if (visualCountdownTimer != null) {
+            visualCountdownTimer.cancel();
+        }
+
         destroyInstance();
     }
 
@@ -556,5 +626,54 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         return false;
     }
 
+
+
+    /**
+     * A TimerTask class that sends a new question.
+     */
+    private class NextQuestionTask extends TimerTask {
+
+        public void run() {
+            //visualCountdownTimer.cancel();
+
+            /* Check if game over */
+            if (isOver()) {
+                stop(null, channel);
+                return;
+            }
+            sendNextQuestion();
+        }
+
+    }
+
+
+    /**
+     * A TimerTask class that acts as a visual countdown on
+     * a question MessageEmbed.
+     */
+    private class TimerCountDownTask extends TimerTask{
+
+        /* Time left in seconds */
+        private long timeLeftSeconds;
+
+        public TimerCountDownTask(long timeLimit) {
+            timeLeftSeconds = timeLimit;
+        }
+
+        public void run() {
+            if (timeLeftSeconds > 0) {
+                timeLeftSeconds--;
+                MessageEmbed embed = questionMsg.getEmbeds().get(0);
+                EmbedBuilder updatedEmbed = new EmbedBuilder();
+                updatedEmbed.copyFrom(embed);
+                updatedEmbed.setFooter(Long.toString(timeLeftSeconds));
+                List<MessageEmbed> embeds = new ArrayList<>();
+                embeds.add(updatedEmbed.build());
+
+                questionMsg.editMessageEmbeds(embeds).queue();
+            }
+        }
+
+    }
 
 }
