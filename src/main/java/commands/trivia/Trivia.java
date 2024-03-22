@@ -23,7 +23,6 @@ import java.util.function.Consumer;
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
  *
- * TODO: Cooldown between wrong answers for users
  * TODO: Ensure selected trivias have permission in the requesting server
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
@@ -102,6 +101,16 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      */
     private boolean readyToReceiveMessages;
 
+    /*
+     * Player cooldowns: When a player gets a question wrong, they
+     * are added to this map and they cannot answer a question for a small amount
+     * of time. To prevent guess spamming
+     *
+     * Map: User -> Timer representing how many seconds of cooldown left
+     * If timer is null, then there is no cooldown.
+     */
+    private Map<User, Timer> playerCooldowns;
+
 
     /**
      * Constructor for an instance of a trivia game. Initializes needed information
@@ -131,8 +140,12 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
         numTotalQuestions = 0;
         numQuestionsAsked = 0;
+
         playerToScore = new HashMap<>();
         playerToScore.put(user, new Long(0));
+        playerCooldowns = new HashMap<>();
+        playerCooldowns.put(user, null);
+
         triviaCount++;
         this.command = triviaCommand;
         questionDelayTimer = new Timer();
@@ -277,22 +290,31 @@ public class Trivia extends ListenerAdapter implements Stoppable {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
 
+        String msg = event.getMessage().getContentRaw();
+        User user = event.getAuthor();
+
         /* If message recieved in some other channel, ignore */
         if (!event.getChannel().equals(channel)) {
             return;
         }
         /* If message received is from a bot, ignore */
-        if (event.getAuthor().isBot()) {
+        if (user.isBot()) {
             return;
         }
 
-        String msg = event.getMessage().getContentRaw();
+        /* If player is in cooldown, ignore */
+        if (playerCooldowns.containsKey(user) &&
+                playerCooldowns.get(user) != null) {
+            return;
+        }
+
+
 
         /* Check for forceful end of trivia */
         if (msg.equalsIgnoreCase(Stoppable.CANCEL)
         || msg.equalsIgnoreCase(Stoppable.END)
         || msg.equalsIgnoreCase(Stoppable.STOP)) {
-            stop(event.getAuthor(), channel);
+            stop(user, channel);
             return;
         }
 
@@ -302,12 +324,35 @@ public class Trivia extends ListenerAdapter implements Stoppable {
 
         /* Check if correct answer */
         if (isCorrect(msg)) {
-            addScoreTo(event.getAuthor());
-            channel.sendMessage(getReplyUponCorrect(event.getAuthor())).queue();
+            addScoreTo(user);
+            channel.sendMessage(getReplyUponCorrect(user)).queue();
             readyToReceiveMessages = false;
             questionTimer.cancel();
             visualCountdownTimer.cancel();
             questionDelayTimer.schedule(new NextQuestionTask(), 3000);
+        }
+
+        /*
+         * If not, place an answer cooldown on the player if they
+         * do not already have one.
+         */
+        else {
+            if (!playerCooldowns.containsKey(user)) {
+                playerCooldowns.put(user, null);
+            }
+
+            if (playerCooldowns.get(user) == null) {
+                Consumer<Message> callback = (botMsg) -> {
+                    Timer timer = new Timer();
+                    timer.schedule(new RemovePlayerCooldownTask(user, botMsg), 4000);
+                    playerCooldowns.put(user, timer);
+                };
+                channel.sendMessage("Wrong, " + user.getName() + "! Now wait " +
+                                "4 seconds before you can answer again.")
+                        .queue(callback);
+            }
+
+
         }
 
     }
@@ -374,6 +419,14 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                     new TimerCountDownTask(questionTimeLimit),0, 1000);
         };
         channel.sendMessageEmbeds(builder.build()).queue(callback);
+
+        /* Cancel any cooldowns users have for next question */
+        for (User user : playerCooldowns.keySet()) {
+            if (playerCooldowns.get(user) != null) {
+                playerCooldowns.get(user).cancel();
+                playerCooldowns.replace(user, null);
+            }
+        }
 
         numQuestionsAsked++;
         readyToReceiveMessages = true;
@@ -675,5 +728,27 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         }
 
     }
+
+
+    /**
+     * A TimerTask that removes a player's answer cooldown after
+     * a certain amount of time has past.
+     */
+    private class RemovePlayerCooldownTask extends TimerTask {
+        private User user;
+        private Message msg;
+
+        public RemovePlayerCooldownTask(User cooldownUser, Message botMsg) {
+            user = cooldownUser;
+            this.msg = botMsg;
+        }
+
+        public void run() {
+            playerCooldowns.replace(user, null);
+            msg.editMessage(user.getName() + "'s cooldown is over!")
+                    .queue();
+        }
+    }
+
 
 }
