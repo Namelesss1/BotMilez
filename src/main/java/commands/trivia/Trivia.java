@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -123,8 +124,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
      * @param timeLimit amount of time in seconds before moving on to next question
      * @param channel MessageChannel this trivia is taking place in
      */
-    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel, User user,
-        TriviaCommand triviaCommand) {
+    public Trivia(String tag, int maxQ, int maxPoints, int timeLimit, MessageChannel channel,
+                  User user, TriviaCommand triviaCommand) {
         this.tag = tag;
         maxQuestions = maxQ;
         winningScore = maxPoints;
@@ -164,14 +165,18 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
                 List<String> tags = (JSONArray)trivObj.get("tags");
                 String trivName = (String)trivObj.get("name");
+                List<String> ids = (JSONArray)trivObj.get("servers");
+                boolean universal = (boolean)trivObj.get("all_servers");
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)
                         || tag.equalsIgnoreCase(trivName)) {
-                    TriviaType type = new TriviaType(trivObj, channel.getJDA());
-                    numTotalQuestions += type.getSize();
-                    if (type.getSize() > 0) {
-                        triviaTypes.add(type);
+                    if (universal || (!ids.isEmpty() && ids.contains(channel.getId()))) {
+                        TriviaType type = new TriviaType(trivObj, channel.getJDA());
+                        numTotalQuestions += type.getSize();
+                        if (type.getSize() > 0) {
+                            triviaTypes.add(type);
+                        }
+                        triviaNames.add(type.getName());
                     }
-                    triviaNames.add(type.getName());
                 }
             }
         }
@@ -182,14 +187,18 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 JSONObject trivObj = (JSONObject)IO.readJson(path + "custom/" + fileName);
                 List<String> tags = (JSONArray)trivObj.get("tags");
                 String trivName = (String)trivObj.get("name");
+                List<String> ids = (JSONArray)trivObj.get("servers");
+                boolean universal = (boolean)trivObj.get("all_servers");
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)
                         || tag.equalsIgnoreCase(trivName)) {
-                    TriviaType type = new TriviaType(trivObj, channel.getJDA());
-                    numTotalQuestions += type.getSize();
-                    if (type.getSize() > 0) {
-                        triviaTypes.add(type);
+                    if (universal || (!ids.isEmpty() && ids.contains(((TextChannel)channel).getGuild().getId()))) {
+                        TriviaType type = new TriviaType(trivObj, channel.getJDA());
+                        numTotalQuestions += type.getSize();
+                        if (type.getSize() > 0) {
+                            triviaTypes.add(type);
+                        }
+                        triviaNames.add(type.getName());
                     }
-                    triviaNames.add(type.getName());
                 }
             }
         }
@@ -216,7 +225,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         }
 
         if (numTotalQuestions == 0) {
-            channel.sendMessage("A trivia by this name or tag does not exist.").queue();
+            channel.sendMessage("A trivia by this name or tag does not exist, " +
+                    "or this server does not have permission to play this trivia. ").queue();
             destroyInstance();
             return;
         }
