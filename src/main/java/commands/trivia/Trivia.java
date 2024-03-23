@@ -167,6 +167,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 String trivName = (String)trivObj.get("name");
                 List<String> ids = (JSONArray)trivObj.get("servers");
                 boolean universal = (boolean)trivObj.get("all_servers");
+
+                /* If chosen tags matches this trivia's, and trivia is allowed in this server */
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)
                         || tag.equalsIgnoreCase(trivName)) {
                     if (universal || (!ids.isEmpty() && ids.contains(channel.getId()))) {
@@ -189,6 +191,8 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 String trivName = (String)trivObj.get("name");
                 List<String> ids = (JSONArray)trivObj.get("servers");
                 boolean universal = (boolean)trivObj.get("all_servers");
+
+                /* If chosen tags matches this trivia's, and trivia is allowed in this server */
                 if (tags.stream().anyMatch(tag::equalsIgnoreCase)
                         || tag.equalsIgnoreCase(trivName)) {
                     if (universal || (!ids.isEmpty() && ids.contains(((TextChannel)channel).getGuild().getId()))) {
