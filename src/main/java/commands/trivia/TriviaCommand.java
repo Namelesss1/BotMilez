@@ -145,6 +145,9 @@ public class TriviaCommand implements IBotCommand {
                         " will be sent during the game. The name of the trivia to play if only" +
                         " one strict trivia is desired. If you want multiple trivia categories" +
                         " in a game, enter a tag that identifies a multiple trivias that share that tag. " +
+                        " For a very interesting game of trivia, you can load a mix of different questions types" +
+                        " from any trivia that is available on the server you're playing in. To do this, " +
+                        " type ALL as the name." +
                         "\n\n" +
                         OPTION_TRIVIA_MAX_POINTS + ": optional. The maximum amount of points a player can" +
                         " earn before the trivia ends. The default is 30" +

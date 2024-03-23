@@ -1,0 +1,23 @@
+{
+  "name": "Sample",
+  "author": "Nameless",
+  "is_default": true,
+  "all_servers": false,
+  "servers": [],
+  "allowed_editors": ["nnameless"],
+  "tags": ["Sample", "test", "not a real trivia"],
+  "qas":[
+	{
+		"id": 0,
+		"question": "What is the name of this trivia?",
+		"answer": ["Sample"],
+		"points": 1
+	},
+	{
+		"id": 1,
+		"question": "How many hours per day are there?",
+		"answer": ["24", "twenty four"],
+		"points": 3
+	}
+  ]
+}

@@ -141,6 +141,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         numTotalQuestions = 0;
         numQuestionsAsked = 0;
 
+        /* Initialize player scores and cooldowns */
         playerToScore = new HashMap<>();
         playerToScore.put(user, new Long(0));
         playerCooldowns = new HashMap<>();
@@ -150,62 +151,10 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         this.command = triviaCommand;
         questionDelayTimer = new Timer();
 
-
-        /* Load appropriate trivias into triviaTypes if they contain a matching tag
-         * Loop through all files in trivia directory to see if the user-chosen tag
-         * matches the trivia's tag or name. If so, add it to the trivia type list
-         * for this trivia instance. */
-        final FileNameExtensionFilter extensionFilter =
-                new FileNameExtensionFilter("N/A", "json");
-        File tDir = new File(path);
-        for (File file : tDir.listFiles()) {
-            if (extensionFilter.accept(file) && file.isFile()) {
-                String fileName = file.getName();
-                JSONObject trivObj = (JSONObject)IO.readJson(path + fileName);
-                List<String> tags = (JSONArray)trivObj.get("tags");
-                String trivName = (String)trivObj.get("name");
-                List<String> ids = (JSONArray)trivObj.get("servers");
-                boolean universal = (boolean)trivObj.get("all_servers");
-
-                /* If chosen tags matches this trivia's, and trivia is allowed in this server */
-                if (tags.stream().anyMatch(tag::equalsIgnoreCase)
-                        || tag.equalsIgnoreCase(trivName)) {
-                    if (universal || (!ids.isEmpty() && ids.contains(channel.getId()))) {
-                        TriviaType type = new TriviaType(trivObj, channel.getJDA());
-                        numTotalQuestions += type.getSize();
-                        if (type.getSize() > 0) {
-                            triviaTypes.add(type);
-                        }
-                        triviaNames.add(type.getName());
-                    }
-                }
-            }
-        }
-        tDir = new File(path + "custom/");
-        for (File file : tDir.listFiles()) {
-            if (extensionFilter.accept(file) && file.isFile()) {
-                String fileName = file.getName();
-                JSONObject trivObj = (JSONObject)IO.readJson(path + "custom/" + fileName);
-                List<String> tags = (JSONArray)trivObj.get("tags");
-                String trivName = (String)trivObj.get("name");
-                List<String> ids = (JSONArray)trivObj.get("servers");
-                boolean universal = (boolean)trivObj.get("all_servers");
-
-                /* If chosen tags matches this trivia's, and trivia is allowed in this server */
-                if (tags.stream().anyMatch(tag::equalsIgnoreCase)
-                        || tag.equalsIgnoreCase(trivName)) {
-                    if (universal || (!ids.isEmpty() && ids.contains(((TextChannel)channel).getGuild().getId()))) {
-                        TriviaType type = new TriviaType(trivObj, channel.getJDA());
-                        numTotalQuestions += type.getSize();
-                        if (type.getSize() > 0) {
-                            triviaTypes.add(type);
-                        }
-                        triviaNames.add(type.getName());
-                    }
-                }
-            }
-        }
-
+        /* Based on the tag, load all questions for this trivia game */
+        boolean allTrivias = (tag.equalsIgnoreCase("all")) ? true : false;
+        getTriviasMatchingTags(path, allTrivias);
+        getTriviasMatchingTags(path + "custom/", allTrivias);
     }
 
 
@@ -661,6 +610,59 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         triviaCount--;
         channel.getJDA().removeEventListener(this);
         command.removeChannelFromActive(channelId);
+    }
+
+
+    /**
+     * load appropriate trivias if they contain a matching tag or name
+     * Loop through all files in trivia directory to see if the user-chosen tag
+     * matches the trivia's tag or name. If so, add it to the trivia type list
+     * for this trivia instance if the server is allowed to view it.
+     *
+     * @param path path to the trivias json files
+     * @param allTrivias true if using the "all trivias" wildcard to load every trivia in server
+     * */
+    private void getTriviasMatchingTags(String path, boolean allTrivias) {
+        final FileNameExtensionFilter extensionFilter =
+                new FileNameExtensionFilter("N/A", "json");
+        File tDir = new File(path);
+        for (File file : tDir.listFiles()) {
+            if (extensionFilter.accept(file) && file.isFile()) {
+                String fileName = file.getName();
+                TriviaType type = new TriviaType(path + fileName, channel.getJDA());
+                List<String> tags = type.getTags();
+                String trivName = type.getName();
+                List<String> ids = type.getServers();
+                boolean universal = type.isUniversal();
+                boolean addTrivia = true;
+
+                /* If all trivia wildcard is disabled & tags or name don't match current trivia,
+                 * don't add it.
+                 */
+                if (!allTrivias) {
+                    if (!tags.stream().anyMatch(tag::equalsIgnoreCase)
+                            && !tag.equalsIgnoreCase(trivName)) {
+                        addTrivia = false;
+                    }
+                }
+
+                /* If trivia is not universal and trivia is not allowed in this server, don't add */
+                if (!universal) {
+                    if (ids.isEmpty() || !ids.contains(((TextChannel)channel).getGuild().getId())) {
+                        addTrivia = false;
+                    }
+                }
+
+                if (addTrivia) {
+                    numTotalQuestions += type.getSize();
+                    if (type.getSize() > 0) {
+                        triviaTypes.add(type);
+                    }
+                    triviaNames.add(type.getName());
+                }
+
+            }
+        }
     }
 
 
