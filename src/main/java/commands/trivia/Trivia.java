@@ -24,7 +24,6 @@ import java.util.function.Consumer;
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
  *
- * TODO: Ensure selected trivias have permission in the requesting server
  */
 public class Trivia extends ListenerAdapter implements Stoppable {
 
