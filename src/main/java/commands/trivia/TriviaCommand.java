@@ -53,19 +53,29 @@ public class TriviaCommand implements IBotCommand {
         options.add(
                 new OptionData(OptionType.STRING, OPTION_TRIVIA_NAME,
                         "tag to identify which trivias to load",
-                        true, true));
+                        true, true)
+        );
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_TRIVIA_MAX_QUESTIONS,
                         "Maximum number of questions to send before ending trivia (up to 50)",
-                        false, true));
+                        false, true)
+                        .setMaxValue(50)
+                        .setMinValue(10)
+        );
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_TRIVIA_MAX_POINTS,
                         "Number of points a player needs to win (up to 100)",
-                        false, true));
+                        false, true)
+                        .setMinValue(100)
+                        .setMaxValue(10)
+        );
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_TRIVIA_SECONDS_PER_Q,
                         "Time you have to guess the answer in seconds",
-                        false, true));
+                        false, true)
+                        .setMaxValue(30)
+                        .setMinValue(5)
+        );
 
     }
 
@@ -98,9 +108,9 @@ public class TriviaCommand implements IBotCommand {
         activeTrivias.add(event.getChannel().getIdLong());
 
         String tag = event.getOption(OPTION_TRIVIA_NAME).getAsString();
-        int maxQuestions = 20;
-        int maxPoints = 30;
-        int questionTime = 15;
+        int maxQuestions = 15;
+        int maxPoints = 25;
+        int questionTime = 20;
         if (event.getOption(OPTION_TRIVIA_MAX_QUESTIONS) != null) {
             maxQuestions = event.getOption(OPTION_TRIVIA_MAX_QUESTIONS).getAsInt();
         }
