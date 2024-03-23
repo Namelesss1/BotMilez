@@ -24,7 +24,7 @@ import java.util.List;
  * tags (list of strings to identify the trivia and to help group multiple ones)
  * is_default (boolean to differentiate if this is a custom trivia made by someone, or default)
  * trivia_author (creator of the trivia question came from)
- * qas (pairs of questions, corresponding answers, corresponding points worth)
+ * qas (pairs of questions, corresponding answers, corresponding points worth, and corresponding image)
  */
 public class TriviaType {
 
@@ -78,8 +78,9 @@ public class TriviaType {
             String question = (String)quesObj.get("question");
             List<String> answers = (JSONArray)quesObj.get("answer");
             long points = (long)quesObj.get("points");
+            String imgURL = (String)quesObj.get("img");
 
-            questions.add(new QA(id, question, answers, points));
+            questions.add(new QA(id, question, answers, points, imgURL));
         }
 
         Collections.sort(questions, new QA.QAsorter());
@@ -260,6 +261,14 @@ public class TriviaType {
     }
 
     /**
+     * @param index index to retrieve from
+     * @return an image link URL relating to a question, or null if none exists.
+     */
+    public String getImgURLAt(int index) {
+        return questions.get(index).getImgURL();
+    }
+
+    /**
      * @return how many questions are within this triviatype
      */
     public int getSize() {
@@ -430,6 +439,8 @@ public class TriviaType {
 
         em.setColor(Color.MAGENTA);
         em.setTitle("Questions in " + getName());
+        em.setDescription("Any supporting images for questions are not shown here since unfortunately," +
+                " discord embeds only support one image per embed. A work around will be in progress");
 
         return em;
     }
@@ -475,6 +486,7 @@ public class TriviaType {
             obj.put("question", qa.getQuestion());
             obj.put("answer", qa.getAnswers());
             obj.put("points", qa.getPoints());
+            obj.put("img", qa.getImgURL());
             questions.add(obj);
         }
         trivObj.put("qas", questions);

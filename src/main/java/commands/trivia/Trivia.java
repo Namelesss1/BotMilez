@@ -361,6 +361,11 @@ public class Trivia extends ListenerAdapter implements Stoppable {
                 getPointsWorth() + " points)");
         builder.setFooter(Integer.toString(questionTimeLimit));
 
+        String imgURL = getImgUrl();
+        if (imgURL != null) {
+            builder.setImage(imgURL);
+        }
+
         builder.addField(
                 fromMessage,
                 getQuestion(),
@@ -422,6 +427,16 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
         long pointsWorth = type.getPointsAt(currentQuestionIndex[1]);
         return pointsWorth;
+    }
+
+
+    /**
+     * @return the image of the current question, or null if none
+     */
+    private String getImgUrl() {
+       TriviaType type = triviaTypes.get(currentQuestionIndex[0]);
+       String imgURL = type.getImgURLAt(currentQuestionIndex[1]);
+       return imgURL;
     }
 
 

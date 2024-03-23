@@ -5,12 +5,16 @@ import commands.trivia.Trivia;
 import commands.trivia.TriviaType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import util.EmbedPageBuilder;
 
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TriviaCreator {
 
@@ -30,7 +34,9 @@ public class TriviaCreator {
         promptName();
     }
 
-    public void handleInput(String input) {
+    public void handleInput(Message message) {
+
+        String input = message.getContentRaw();
 
         if (session.confirmState == TriviaEditSession.ConfirmState.CONFIRM) {
             processConfirm(input);
@@ -56,6 +62,9 @@ public class TriviaCreator {
         }
         else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
             processQuestionInput(input);
+        }
+        else if (session.inputType == TriviaEditSession.InputType.IMAGE) {
+            processImgInput(message);
         }
         else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {
             processAnswerInput(input);
@@ -206,6 +215,58 @@ public class TriviaCreator {
         session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
     }
 
+    /**
+     * Processes support image input for a question. Ensures that an
+     * image input is a valid url. No checks for whether link leads to
+     * an image are done as of now, since this causes no problems in an
+     * embed. Image simply won't appear as if one was not intentionally set.
+     *
+     * @param imgMsg user-input for an image url
+     */
+    private void processImgInput(Message imgMsg) {
+
+        String imgInput = imgMsg.getContentRaw();
+
+        boolean validImg = true;
+
+        /* Validate URL */
+        try {
+            new URL(imgInput).toURI();
+        }
+        catch (Exception e) {
+            validImg = false;
+        }
+
+        if (validImg) {
+            session.questionObj.setImgURL(imgInput);
+            session.channel.sendMessage("Your image is: ").queue();
+            session.channel.sendMessage(imgInput).queue();
+        }
+        else {
+            /* Check if image was sent as an attachment */
+            List<Message.Attachment> attachments = imgMsg.getAttachments();
+            if (attachments != null && !attachments.isEmpty()) {
+                Message.Attachment attachment = attachments.get(0);
+                if (attachment.getContentType().startsWith("image/")) {
+                    session.questionObj.setImgURL(attachment.getUrl());
+                    session.channel.sendMessage("Your image is: ").queue();
+                    session.channel.sendMessage(attachment.getUrl()).queue();
+                }
+                else {
+                    session.channel.sendMessage("Either your message attachment is not an image" +
+                            ", or you chose not to add an image.").queue();
+                }
+            }
+            else {
+                session.channel.sendMessage("Either your image didn't work, or you chose " +
+                        "not to add an image.").queue();
+            }
+        }
+
+        promptConfirm();
+        session.confirmState = TriviaEditSession.ConfirmState.CONFIRM;
+    }
+
 
     /**
      * Processes answers that the user wants to set for a corresponding question prompt
@@ -330,6 +391,10 @@ public class TriviaCreator {
                 session.inputType = TriviaEditSession.InputType.QUESTION;
             }
             else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
+                promptImg();
+                session.inputType = TriviaEditSession.InputType.IMAGE;
+            }
+            else if (session.inputType == TriviaEditSession.InputType.IMAGE) {
                 promptAnswers();
                 session.inputType = TriviaEditSession.InputType.ANSWERS;
             }
@@ -366,6 +431,9 @@ public class TriviaCreator {
             }
             else if (session.inputType == TriviaEditSession.InputType.QUESTION) {
                 promptQuestion();
+            }
+            else if (session.inputType == TriviaEditSession.InputType.IMAGE) {
+                promptImg();
             }
             else if (session.inputType == TriviaEditSession.InputType.ANSWERS) {
                 promptAnswers();
@@ -439,6 +507,13 @@ public class TriviaCreator {
     public void promptQuestion() {
         session.channel.sendMessage("Enter a question you would like " +
                         "to ask in this trivia.")
+                .queue();
+    }
+
+    public void promptImg() {
+        session.channel.sendMessage("Enter a URL link to an image you'd like to go with" +
+                " the question. Or you can paste the image." +
+                " If you want no images, type 'none' or anything that is not a url.")
                 .queue();
     }
 

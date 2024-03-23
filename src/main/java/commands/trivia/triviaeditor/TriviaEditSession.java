@@ -69,6 +69,7 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         SERVERS, /* Input allowed servers that can view trivia */
         EDITORS, /* Input allowed contributors to trivia */
         QUESTION, /* Input a question */
+        IMAGE, /* Input a supporting image for the question */
         ANSWERS, /* Input answers to a question */
         POINTS, /* Input amount of points a quesion is worth */
         FINISHED, /* User has completed their editing action */
@@ -189,11 +190,11 @@ public class TriviaEditSession extends ListenerAdapter implements Stoppable {
         }
 
         else if (action == Action.CREATE) {
-            creator.handleInput(msg);
+            creator.handleInput(event.getMessage());
         }
 
         else if (action == Action.MODIFY) {
-            modifier.handleInput(msg);
+            modifier.handleInput(event.getMessage());
         }
 
         else if (action == Action.DELETE) {

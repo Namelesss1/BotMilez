@@ -16,21 +16,25 @@ public class QA  {
     private List<String> answers;
     private long points;
     private boolean was_asked;
+    private String imgURL;
 
-    public QA(long id, String ques, List<String> ans, long pts) {
+    public QA(long id, String ques, List<String> ans, long pts, String url) {
         this.id = id;
         question = ques;
         answers = ans;
         points = pts;
+        imgURL = url;
         was_asked = false;
     }
 
     public QA(long id) {
         was_asked = false;
+        imgURL = null;
         this.id = id;
     }
 
     public QA() {
+        imgURL = null;
         was_asked = false;
     }
 
@@ -64,6 +68,14 @@ public class QA  {
      */
     public void setPoints(long points) {
         this.points = points;
+    }
+
+    /**
+     * Sets a url for an image relating to the question
+     * @param url url link of image to set.
+     */
+    public void setImgURL(String url) {
+        imgURL = url;
     }
 
     /**
@@ -102,6 +114,14 @@ public class QA  {
     }
 
     /**
+     *
+     * @return an image url relating to the question, or null if none.
+     */
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    /**
      * @return true if question was already asked, false if not
      */
     public boolean wasAsked() {
@@ -132,6 +152,9 @@ public class QA  {
             em.setDescription("Answers: " + getAnswers().toString());
         }
         em.setFooter(getPoints() + " points");
+        if (imgURL != null) {
+            em.setImage(imgURL);
+        }
         em.setColor(Color.MAGENTA);
         return em.build();
     }
