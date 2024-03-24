@@ -63,5 +63,5 @@ public class Dice {
     }
 
 
-    private int
+    //private int
 }

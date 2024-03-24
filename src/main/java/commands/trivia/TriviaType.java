@@ -133,6 +133,7 @@ public class TriviaType {
             qa.setQuestion(otherQA.getQuestion());
             qa.setAnswer(otherQA.getAnswers());
             qa.setPoints(otherQA.getPoints());
+            qa.setImgURL(otherQA.getImgURL());
             questions.add(qa);
         }
     }
