@@ -3,6 +3,8 @@ package commands.trivia;
 import commands.IBotCommand;
 import commands.Stoppable;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -12,9 +14,12 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -212,5 +217,55 @@ public class TriviaCommand extends ListenerAdapter implements IBotCommand {
      */
     public void removeChannelFromActive(long channelId) {
         activeTrivias.remove(channelId);
+    }
+
+
+    @Override
+    public void onCommandAutoCompleteInteraction(CommandAutoCompleteInteractionEvent event) {
+        if (event.getName().equals(getName()) &&
+                event.getFocusedOption().getName().equals(OPTION_TRIVIA_NAME)) {
+            List<String> autoComplete = getAutoCompleteOptions("resources/trivia/custom/", event.getChannel());
+            List<Command.Choice> options = autoComplete.stream()
+                    .filter(name -> name.startsWith(event.getFocusedOption().getValue()))
+                    .map(name -> new Command.Choice(name, name)) // map the words to choices
+                    .collect(Collectors.toList());
+            event.replyChoices(options).queue();
+        }
+    }
+
+
+    private List<String> getAutoCompleteOptions(String path, MessageChannel channel) {
+
+        List<String> triviaNames = new ArrayList<>();
+
+        final FileNameExtensionFilter extensionFilter =
+                new FileNameExtensionFilter("N/A", "json");
+        File tDir = new File(path);
+        for (File file : tDir.listFiles()) {
+            if (extensionFilter.accept(file) && file.isFile()) {
+                String fileName = file.getName();
+                TriviaType type = new TriviaType(path + fileName, channel.getJDA());
+                String trivName = type.getName();
+                List<String> ids = type.getServers();
+                boolean universal = type.isUniversal();
+                boolean addTrivia = true;
+
+                /* If trivia is not universal and trivia is not allowed in this server, don't add */
+                if (!universal) {
+                    if (ids.isEmpty() || !ids.contains(((TextChannel)channel).getGuild().getId())) {
+                        addTrivia = false;
+                    }
+                }
+
+                if (addTrivia) {
+                    if (type.getSize() > 0) {
+                        triviaNames.add(trivName);
+                    }
+                }
+
+            }
+        }
+
+        return triviaNames;
     }
 }

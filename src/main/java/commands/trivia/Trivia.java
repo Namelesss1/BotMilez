@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static java.util.Comparator.reverseOrder;
+
 /**
  * This class represents an instance of a currently-ongoing game of
  * trivia that was activated through the TriviaCommand.
@@ -222,7 +224,7 @@ public class Trivia extends ListenerAdapter implements Stoppable {
         List<Map.Entry<User,Long>> sortedScores = new ArrayList<Map.Entry<User, Long>>(
                 playerToScore.entrySet()
         );
-        Collections.sort(sortedScores, Collections.reverseOrder());
+        sortedScores.sort(Map.Entry.comparingByValue(reverseOrder()));
 
         int rank = 1;
         for (Map.Entry<User,Long> playerToScore : sortedScores) {
