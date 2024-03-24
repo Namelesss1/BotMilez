@@ -4,14 +4,18 @@ import commands.IBotCommand;
 import commands.Stoppable;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * =============== TriviaCommand ===============
@@ -26,7 +30,7 @@ import java.util.List;
  * questions and answers.
  *
  */
-public class TriviaCommand implements IBotCommand {
+public class TriviaCommand extends ListenerAdapter implements IBotCommand {
 
     /* List of options that can be used with command e.g. trivia type, create new */
     private final List<OptionData> options;
@@ -58,21 +62,21 @@ public class TriviaCommand implements IBotCommand {
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_TRIVIA_MAX_QUESTIONS,
                         "Maximum number of questions to send before ending trivia (up to 50)",
-                        false, true)
+                        false, false)
                         .setMaxValue(50)
                         .setMinValue(10)
         );
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_TRIVIA_MAX_POINTS,
                         "Number of points a player needs to win (up to 100)",
-                        false, true)
-                        .setMinValue(100)
-                        .setMaxValue(10)
+                        false, false)
+                        .setMinValue(10)
+                        .setMaxValue(100)
         );
         options.add(
                 new OptionData(OptionType.INTEGER, OPTION_TRIVIA_SECONDS_PER_Q,
                         "Time you have to guess the answer in seconds",
-                        false, true)
+                        false, false)
                         .setMaxValue(30)
                         .setMinValue(5)
         );
