@@ -224,4 +224,16 @@ public class Dice {
         return valueToCount;
     }
 
+
+    /**
+     * Sets the dice to have the new values. Not used in Yahtzee but
+     * is helpful for testing due to the random nature of rolling the
+     * dice.
+     * @param values array of ints representing the new values of the dice
+     */
+    public void setValues(int[] values) {
+        for (int i = 0; i < dice.length; i++) {
+            dice[i] = values[i];
+        }
+    }
 }
