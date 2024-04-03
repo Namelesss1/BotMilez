@@ -53,7 +53,29 @@ public class TestScoreboard {
 
     @Test
     public void testEmptyBoard() {
+        scoreboard = new Scoreboard("Empty");
 
+        assertEquals(-1, scoreboard.getOnes());
+        assertEquals(-1, scoreboard.getTwos());
+        assertEquals(-1, scoreboard.getThrees());
+        assertEquals(-1, scoreboard.getFours());
+        assertEquals(-1, scoreboard.getFives());
+        assertEquals(-1, scoreboard.getSixes());
+        assertEquals(-1, scoreboard.getThreeOfAKind());
+        assertEquals(-1, scoreboard.getFourOfAKind());
+        assertEquals(-1, scoreboard.getFullHouse());
+        assertEquals(-1, scoreboard.getSmallStraight());
+        assertEquals(-1, scoreboard.getLargeStraight());
+        assertEquals(-1, scoreboard.getYahtzee());
+        assertEquals(-1, scoreboard.getChance());
+
+        assertFalse(scoreboard.upperSectionHasBonus());
+        assertEquals(0, scoreboard.getExtraYahtzeeCount());
+
+        assertEquals(0, scoreboard.getUpperSectionTotal());
+        assertEquals(0, scoreboard.getUpperSectionTotalWithoutBonus());
+        assertEquals(0, scoreboard.getLowerSectionTotal());
+        assertEquals(0, scoreboard.getTotalScore());
     }
 
     @Test
