@@ -23,12 +23,104 @@ public class Scoreboard {
     private int largeStraight = -1;
     private int fullHouse = -1;
 
-    /* Number of extra yahtzees obtained */
-    private int xCount = 0;
+    /* Number of yahtzees obtained */
+    private int yahtzeeCount = 0;
 
 
     public Scoreboard(String name) {
         this.name = name;
+    }
+
+    /**
+     * Sets the ones score to the given score.
+     * @param score score to set the ones to
+     */
+    public void setOnes(int score) {
+        ones = score;
+    }
+
+    /**
+     * Sets the twos score to the given score.
+     * @param score score to set the twos to
+     */
+    public void setTwos(int score) {
+        twos = score;
+    }
+
+    /**
+     * Sets the threes score to the given score.
+     * @param score score to set the threes to
+     */
+    public void setThrees(int score) {
+        threes = score;
+    }
+
+    /**
+     * Sets the fours score to the given score.
+     * @param score score to set the fours to
+     */
+    public void setFours(int score) {
+        fours = score;
+    }
+
+    /**
+     * Sets the fives score to the given score.
+     * @param score score to set the fives to.
+     */
+    public void setFives(int score) {
+        fives = score;
+    }
+
+    /**
+     * Sets the sixes score to the given score.
+     * @param score score to set the sixes to.
+     */
+    public void setSixes(int score) {
+        sixes = score;
+    }
+
+    /**
+     * Sets three-of-a-kind score to the given score.
+     * @param score score to set the field to.
+     */
+    public void setThreeOfAKind(int score) {
+        threeOfAKind = score;
+    }
+
+    /**
+     * Sets the four-of-a-kind score to the given score.
+     * @param score score to set the field to.
+     */
+    public void setFourOfAKind(int score) {
+        fourOfAKind = score;
+    }
+
+    /**
+     * Sets the full house score, which is default 25 in yahtzee.
+     */
+    public void setFullHouse() {
+        fullHouse = 25;
+    }
+
+    /**
+     * Sets the small straight score, which is by default 30 in yahtzee.
+     */
+    public void setSmallStraight() {
+        smallStraight = 30;
+    }
+
+    /**
+     * Sets the Large straight score, which is by default 40 in yahtzee.
+     */
+    public void setLargeStraight() {
+        largeStraight = 40;
+    }
+
+    /**
+     * Sets the Yahtzee Score which is by default 50.
+     */
+    public void setYahtzee() {
+        yahtzee = 50;
     }
 
     /**
@@ -74,7 +166,9 @@ public class Scoreboard {
         if (largeStraight != -1) sum += largeStraight;
         if (yahtzee != -1) sum += yahtzee;
 
-        sum += (xCount * 100);
+        if (yahtzeeCount > 1) {
+            sum += (yahtzeeCount - 1) * 100;
+        }
 
         return sum;
     }
