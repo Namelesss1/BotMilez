@@ -96,31 +96,35 @@ public class Scoreboard {
     }
 
     /**
-     * Sets the full house score, which is default 25 in yahtzee.
+     * Sets the full house score, which is default 25, or 0 in yahtzee.
+     * @param score score to set this field to.
      */
-    public void setFullHouse() {
-        fullHouse = 25;
+    public void setFullHouse(int score) {
+        fullHouse = score;
     }
 
     /**
-     * Sets the small straight score, which is by default 30 in yahtzee.
+     * Sets the small straight score, which is by default 30, or 0 in yahtzee.
+     * @param score score to set this field to.
      */
-    public void setSmallStraight() {
-        smallStraight = 30;
+    public void setSmallStraight(int score) {
+        smallStraight = score;
     }
 
     /**
-     * Sets the Large straight score, which is by default 40 in yahtzee.
+     * Sets the Large straight score, which is by default 40, or 0 in yahtzee.
+     * @param score score to set this field to.
      */
-    public void setLargeStraight() {
-        largeStraight = 40;
+    public void setLargeStraight(int score) {
+        largeStraight = score;
     }
 
     /**
-     * Sets the Yahtzee Score which is by default 50.
+     * Sets the Yahtzee Score which is by default 50, or 0.
+     * @param score score to set this field to.
      */
-    public void setYahtzee() {
-        yahtzee = 50;
+    public void setYahtzee(int score) {
+        yahtzee = score;
         yahtzeeCount++;
     }
 
