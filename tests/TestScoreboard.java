@@ -49,4 +49,30 @@ public class TestScoreboard {
         assertEquals(138, scoreboard.getLowerSectionTotal());
         assertEquals(187, scoreboard.getTotalScore());
     }
+
+
+    @Test
+    public void testEmptyBoard() {
+
+    }
+
+    @Test
+    public void testUnfinishedBoard() {
+
+    }
+
+    @Test
+    public void testBoardWithUpperBonus() {
+
+    }
+
+    @Test
+    public void testBoardWithExtraYahtzees() {
+
+    }
+
+    @Test
+    public void testBoardWithAllBonuses() {
+
+    }
 }
