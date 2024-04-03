@@ -121,6 +121,7 @@ public class Scoreboard {
      */
     public void setYahtzee() {
         yahtzee = 50;
+        yahtzeeCount++;
     }
 
     /**
@@ -208,6 +209,38 @@ public class Scoreboard {
     }
 
 
+    /**
+     * Get the total score of the upper section. This consists of
+     * The total of the ones, twos, threes, fours, fives, and sixes.
+     * This does not account for the bonus.
+     *
+     * @return sum of the upper section of this scoreboard without bonus.
+     */
+    public int getUpperSectionTotalWithoutBonus() {
+        int sum = 0;
+        if (ones != -1) sum += ones;
+        if (twos != -1) sum += twos;
+        if (threes != -1) sum += threes;
+        if (fours != -1) sum += fours;
+        if (fives != -1) sum += fives;
+        if (sixes != -1) sum += sixes;
+
+        return sum;
+    }
+
+    /**
+     * Whether the upper section of this scoreboard is eligible for
+     * the 35 bonus points i.e. if raw upper section score is greater than or
+     * equal to 63.
+     *
+     * @return true if bonus is eligible, false if not.
+     */
+    public boolean upperSectionHasBonus() {
+        if (getUpperSectionTotalWithoutBonus() >= 63) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Get the total score of the upper section. This consists of
@@ -218,19 +251,20 @@ public class Scoreboard {
      * @return sum of the upper section of this scoreboard.
      */
     public int getUpperSectionTotal() {
-        int sum = 0;
-        if (ones != -1) sum += ones;
-        if (twos != -1) sum += twos;
-        if (threes != -1) sum += threes;
-        if (fours != -1) sum += fours;
-        if (fives != -1) sum += fives;
-        if (sixes != -1) sum += sixes;
+        int sum = getUpperSectionTotalWithoutBonus();
 
-        if (sum >= 63) {
+        if (upperSectionHasBonus()) {
             sum += 35;
         }
 
         return sum;
+    }
+
+    public int getExtraYahtzeeCount() {
+        if (yahtzeeCount == 0) {
+            return 0;
+        }
+        return yahtzeeCount - 1;
     }
 
 
@@ -252,9 +286,7 @@ public class Scoreboard {
         if (largeStraight != -1) sum += largeStraight;
         if (yahtzee != -1) sum += yahtzee;
 
-        if (yahtzeeCount > 1) {
-            sum += (yahtzeeCount - 1) * 100;
-        }
+        sum += getExtraYahtzeeCount() * 100;
 
         return sum;
     }
