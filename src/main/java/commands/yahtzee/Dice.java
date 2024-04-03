@@ -49,16 +49,6 @@ public class Dice {
 
 
     /**
-     * "Rolls" a specific die. I.e. Randomly generate number from 1-6
-     * @param dieToRoll index of die to roll
-     */
-    public void roll(int dieToRoll) {
-        Random random = new Random();
-        dice[dieToRoll] = random.nextInt(MAX_DICE_VALUE - MIN_DICE_VALUE)
-                + MIN_DICE_VALUE;
-    }
-
-    /**
      * "Rolls" multiple dice. I.e. Randomly generates numbers 1-6 for each die.
      * @param diceToRoll array of booleans, true if corresponding die should roll
      */
@@ -68,6 +58,7 @@ public class Dice {
                 roll(i);
             }
         }
+        findPattern();
     }
 
 
@@ -181,6 +172,7 @@ public class Dice {
 
         /* Determine if any straights */
         int straightCount = 1;
+        int maxStraightCount = 1;
         for (int i = 1; i <= 5; i++) {
             int frequency = valueToCount.get(i);
             int nextFrequency = valueToCount.get(i + 1);
@@ -188,13 +180,16 @@ public class Dice {
                 straightCount++;
             }
             else {
+                if (straightCount > maxStraightCount) {
+                    maxStraightCount = straightCount;
+                }
                 straightCount = 1;
             }
         }
-        if (straightCount >= 4) {
+        if (straightCount >= 4 || maxStraightCount >= 4) {
             patterns.add(Pattern.SM_STRAIGHT);
         }
-        if (straightCount == 5) {
+        if (straightCount == 5 || maxStraightCount == 5) {
             patterns.add(Pattern.LG_STRAIGHT);
         }
 
@@ -224,6 +219,15 @@ public class Dice {
         return valueToCount;
     }
 
+    /**
+     * "Rolls" a specific die. I.e. Randomly generate number from 1-6
+     * @param dieToRoll index of die to roll
+     */
+    public void roll(int dieToRoll) {
+        Random random = new Random();
+        dice[dieToRoll] = random.nextInt(MAX_DICE_VALUE - MIN_DICE_VALUE)
+                + MIN_DICE_VALUE;
+    }
 
     /**
      * Sets the dice to have the new values. Not used in Yahtzee but
@@ -235,5 +239,6 @@ public class Dice {
         for (int i = 0; i < dice.length; i++) {
             dice[i] = values[i];
         }
+        findPattern();
     }
 }

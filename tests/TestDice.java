@@ -2,7 +2,7 @@
 import commands.yahtzee.Dice;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class TestDice {
     commands.yahtzee.Dice dice = new Dice();
@@ -40,7 +40,45 @@ public class TestDice {
 
 
     @Test
-    public void testPatterns() {
+    public void testStraights() {
+        dice.setValues(new int[]{2,3,4,5,6});
+        assertFalse(dice.isFourOfAKind());
+        assertFalse(dice.isThreeOfAKind());
+        assertFalse(dice.isFullHouse());
+        assertFalse(dice.isYahtzee());
+        assertTrue(dice.isLargeStraight());
+        assertTrue(dice.isSmallStraight());
 
+        dice.setValues(new int[]{1,2,3,4,5});
+        assertFalse(dice.isFourOfAKind());
+        assertFalse(dice.isThreeOfAKind());
+        assertFalse(dice.isFullHouse());
+        assertFalse(dice.isYahtzee());
+        assertTrue(dice.isLargeStraight());
+        assertTrue(dice.isSmallStraight());
+
+        dice.setValues(new int[]{2,2,3,4,5});
+        assertFalse(dice.isFourOfAKind());
+        assertFalse(dice.isThreeOfAKind());
+        assertFalse(dice.isFullHouse());
+        assertFalse(dice.isYahtzee());
+        assertFalse(dice.isLargeStraight());
+        assertTrue(dice.isSmallStraight());
+
+        dice.setValues(new int[]{5,6,3,4,1});
+        assertFalse(dice.isFourOfAKind());
+        assertFalse(dice.isThreeOfAKind());
+        assertFalse(dice.isFullHouse());
+        assertFalse(dice.isYahtzee());
+        assertFalse(dice.isLargeStraight());
+        assertTrue(dice.isSmallStraight());
+
+        dice.setValues(new int[]{1,2,4,5,6});
+        assertFalse(dice.isFourOfAKind());
+        assertFalse(dice.isThreeOfAKind());
+        assertFalse(dice.isFullHouse());
+        assertFalse(dice.isYahtzee());
+        assertFalse(dice.isLargeStraight());
+        assertFalse(dice.isSmallStraight());
     }
 }
