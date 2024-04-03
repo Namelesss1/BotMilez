@@ -157,7 +157,44 @@ public class TestScoreboard {
 
     @Test
     public void testBoardWithExtraYahtzees() {
+        scoreboard.setOnes(0);
+        scoreboard.setTwos(0);
+        scoreboard.setFours(16);
+        scoreboard.setFives(20);
+        scoreboard.setThreeOfAKind(0);
+        scoreboard.setFourOfAKind(28);
+        scoreboard.setFullHouse(25);
+        scoreboard.setSmallStraight(30);
+        scoreboard.setLargeStraight(40);
+        scoreboard.setYahtzee(50);
+        scoreboard.setYahtzee(50);
+        scoreboard.setYahtzee(50);
+        scoreboard.setChance(27);
 
+        /* Ensure correct individual score fields */
+        assertEquals(0, scoreboard.getOnes());
+        assertEquals(0, scoreboard.getTwos());
+        assertEquals(-1, scoreboard.getThrees());
+        assertEquals(16, scoreboard.getFours());
+        assertEquals(20, scoreboard.getFives());
+        assertEquals(-1, scoreboard.getSixes());
+        assertEquals(0, scoreboard.getThreeOfAKind());
+        assertEquals(28, scoreboard.getFourOfAKind());
+        assertEquals(25, scoreboard.getFullHouse());
+        assertEquals(30, scoreboard.getSmallStraight());
+        assertEquals(40, scoreboard.getLargeStraight());
+        assertEquals(50, scoreboard.getYahtzee());
+        assertEquals(27, scoreboard.getChance());
+
+        /* Ensure correct bonuses */
+        assertFalse(scoreboard.upperSectionHasBonus());
+        assertEquals(2, scoreboard.getExtraYahtzeeCount());
+
+        /* Ensure correct score totals */
+        assertEquals(36, scoreboard.getUpperSectionTotal());
+        assertEquals(36, scoreboard.getUpperSectionTotalWithoutBonus());
+        assertEquals(400, scoreboard.getLowerSectionTotal());
+        assertEquals(436, scoreboard.getTotalScore());
     }
 
     @Test
