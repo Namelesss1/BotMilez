@@ -22,6 +22,7 @@ public class TestScoreboard {
         scoreboard.setSmallStraight(30);
         scoreboard.setLargeStraight(40);
         scoreboard.setYahtzee(0);
+        scoreboard.setChance(22);
 
         /* Ensure correct individual score fields */
         assertEquals(3, scoreboard.getOnes());
@@ -36,6 +37,7 @@ public class TestScoreboard {
         assertEquals(30, scoreboard.getSmallStraight());
         assertEquals(40, scoreboard.getLargeStraight());
         assertEquals(0, scoreboard.getYahtzee());
+        assertEquals(22, scoreboard.getChance());
 
         /* Ensure correct bonuses */
         assertFalse(scoreboard.upperSectionHasBonus());
@@ -44,7 +46,7 @@ public class TestScoreboard {
         /* Ensure correct score totals */
         assertEquals(49, scoreboard.getUpperSectionTotal());
         assertEquals(49, scoreboard.getUpperSectionTotalWithoutBonus());
-        assertEquals(116, scoreboard.getLowerSectionTotal());
-        assertEquals(165, scoreboard.getTotalScore());
+        assertEquals(138, scoreboard.getLowerSectionTotal());
+        assertEquals(187, scoreboard.getTotalScore());
     }
 }
