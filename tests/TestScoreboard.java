@@ -80,7 +80,38 @@ public class TestScoreboard {
 
     @Test
     public void testUnfinishedBoard() {
+        scoreboard.setOnes(0);
+        scoreboard.setFives(20);
+        scoreboard.setSixes(18);
+        scoreboard.setThreeOfAKind(18);
+        scoreboard.setFullHouse(25);
+        scoreboard.setLargeStraight(0);
+        scoreboard.setYahtzee(50);
 
+        /* Ensure correct individual score fields */
+        assertEquals(0, scoreboard.getOnes());
+        assertEquals(-1, scoreboard.getTwos());
+        assertEquals(-1, scoreboard.getThrees());
+        assertEquals(-1, scoreboard.getFours());
+        assertEquals(20, scoreboard.getFives());
+        assertEquals(18, scoreboard.getSixes());
+        assertEquals(18, scoreboard.getThreeOfAKind());
+        assertEquals(-1, scoreboard.getFourOfAKind());
+        assertEquals(25, scoreboard.getFullHouse());
+        assertEquals(-1, scoreboard.getSmallStraight());
+        assertEquals(0, scoreboard.getLargeStraight());
+        assertEquals(50, scoreboard.getYahtzee());
+        assertEquals(-1, scoreboard.getChance());
+
+        /* Ensure correct bonuses */
+        assertFalse(scoreboard.upperSectionHasBonus());
+        assertEquals(0, scoreboard.getExtraYahtzeeCount());
+
+        /* Ensure correct score totals */
+        assertEquals(38, scoreboard.getUpperSectionTotal());
+        assertEquals(38, scoreboard.getUpperSectionTotalWithoutBonus());
+        assertEquals(93, scoreboard.getLowerSectionTotal());
+        assertEquals(131, scoreboard.getTotalScore());
     }
 
     @Test
