@@ -22,6 +22,7 @@ public class Scoreboard {
     private int smallStraight = -1;
     private int largeStraight = -1;
     private int fullHouse = -1;
+    private int chance = -1;
 
     /* Number of yahtzees obtained */
     private int yahtzeeCount = 0;
@@ -129,6 +130,14 @@ public class Scoreboard {
     }
 
     /**
+     * Sets the chance score to the given score.
+     * @param score score to set the field to.
+     */
+    public void setChance(int score) {
+        chance = score;
+    }
+
+    /**
      * @return score for the ones.
      */
     public int getOnes() {
@@ -212,6 +221,13 @@ public class Scoreboard {
         return yahtzee;
     }
 
+    /**
+     * @return score for chance
+     */
+    public int getChance() {
+        return chance;
+    }
+
 
     /**
      * Get the total score of the upper section. This consists of
@@ -289,6 +305,7 @@ public class Scoreboard {
         if (smallStraight != -1) sum += smallStraight;
         if (largeStraight != -1) sum += largeStraight;
         if (yahtzee != -1) sum += yahtzee;
+        if (chance != -1) sum += chance;
 
         sum += getExtraYahtzeeCount() * 100;
 
