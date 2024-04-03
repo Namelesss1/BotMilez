@@ -124,6 +124,92 @@ public class Scoreboard {
     }
 
     /**
+     * @return score for the ones.
+     */
+    public int getOnes() {
+        return ones;
+    }
+
+    /**
+     * @return score for the twos.
+     */
+    public int getTwos() {
+        return twos;
+    }
+
+    /**
+     * @return score for the threes.
+     */
+    public int getThrees() {
+        return threes;
+    }
+
+    /**
+     * @return score for the fours.
+     */
+    public int getFours() {
+        return fours;
+    }
+
+    /**
+     * @return score for the fives.
+     */
+    public int getFives() {
+        return fives;
+    }
+
+    /**
+     * @return score for the sixes.
+     */
+    public int getSixes() {
+        return sixes;
+    }
+
+    /**
+     * @return score for three of a kind
+     */
+    public int getThreeOfAKind() {
+        return threeOfAKind;
+    }
+
+    /**
+     * @return score for four of a kind
+     */
+    public int getFourOfAKind() {
+        return fourOfAKind;
+    }
+
+    /**
+     * @return score for Full House
+     */
+    public int getFullHouse() {
+        return fullHouse;
+    }
+
+    /**
+     * @return score for Small Straight
+     */
+    public int getSmallStraight() {
+        return smallStraight;
+    }
+
+    /**
+     * @return score for Large Straight
+     */
+    public int getLargeStraight() {
+        return largeStraight;
+    }
+
+    /**
+     * @return score for yahtzee
+     */
+    public int getYahtzee() {
+        return yahtzee;
+    }
+
+
+
+    /**
      * Get the total score of the upper section. This consists of
      * The total of the ones, twos, threes, fours, fives, and sixes.
      * A bonus 35 points are awarded if the sum is 63 or more, which is
