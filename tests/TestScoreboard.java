@@ -1,8 +1,7 @@
 import commands.yahtzee.Scoreboard;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class TestScoreboard {
 
@@ -116,7 +115,44 @@ public class TestScoreboard {
 
     @Test
     public void testBoardWithUpperBonus() {
+        scoreboard.setOnes(4);
+        scoreboard.setTwos(8);
+        scoreboard.setThrees(12);
+        scoreboard.setFours(16);
+        scoreboard.setFives(20);
+        scoreboard.setSixes(24);
+        scoreboard.setThreeOfAKind(10);
+        scoreboard.setFourOfAKind(28);
+        scoreboard.setFullHouse(0);
+        scoreboard.setSmallStraight(0);
+        scoreboard.setLargeStraight(40);
+        scoreboard.setYahtzee(50);
+        scoreboard.setChance(12);
 
+        /* Ensure correct individual score fields */
+        assertEquals(4, scoreboard.getOnes());
+        assertEquals(8, scoreboard.getTwos());
+        assertEquals(12, scoreboard.getThrees());
+        assertEquals(16, scoreboard.getFours());
+        assertEquals(20, scoreboard.getFives());
+        assertEquals(24, scoreboard.getSixes());
+        assertEquals(10, scoreboard.getThreeOfAKind());
+        assertEquals(28, scoreboard.getFourOfAKind());
+        assertEquals(0, scoreboard.getFullHouse());
+        assertEquals(0, scoreboard.getSmallStraight());
+        assertEquals(40, scoreboard.getLargeStraight());
+        assertEquals(50, scoreboard.getYahtzee());
+        assertEquals(12, scoreboard.getChance());
+
+        /* Ensure correct bonuses */
+        assertTrue(scoreboard.upperSectionHasBonus());
+        assertEquals(0, scoreboard.getExtraYahtzeeCount());
+
+        /* Ensure correct score totals */
+        assertEquals(119, scoreboard.getUpperSectionTotal());
+        assertEquals(84, scoreboard.getUpperSectionTotalWithoutBonus());
+        assertEquals(140, scoreboard.getLowerSectionTotal());
+        assertEquals(259, scoreboard.getTotalScore());
     }
 
     @Test
